@@ -1,0 +1,13 @@
+<bin name="HOStudy" file="main.cc" />
+
+<use name="root"/>
+<use name="rootrio"/>
+<use name="rootcore"/>
+<use name="rootphysics"/>
+<use name="rootgraphics"/>
+
+<use name="HOAnalysis/HOL1"/>
+
+<export>
+	<lib name="1"/>
+</export>
