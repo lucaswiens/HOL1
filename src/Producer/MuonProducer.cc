@@ -56,7 +56,7 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product) {
 
 		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(product->muonEta.at(i)));
 
-		product->muonHasMB1.push_back((fabs(product->muonEtaSt1.at(iMuon)) < 5) && (fabs(product->muonPhiSt1.at(iMuon)) < M_PI));
+		product->muonHasMb1.push_back((fabs(product->muonEtaSt1.at(i)) < 5) && (fabs(product->muonPhiSt1.at(i)) < M_PI));
 
 		histMuonMet->Fill(product->muonMet.at(i));
 		histMuonMt->Fill(product->muonMt.at(i));
