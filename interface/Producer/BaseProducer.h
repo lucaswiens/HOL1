@@ -12,12 +12,13 @@
 #include <TCanvas.h>
 
 #include <HOAnalysis/HOL1/interface/DataReader.h>
+#include <HOAnalysis/HOL1/interface/HoProduct.h>
+#include <HOAnalysis/HOL1/interface/Utility/Utility.h>
 
 class BaseProducer {
 	public:
 		virtual ~BaseProducer(){};
 		BaseProducer();
-		virtual void Produce(DataReader*) = 0;
+		virtual void Produce(DataReader* dataReader, HoProduct* product) = 0;
 
-		static float DeltaR(const float&, const float&, const float&, const float&);
 };

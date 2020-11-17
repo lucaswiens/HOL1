@@ -5,6 +5,7 @@
 #include <TTreeReader.h>
 
 #include <HOAnalysis/HOL1/interface/DataReader.h>
+#include <HOAnalysis/HOL1/interface/HoProduct.h>
 #include <HOAnalysis/HOL1/interface/Producer/BaseProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
@@ -35,9 +36,11 @@ int main(int argc, char* argv[]) {
 		if(processed % 10000) {
 			ProgressBar(processed, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
 		}
+		processed++;
 
+		HoProduct product;
 		for (std::shared_ptr<BaseProducer> producer: producers) {
-			producer->Produce(dataReader);
+			producer->Produce(dataReader, &product);
 		}
 	}
 	ProgressBar(100, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <HOAnalysis/HOL1/interface/Producer/BaseProducer.h>
-#include <HOAnalysis/HOL1/interface/DataReader.h>
 
 class HoProducer : public BaseProducer {
 	private:
@@ -12,5 +11,5 @@ class HoProducer : public BaseProducer {
 	public:
 		HoProducer();
 		~HoProducer();
-		void Produce(DataReader*);
+		void Produce(DataReader* dataReader, HoProduct* product);
 };

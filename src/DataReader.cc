@@ -27,7 +27,7 @@ DataReader::DataReader(std::string inputFileName) {
 	l1MuonRecoReader = new TTreeReader(l1MuonRecoTree);
 	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);
 
-	//Set Address for HO Variables
+	//Set Reader for HO Variables
 	nHcalDetIds = std::make_unique<TTreeReaderValue<unsigned int>>(*l1HoReader, "nHcalDetIds");
 	nHcalQIESamples = std::make_unique<TTreeReaderValue<unsigned int>>(*l1HoReader, "nHcalQIESamples");
 	sumQ = std::make_unique<TTreeReaderValue<double>>(*l1HoReader, "sumQ");
@@ -42,19 +42,15 @@ DataReader::DataReader(std::string inputFileName) {
 	QIESamplePedestal = std::make_unique<TTreeReaderArray<float>>(*l1HoReader, "QIESamplePedestal");
 	QIESampleFc_MPedestals = std::make_unique<TTreeReaderArray<float>>(*l1HoReader, "QIESampleFc_MPedestals");
 
-	//Set Address for MuonReco Variables
+	//Set Reader for MuonReco Variables
 	nMuon = std::make_unique<TTreeReaderValue<unsigned short>>(*l1MuonRecoReader, "nMuons");
-
 	muonIsLooseMuon = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isLooseMuon");
 	muonIsMediumMuon = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isMediumMuon");
 	muonIsTightMuon = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isTightMuon");
-
 	muonHlt_isomu = std::make_unique<TTreeReaderArray<short>>(*l1MuonRecoReader, "hlt_isomu");
 	muonHlt_mu = std::make_unique<TTreeReaderArray<short>>(*l1MuonRecoReader, "hlt_mu");
-
 	muonPassesSingleMuon = std::make_unique<TTreeReaderArray<int>>(*l1MuonRecoReader, "passesSingleMuon");
 	muonCharge = std::make_unique<TTreeReaderArray<int>>(*l1MuonRecoReader, "charge");
-
 	muonE = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "e");
 	muonEt = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "et");
 	muonPt = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "pt");
@@ -67,14 +63,12 @@ DataReader::DataReader(std::string inputFileName) {
 	muonPhiSt1 = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt1");
 	muonEtaSt2 = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "etaSt2");
 	muonPhiSt2 = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt2");
-
 	muonMet = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "met");
 	muonMt = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "mt");
 
-	//Set Address for BMTF Input Variables
+	//Set Reader for BMTF Input Variables
 	bmtfPhSize = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "phSize");
 	bmtfThSize = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "thSize");
-
 	bmtfPhBx = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phBx");
 	bmtfPhWh = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phWh");
 	bmtfPhSe = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phSe");
@@ -87,9 +81,24 @@ DataReader::DataReader(std::string inputFileName) {
 	bmtfThSt = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thSt");
 	bmtfThTheta = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thTheta");
 	bmtfThCode = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thCode");
-
 	bmtfPhAng = std::make_unique<TTreeReaderArray<float>>(*l1BmtfInputReader, "phAng");
 	bmtfPhBandAng = std::make_unique<TTreeReaderArray<float>>(*l1BmtfInputReader, "phBandAng");
+	//Set Reader for BMTF Muon Variables
+	nTfMuon = std::make_unique<TTreeReaderValue<unsigned short>>(*l1BmtfInputReader, "nTfMuons");
+	tfMuonHwPt = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwPt");
+	tfMuonHwEta = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwEta");
+	tfMuonHwPhi = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwPhi");
+	tfMuonGlobalPhi = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonGlobalPhi");
+	tfMuonHwSign = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwSign");
+	tfMuonHwSignValid = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwSignValid");
+	tfMuonHwQual = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwQual");
+	tfMuonLink = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonLink");
+	tfMuonProcessor = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonProcessor");
+	tfMuonTrackFinderType = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonTrackFinderType");
+	tfMuonHwHF = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwHF");
+	tfMuonBx = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonBx");
+	tfMuonWh = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonWh");
+	tfMuonTrAdd = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonTrAdd");
 }
 
 DataReader::~DataReader(){
