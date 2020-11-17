@@ -10,6 +10,7 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/BmtfInputProducer.h>
+#include <HOAnalysis/HOL1/interface/Producer/HoCoincidenceProducer.h>
 
 void ProgressBar(const int &, const int &);
 
@@ -27,6 +28,7 @@ int main(int argc, char* argv[]) {
 		std::shared_ptr<HoProducer>(new HoProducer()),
 		std::shared_ptr<MuonProducer>(new MuonProducer()),
 		std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer()),
+		std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()),
 	};
 
 	int processed = 0;
