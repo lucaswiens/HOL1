@@ -85,7 +85,7 @@ public:
 		muonMt;
 	// Unused Muons
 	unsigned short nUnusedMuon;
-	std::vector<bool> isMediumMuon,
+	std::vector<bool> isMediumUnusedMuon,
 		unusedMuonHltIsoMu,
 		unusedMuonHltMu,
 		unusedMuonPassesSingleMuon,
