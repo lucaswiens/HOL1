@@ -113,14 +113,19 @@ public:
 		bmtfMatchedMuonPhi,
 		bmtfMatchedMuonTrackType,
 		bmtfMatchedMuonDeltaPhi;
-	std::vector<int> bmtfMatchedMuonCharge;
+	std::vector<int> bmtfMatchedMuonCharge,
+		bmtfMatchedMuonIndex;
 	std::vector<bool> isBmtfMatchedMuon;
 	// Matching MB34 with HO
 	std::vector<double> bmtfMb34MatchedHoDeltaR,
 		bmtfMb34MatchedHoPt,
 		bmtfMb34MatchedHoCmsEta,
 		bmtfMb34MatchedHoCmsPhi,
-		bmtfMb34MatchedHoDeltaPhi;
+		bmtfMb34MatchedHoDeltaPhi,
+		bmtfMb34MatchedMuonPt,
+		bmtfMb34MatchedMuonEta,
+		bmtfMb34MatchedMuonPhi,
+		bmtfMb34MatchedMuonDeltaPhi;
 	std::vector<int> bmtfMb34MatchedHoIEta,
 		bmtfMb34MatchedHoIPhi,
 		bmtfMb34MatchedHoDeltaIPhi;

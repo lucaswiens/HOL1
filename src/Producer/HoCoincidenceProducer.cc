@@ -21,11 +21,12 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		double bmtfMatchedDttpPt = -999, bmtfMatchedDttpPhi = -999, bmtfMatchedDttpCmsPhi = -999, bmtfMatchedDttpDeltaPhiMin = -999;
 		bool isBmtfMatchedDttp = false;
 		for (int iDttp = 0; iDttp < product->dttpSize; iDttp ++) {
-			if (product->dttpBx.at(iDttp) != 0) { continue;}
+			if (product->dttpBx.at(iDttp) != 0 &&
+				product->isBmtfMatchedDttp.at(iDttp)
+			) { continue;}
 
 			for (int iBmtfStation = 0; iBmtfStation <= 3; iBmtfStation++) {
 				// Skip if already associated to a BMTF
-				if (product->isBmtfMatchedDttp.at(iDttp) == true) { continue;}
 
 				// For Mb1, TrackAddress has to be 3, but for MB2, MB3 and MB4 it has to be 15
 				if (iBmtfStation == 0) {
@@ -64,6 +65,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		double bmtfMatchedMuonDeltaPhi = -999;
 		bool isBmtfMatchedMuon = false;
 		for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
+			if (product->isBmtfMatchedMuon.at(iMuon)){ continue;}
 			if (!product->isMediumMuon.at(iMuon) &&
 				!product->muonHasMb1.at(iMuon) &&
 				product->muonIEta.at(iMuon) > 10
@@ -108,7 +110,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		//if (!product->isBmtfMatchedMuon.at(iBmtf)) {
 		// BMTF Tracks with Hits only in MB3 and MB4
 		if(product->bmtfTrackerAddresses.at(iBmtf).at(0) == 3 && product->bmtfTrackerAddresses.at(iBmtf).at(1) == 15 && product->bmtfTrackerAddresses.at(iBmtf).at(2) != 15 && product->bmtfTrackerAddresses.at(iBmtf).at(3) != 15) {
-			double bmtfMb34MatchedHoDeltaRMin = 999, bmtfMb34MatchedHoPt = -999, bmtfMb34MatchedHoCmsEta = -999, bmtfMb34MatchedHoCmsPhi = -999;
+			double bmtfMb34MatchedHoDeltaRMin = 999, bmtfMb34MatchedHoPt = -999, bmtfMb34MatchedHoCmsEta = -999, bmtfMb34MatchedHoCmsPhi = -999, bmtfMb34MatchedMuonPt = -999, bmtfMb34MatchedMuonEta = -999, bmtfMb34MatchedMuonPhi = -999, bmtfMb34MatchedMuonDeltaPhi;
 			int bmtfMb34MatchedHoIEta = -999, bmtfMb34MatchedHoIPhi = -999;
 			bool isBmtfMb34HoMatched = false;
 			for (unsigned int iHo = 0; iHo < product->nHcalDetIds; iHo++) {
@@ -121,6 +123,11 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 					bmtfMb34MatchedHoIEta = product->hcalIEta.at(iHo);
 					bmtfMb34MatchedHoIPhi = product->hcalIPhi.at(iHo);
 					isBmtfMb34HoMatched = bmtfMb34MatchedHoDeltaRMin < 0.4;
+					// Store the muon variables matched to this particular BMTF Muon
+					bmtfMb34MatchedMuonPt = product->bmtfMatchedMuonPt.at(iBmtf);
+					bmtfMb34MatchedMuonEta = product->bmtfMatchedMuonEta.at(iBmtf);
+					bmtfMb34MatchedMuonPhi = product->bmtfMatchedMuonPhi.at(iBmtf);
+					bmtfMb34MatchedMuonDeltaPhi = product->bmtfMatchedMuonDeltaPhi.at(iBmtf);
 				}
 			}
 			product->bmtfMb34MatchedHoDeltaR.push_back(bmtfMb34MatchedHoDeltaRMin);
@@ -129,6 +136,12 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 			product->bmtfMb34MatchedHoCmsPhi.push_back(bmtfMb34MatchedHoCmsPhi);
 			product->bmtfMb34MatchedHoIEta.push_back(bmtfMb34MatchedHoIEta);
 			product->bmtfMb34MatchedHoIPhi.push_back(bmtfMb34MatchedHoIPhi);
+			product->bmtfMb34MatchedHoPt.push_back(bmtfMb34MatchedHoPt);
+			product->bmtfMb34MatchedMuonPt.push_back(bmtfMb34MatchedMuonPt);
+			product->bmtfMb34MatchedMuonEta.push_back(bmtfMb34MatchedMuonEta);
+			product->bmtfMb34MatchedMuonPhi.push_back(bmtfMb34MatchedMuonPhi);
+			product->bmtfMb34MatchedMuonDeltaPhi.push_back(bmtfMb34MatchedMuonDeltaPhi);
+
 
 			if (!isBmtfMb34HoMatched && abs(bmtfMb34MatchedHoIEta) > 10) { continue;}
 
@@ -199,6 +212,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		int dttpMatchedHoDeltaIPhiMin = -999, dttpMatchedHoIPhi, dttpMatchedHoIEta;
 		double dttpMatchedHoCmsPhi = -999, dttpMatchedHoCmsEta = -999;
 		for (unsigned int iHo = 0; iHo < product->nHcalDetIds; iHo++) {
+			if (isDttpMatchedHo) { break;}
 			//TODO what is hoTPdigi_bits
 			//if(input->v_hoTPdigi_bits->at(iHOTP) != HOTP_bits_SOI)
 			const int deltaIPhi = Utility::DeltaIPhi(product->dttpIPhi.at(iDttp), product->hcalIPhi.at(iHo));
@@ -231,7 +245,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
 			if (!product->isMediumMuon.at(iMuon) &&
 				!product->muonHasMb1.at(iMuon) &&
-				product->muonIEta.at(iMuon) > 10
+				product->muonIEta.at(iMuon) > 10 &&
+				product->isDttpMatchedMuon.at(iMuon)
 			) { continue;}
 			const double &deltaR = Utility::DeltaR(product->hcalCmsEta.at(iDttp), product->hcalCmsPhi.at(iDttp), product->muonEta.at(iMuon), product->muonPhi.at(iMuon));
 			if (deltaR < dttpMatchedMuonDeltaRMin) {
@@ -256,33 +271,33 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		}
 	}
 
-	for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
-		//if(std::find(bmtfMatchedMuonIndex.begin(), bmtfMatchedMuonIndex.end(), iMuon) != bmtfMatchedMuonIndex.end()) { continue;}
-		//if(std::find(dttpMatchedMuonIndex.begin(), dttpMatchedMuonIndex.end(), iMuon) != dttpMatchedMuonIndex.end()) { continue;}
-		//unused muons
-		if (product->isBmtfMatchedMuon.at(iMuon) || product->isDttpMatchedMuon.at(iMuon)) {
-			product->isMediumUnusedMuon.push_back(product->isMediumMuon.at(iMuon));
-			product->unusedMuonHltIsoMu.push_back(product->muonHltIsoMu.at(iMuon));
-			product->unusedMuonHltMu.push_back(product->muonHltMu.at(iMuon));
-			product->unusedMuonPassesSingleMuon.push_back(product->muonPassesSingleMuon.at(iMuon));
-			product->unusedMuonHasMb1.push_back(product->muonHasMb1.at(iMuon));
-			product->unusedMuonCharge.push_back(product->muonCharge.at(iMuon));
-			product->unusedMuonIEta.push_back(product->muonIEta.at(iMuon));
-			product->unusedMuonE.push_back(product->muonE.at(iMuon));
-			product->unusedMuonEt.push_back(product->muonEt.at(iMuon));
-			product->unusedMuonPt.push_back(product->muonPt.at(iMuon));
-			product->unusedMuonEta.push_back(product->muonEta.at(iMuon));
-			product->unusedMuonPhi.push_back(product->muonPhi.at(iMuon));
-			product->unusedMuonIso.push_back(product->muonIso.at(iMuon));
-			product->unusedMuonHltIsoDeltaR.push_back(product->muonHltIsoDeltaR.at(iMuon));
-			product->unusedMuonDeltaR.push_back(product->muonDeltaR.at(iMuon));
-			product->unusedMuonEtaSt1.push_back(product->muonEtaSt1.at(iMuon));
-			product->unusedMuonPhiSt1.push_back(product->muonPhiSt1.at(iMuon));
-			product->unusedMuonEtaSt2.push_back(product->muonEtaSt2.at(iMuon));
-			product->unusedMuonPhiSt2.push_back(product->muonPhiSt2.at(iMuon));
-			product->unusedMuonMet.push_back(product->muonMet.at(iMuon));
-			product->unusedMuonMt.push_back(product->muonMt.at(iMuon));
-		}
-	}
-	product->nUnusedMuon = product->isMediumMuon.size();
+	//for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
+	//	//if(std::find(bmtfMatchedMuonIndex.begin(), bmtfMatchedMuonIndex.end(), iMuon) != bmtfMatchedMuonIndex.end()) { continue;}
+	//	//if(std::find(dttpMatchedMuonIndex.begin(), dttpMatchedMuonIndex.end(), iMuon) != dttpMatchedMuonIndex.end()) { continue;}
+	//	//unused muons
+	//	//if (product->isBmtfMatchedMuon.at(iMuon) || product->isDttpMatchedMuon.at(iMuon)) {
+	//	//	product->isMediumUnusedMuon.push_back(product->isMediumMuon.at(iMuon));
+	//	//	product->unusedMuonHltIsoMu.push_back(product->muonHltIsoMu.at(iMuon));
+	//	//	product->unusedMuonHltMu.push_back(product->muonHltMu.at(iMuon));
+	//	//	product->unusedMuonPassesSingleMuon.push_back(product->muonPassesSingleMuon.at(iMuon));
+	//	//	product->unusedMuonHasMb1.push_back(product->muonHasMb1.at(iMuon));
+	//	//	product->unusedMuonCharge.push_back(product->muonCharge.at(iMuon));
+	//	//	product->unusedMuonIEta.push_back(product->muonIEta.at(iMuon));
+	//	//	product->unusedMuonE.push_back(product->muonE.at(iMuon));
+	//	//	product->unusedMuonEt.push_back(product->muonEt.at(iMuon));
+	//	//	product->unusedMuonPt.push_back(product->muonPt.at(iMuon));
+	//	//	product->unusedMuonEta.push_back(product->muonEta.at(iMuon));
+	//	//	product->unusedMuonPhi.push_back(product->muonPhi.at(iMuon));
+	//	//	product->unusedMuonIso.push_back(product->muonIso.at(iMuon));
+	//	//	product->unusedMuonHltIsoDeltaR.push_back(product->muonHltIsoDeltaR.at(iMuon));
+	//	//	product->unusedMuonDeltaR.push_back(product->muonDeltaR.at(iMuon));
+	//	//	product->unusedMuonEtaSt1.push_back(product->muonEtaSt1.at(iMuon));
+	//	//	product->unusedMuonPhiSt1.push_back(product->muonPhiSt1.at(iMuon));
+	//	//	product->unusedMuonEtaSt2.push_back(product->muonEtaSt2.at(iMuon));
+	//	//	product->unusedMuonPhiSt2.push_back(product->muonPhiSt2.at(iMuon));
+	//	//	product->unusedMuonMet.push_back(product->muonMet.at(iMuon));
+	//	//	product->unusedMuonMt.push_back(product->muonMt.at(iMuon));
+	//	//}
+	//	//product->nUnusedMuon = product->isMediumMuon.size();
+	//}
 }
