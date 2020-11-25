@@ -54,35 +54,35 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		product->muonMet.push_back(dataReader->muonMet->At(i));
 		product->muonMt.push_back(dataReader->muonMt->At(i));
 
-		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(product->muonEta.at(i)));
+		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(product->muonEta.back()));
 
-		product->muonHasMb1.push_back((fabs(product->muonEtaSt1.at(i)) < 5) && (fabs(product->muonPhiSt1.at(i)) < M_PI));
+		product->muonHasMb1.push_back((fabs(product->muonEtaSt1.back()) < 5) && (fabs(product->muonPhiSt1.back()) < M_PI));
 
-		histMuonMet->Fill(product->muonMet.at(i));
-		histMuonMt->Fill(product->muonMt.at(i));
+		histMuonMet->Fill(product->muonMet.back());
+		histMuonMt->Fill(product->muonMt.back());
 
-		histIsLooseMuon->Fill(product->isLooseMuon.at(i));
-		histIsMediumMuon->Fill(product->isMediumMuon.at(i));
-		histIsTightMuon->Fill(product->isTightMuon.at(i));
-		histMuonHltIsoMu->Fill(product->muonHltIsoMu.at(i));
-		histMuonHltMu->Fill(product->muonHltMu.at(i));
-		histMuonPassesSingleMuon->Fill(product->muonPassesSingleMuon.at(i));
-		histMuonCharge->Fill(product->muonCharge.at(i));
+		histIsLooseMuon->Fill(product->isLooseMuon.back());
+		histIsMediumMuon->Fill(product->isMediumMuon.back());
+		histIsTightMuon->Fill(product->isTightMuon.back());
+		histMuonHltIsoMu->Fill(product->muonHltIsoMu.back());
+		histMuonHltMu->Fill(product->muonHltMu.back());
+		histMuonPassesSingleMuon->Fill(product->muonPassesSingleMuon.back());
+		histMuonCharge->Fill(product->muonCharge.back());
 
-		histMuonE->Fill(product->muonE.at(i));
-		histMuonEt->Fill(product->muonEt.at(i));
-		histMuonPt->Fill(product->muonPt.at(i));
-		histMuonEta->Fill(product->muonEta.at(i));
-		histMuonPhi->Fill(product->muonPhi.at(i));
-		histMuonIso->Fill(product->muonIso.at(i));
-		histMuonHltIsoDeltaR->Fill(product->muonHltIsoDeltaR.at(i));
-		histMuonDeltaR->Fill(product->muonDeltaR.at(i));
-		histMuonEtaSt1->Fill(product->muonEtaSt1.at(i));
-		histMuonPhiSt1->Fill(product->muonPhiSt1.at(i));
-		histMuonEtaSt2->Fill(product->muonEtaSt2.at(i));
-		histMuonPhiSt2->Fill(product->muonPhiSt2.at(i));
+		histMuonE->Fill(product->muonE.back());
+		histMuonEt->Fill(product->muonEt.back());
+		histMuonPt->Fill(product->muonPt.back());
+		histMuonEta->Fill(product->muonEta.back());
+		histMuonPhi->Fill(product->muonPhi.back());
+		histMuonIso->Fill(product->muonIso.back());
+		histMuonHltIsoDeltaR->Fill(product->muonHltIsoDeltaR.back());
+		histMuonDeltaR->Fill(product->muonDeltaR.back());
+		histMuonEtaSt1->Fill(product->muonEtaSt1.back());
+		histMuonPhiSt1->Fill(product->muonPhiSt1.back());
+		histMuonEtaSt2->Fill(product->muonEtaSt2.back());
+		histMuonPhiSt2->Fill(product->muonPhiSt2.back());
 
-		histMuonIEta->Fill(product->muonIEta.at(i));
+		histMuonIEta->Fill(product->muonIEta.back());
 	}
 }
 

@@ -70,37 +70,39 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		product->dttpPhi.push_back(dataReader->bmtfPhAng->At(i));
 		product->dttpPhiB.push_back(dataReader->bmtfPhBandAng->At(i));
 
-		product->dttpCmsPhi.push_back(Utility::DttpPhiToCmsPhi(product->dttpPhi.at(i), product->dttpSection.at(i)));
-		product->dttpIPhi.push_back(Utility::CmsPhiToHoIPhi(product->dttpCmsPhi.at(i)));
+		product->dttpCmsPhi.push_back(Utility::DttpPhiToCmsPhi(product->dttpPhi.back(), product->dttpSection.back()));
+		product->dttpIPhi.push_back(Utility::CmsPhiToHoIPhi(product->dttpCmsPhi.back()));
 
-		if (product->dttpStation.at(i) == 1) {
-			product->dttpPt.push_back(Utility::PhiBMb1ToPt.at(product->dttpPhiB.at(i)) * 0.5);
-		} else if (product->dttpStation.at(i) == 2) {
-			product->dttpPt.push_back(Utility::PhiBMb2ToPt.at(product->dttpPhiB.at(i)) * 0.5);
+		//product->dttpCmsEta.push_back(Utility::DttpEtaToCmsEta(product->dttpEta.back(), product->dttpSection.back()));
+
+		if (product->dttpStation.back() == 1) {
+			product->dttpPt.push_back(Utility::PhiBMb1ToPt.at(product->dttpPhiB.back()) * 0.5);
+		} else if (product->dttpStation.back() == 2) {
+			product->dttpPt.push_back(Utility::PhiBMb2ToPt.at(product->dttpPhiB.back()) * 0.5);
 		} else {
 			product->dttpPt.push_back(-999);
 		}
 
-		histDttpBx->Fill(product->dttpBx.at(i));
-		histDttpWheel->Fill(product->dttpWheel.at(i));
-		histDttpSection->Fill(product->dttpSection.at(i));
-		histDttpStation->Fill(product->dttpStation.at(i));
-		histDttpQualityCode->Fill(product->dttpQualityCode.at(i));
-		histDttpTs2Tag->Fill(product->dttpTs2Tag.at(i));
-		histDttpPhi->Fill(product->dttpPhi.at(i));
-		histDttpPhiB->Fill(product->dttpPhiB.at(i));
-		histDttpCmsPhi->Fill(product->dttpCmsPhi.at(i));
+		histDttpBx->Fill(product->dttpBx.back());
+		histDttpWheel->Fill(product->dttpWheel.back());
+		histDttpSection->Fill(product->dttpSection.back());
+		histDttpStation->Fill(product->dttpStation.back());
+		histDttpQualityCode->Fill(product->dttpQualityCode.back());
+		histDttpTs2Tag->Fill(product->dttpTs2Tag.back());
+		histDttpPhi->Fill(product->dttpPhi.back());
+		histDttpPhiB->Fill(product->dttpPhiB.back());
+		histDttpCmsPhi->Fill(product->dttpCmsPhi.back());
 
 		//TODO these will not always be filled.. Maybe just construct dttpPt later if needed?
-		if (product->dttpStation.at(i) == 1) {
-			product->dttpPt.push_back(Utility::PhiBMb1ToPt.at(product->dttpPhiB.at(i)) * 0.5);
-		} else if (product->dttpStation.at(i) == 2) {
-			product->dttpPt.push_back(Utility::PhiBMb2ToPt.at(product->dttpPhiB.at(i)) * 0.5);
+		if (product->dttpStation.back() == 1) {
+			product->dttpPt.push_back(Utility::PhiBMb1ToPt.at(product->dttpPhiB.back()) * 0.5);
+		} else if (product->dttpStation.back() == 2) {
+			product->dttpPt.push_back(Utility::PhiBMb2ToPt.at(product->dttpPhiB.back()) * 0.5);
 		} else {
 			product->dttpPt.push_back(-999);
 		}
 
-		product->dttpIsHq.push_back((3 < product->dttpQualityCode.at(i)) && (product->dttpQualityCode.at(i) < 7));
+		product->dttpIsHq.push_back((3 < product->dttpQualityCode.back()) && (product->dttpQualityCode.back() < 7));
 	}
 
 	const int &thSize = *dataReader->bmtfThSize->Get();
@@ -123,21 +125,21 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		product->bmtfGlobalPhi.push_back(dataReader->tfMuonGlobalPhi->At(i));
 		product->bmtfPt.push_back(dataReader->tfMuonHwPt->At(i));
 		product->bmtfEta.push_back(dataReader->tfMuonHwEta->At(i));
-		product->bmtfCmsPt.push_back(Utility::BmtfPtToCmsPt(product->bmtfPt.at(i)));
-		product->bmtfCmsEta.push_back(Utility::BmtfEtaToCmsEta(product->bmtfEta.at(i)));
-		product->bmtfCmsPhi.push_back(Utility::BmtfGlobalPhiToCmsPhi(product->bmtfGlobalPhi.at(i)));
+		product->bmtfCmsPt.push_back(Utility::BmtfPtToCmsPt(product->bmtfPt.back()));
+		product->bmtfCmsEta.push_back(Utility::BmtfEtaToCmsEta(product->bmtfEta.back()));
+		product->bmtfCmsPhi.push_back(Utility::BmtfGlobalPhiToCmsPhi(product->bmtfGlobalPhi.back()));
 		product->bmtfTrackerAddresses.push_back({
 			dataReader->tfMuonTrAdd->At(4 * i + 0),
 			dataReader->tfMuonTrAdd->At(4 * i + 1),
 			dataReader->tfMuonTrAdd->At(4 * i + 2),
 			dataReader->tfMuonTrAdd->At(4 * i + 3)
 		});
-		product->bmtfTrackType.push_back(Utility::GetBmtfStationMask(product->bmtfTrackerAddresses.at(i)));
+		product->bmtfTrackType.push_back(Utility::GetBmtfStationMask(product->bmtfTrackerAddresses.back()));
 
-		histBmtfHwPt->Fill(product->bmtfPt.at(i));
-		histBmtfHwEta->Fill(product->bmtfEta.at(i));
+		histBmtfHwPt->Fill(product->bmtfPt.back());
+		histBmtfHwEta->Fill(product->bmtfEta.back());
 		histBmtfHwPhi->Fill(dataReader->tfMuonHwPhi->At(i));
-		histBmtfGlobalPhi->Fill(product->bmtfGlobalPhi.at(i));
+		histBmtfGlobalPhi->Fill(product->bmtfGlobalPhi.back());
 		histBmtfHwSign->Fill(dataReader->tfMuonHwSign->At(i));
 		histBmtfHwSignValid->Fill(dataReader->tfMuonHwSignValid->At(i));
 		histBmtfHwQual->Fill(dataReader->tfMuonHwQual->At(i));
@@ -145,15 +147,15 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		histBmtfProcessor->Fill(dataReader->tfMuonProcessor->At(i));
 		histBmtfTrackFinderType->Fill(dataReader->tfMuonTrackFinderType->At(i));
 		histBmtfHwHF->Fill(dataReader->tfMuonHwHF->At(i));
-		histBmtfBx->Fill(product->bmtfBx.at(i));
+		histBmtfBx->Fill(product->bmtfBx.back());
 		histBmtfWh->Fill(dataReader->tfMuonWh->At(i));
-		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.at(i).at(0));
-		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.at(i).at(1));
-		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.at(i).at(2));
-		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.at(i).at(3));
-		histBmtfCmsPt->Fill(product->bmtfCmsPt.at(i));
-		histBmtfCmsEta->Fill(product->bmtfCmsEta.at(i));
-		histBmtfCmsPhi->Fill(product->bmtfCmsPhi.at(i));
+		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(0));
+		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(1));
+		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(2));
+		histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(3));
+		histBmtfCmsPt->Fill(product->bmtfCmsPt.back());
+		histBmtfCmsEta->Fill(product->bmtfCmsEta.back());
+		histBmtfCmsPhi->Fill(product->bmtfCmsPhi.back());
 	}
 }
 

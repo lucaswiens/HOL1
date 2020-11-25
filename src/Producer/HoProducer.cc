@@ -11,6 +11,9 @@ HoProducer::HoProducer() {
 	histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
 	histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
 
+	histHoCmsEta = new TH1D("HoCmsEta", "HoCmsEta", 68, -3, 3);
+	histHoCmsPhi = new TH1D("HoCmsPhi", "HoCmsPhi", 72, -M_PI, M_PI);
+
 	histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
 	histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
 	histQIESamplePedestal = new TH1F("QIESamplePedestal", "QIESamplePedestal", 30, -10, 10);
@@ -27,10 +30,12 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product) {
 	histNHcalQIESamples->Fill(product->nHcalQIESamples);
 
 	//unsigned int size = dataReader->hcalDetIdIEta->GetSize();
-	for (unsigned i = 0; i < product->nHcalDetIds; i++) {
+	for (unsigned i = 0; i < dataReader->hcalDetIdIEta->GetSize(); i++) {
+		const int &qieSample = dataReader->hcalQIESample->At(i);
+		if (qieSample != 4) { continue;}
 		product->hcalIEta.push_back(dataReader->hcalDetIdIEta->At(i));
 		product->hcalIPhi.push_back(dataReader->hcalDetIdIPhi->At(i));
-		product->hcalQIESample.push_back(dataReader->hcalQIESample->At(i));
+		product->hcalQIESample.push_back(qieSample);
 		product->hcalQIESampleAdc.push_back(dataReader->hcalQIESampleAdc->At(i));
 		product->hcalQIESampleDv.push_back(dataReader->hcalQIESampleDv->At(i));
 		product->hcalQIESampleEr.push_back(dataReader->hcalQIESampleEr->At(i));
@@ -40,23 +45,26 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		product->QIESamplePedestal.push_back(dataReader->QIESamplePedestal->At(i));
 		product->QIESampleFc_MPedestals.push_back(dataReader->QIESampleFc_MPedestals->At(i));
 
-		product->hcalCmsEta.push_back(Utility::HoIEtaToCmsEta(product->hcalIEta.at(i)));
-		product->hcalCmsPhi.push_back(Utility::HoIPhiToCmsPhi(product->hcalIPhi.at(i)));
+		product->hcalCmsEta.push_back(Utility::HoIEtaToCmsEta(product->hcalIEta.back()));
+		product->hcalCmsPhi.push_back(Utility::HoIPhiToCmsPhi(product->hcalIPhi.back()));
 
-		product->hcalWheel.push_back(Utility::HoIEtaToWheel(product->hcalIEta.at(i)));
-		product->hcalSection.push_back(Utility::HoIPhiToSection(product->hcalIPhi.at(i)));
+		product->hcalWheel.push_back(Utility::HoIEtaToWheel(product->hcalIEta.back()));
+		product->hcalSection.push_back(Utility::HoIPhiToSection(product->hcalIPhi.back()));
 
-		histHcalDetIdIEta->Fill(product->hcalIEta.at(i));
-		histHcalDetIdIPhi->Fill(product->hcalIPhi.at(i));
-		histHcalQIESample->Fill(product->hcalQIESample.at(i));
-		histHcalQIESampleAdc->Fill(product->hcalQIESampleAdc.at(i));
-		histHcalQIESampleDv->Fill(product->hcalQIESampleDv.at(i));
-		histHcalQIESampleEr->Fill(product->hcalQIESampleEr.at(i));
+		histHcalDetIdIEta->Fill(product->hcalIEta.back());
+		histHcalDetIdIPhi->Fill(product->hcalIPhi.back());
+		histHcalQIESample->Fill(product->hcalQIESample.back());
+		histHcalQIESampleAdc->Fill(product->hcalQIESampleAdc.back());
+		histHcalQIESampleDv->Fill(product->hcalQIESampleDv.back());
+		histHcalQIESampleEr->Fill(product->hcalQIESampleEr.back());
 
-		histSampleEnergy->Fill(product->SampleEnergy.at(i));
-		histQIESampleFc->Fill(product->QIESampleFc.at(i));
-		histQIESamplePedestal->Fill(product->QIESamplePedestal.at(i));
-		histQIESampleFc_MPedestals->Fill(product->QIESampleFc_MPedestals.at(i));
+		histSampleEnergy->Fill(product->SampleEnergy.back());
+		histQIESampleFc->Fill(product->QIESampleFc.back());
+		histQIESamplePedestal->Fill(product->QIESamplePedestal.back());
+		histQIESampleFc_MPedestals->Fill(product->QIESampleFc_MPedestals.back());
+
+		histHoCmsEta->Fill(product->hcalCmsEta.back());
+		histHoCmsPhi->Fill(product->hcalCmsPhi.back());
 	}
 }
 

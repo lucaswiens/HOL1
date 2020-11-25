@@ -11,6 +11,7 @@
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/BmtfInputProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/HoCoincidenceProducer.h>
+#include <HOAnalysis/HOL1/interface/Producer/HoHistogramProducer.h>
 
 void ProgressBar(const int &, const int &);
 
@@ -29,15 +30,16 @@ int main(int argc, char* argv[]) {
 		std::shared_ptr<MuonProducer>(new MuonProducer()),
 		std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer()),
 		std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()),
+		std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()),
 	};
 
 	int processed = 0;
 	ProgressBar(0, 0);
 	while(dataReader->Next()){
 		//ProgressBar
-		if(processed % 10000) {
-			ProgressBar(processed, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
-		}
+		//if(processed % 10000) {
+		ProgressBar(processed, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+		//}
 		processed++;
 
 		HoProduct product;

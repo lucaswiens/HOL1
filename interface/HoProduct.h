@@ -49,7 +49,8 @@ public:
 		hcalCmsPhi,
 		hcalCmsEta;
 	// Matching tfMuon (BMTF output) with DTTP (BMTF input)
-	std::vector<bool> isBmtfMatchedDttp;
+	std::vector<bool> isDttpMatchedBmtf,
+		isBmtfMatchedDttp;
 	std::vector<std::vector<int>> bmtfMatchedDttpIndices;
 	std::vector<int> bmtfMatchedDttpWheel,
 		bmtfMatchedDttpSection,
@@ -113,9 +114,9 @@ public:
 		bmtfMatchedMuonPhi,
 		bmtfMatchedMuonTrackType,
 		bmtfMatchedMuonDeltaPhi;
-	std::vector<int> bmtfMatchedMuonCharge,
-		bmtfMatchedMuonIndex;
-	std::vector<bool> isBmtfMatchedMuon;
+	std::vector<int> bmtfMatchedMuonCharge;
+	std::vector<bool> isMuonMatchedBmtf,
+		isBmtfMatchedMuon;
 	// Matching MB34 with HO
 	std::vector<double> bmtfMb34MatchedHoDeltaR,
 		bmtfMb34MatchedHoPt,
@@ -139,7 +140,8 @@ public:
 	std::vector<double> dttpMatchedHoCmsPhi,
 		dttpMatchedHoCmsEta;
 	// DTTP matching Muon
-	std::vector<bool> isDttpMatchedMuon;
+	std::vector<bool> isMuonMatchedDttp,
+		isDttpMatchedMuon;
 	// Reco Muon matching Ho
 	std::vector<int> nHo3x3Hit;
 
