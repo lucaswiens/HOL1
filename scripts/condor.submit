@@ -1,6 +1,6 @@
 #Template for the submit file created by createFileList.py
 executable = /nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1/scripts/produceL1Ntuple
-arguments  = $(inputFile) $(cmsswBase)
+arguments  = $(inputFile) $(cmsswBase) $(Process)
 
 universe       = vanilla
 request_memory = 4000 MB
