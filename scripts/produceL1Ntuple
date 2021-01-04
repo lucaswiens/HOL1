@@ -17,5 +17,5 @@ eval `scramv1 runtime -sh`;
 mkdir -p $TARGETDIR/L1Ntuple/`date +"%Y_%m_%d"`/job_$JOBNUMBER
 cd $TARGETDIR/L1Ntuple/`date +"%Y_%m_%d"`/job_$JOBNUMBER
 
-cmsDriver.py l1Ntuple -s RAW2DIGI --python_filename=data.py --no_output --era=Run2_2018 --data --conditions=110X_dataRun2_v12 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleAODRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_4_1 --filein=$INPUTFILE
+cmsDriver.py l1Ntuple -s RAW2DIGI --python_filename=data.py --no_output --era=Run2_2018 --data --conditions=110X_dataRun2_v12 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleAODRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_4_1 --filein=$INPUTFILE -n -1
 #cmsRun -e -j l1NtupleReport.xml /nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1/python/data.py
