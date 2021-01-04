@@ -54,3 +54,6 @@ if __name__=="__main__":
 			argumentFile.write(redirector + sample + " " + cmsswBase + "\n")
 	sampleFile.close()
 	argumentFile.close()
+
+	print("To execute, go to {}".format(args.output))
+	print("condor_submit condor.submit")
