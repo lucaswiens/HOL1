@@ -4,7 +4,7 @@ HoProducer::HoProducer() {
 	histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
 	histNHcalDetIds = new TH1I("hcalDetIds", "hcalDetIds", 50, 500, 1000);
 	histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
-	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 30, -15, 16);
+	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
 	histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
 	histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 50, 0, 50);
 	histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
