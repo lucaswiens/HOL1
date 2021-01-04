@@ -30,8 +30,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 
 			for (int iBmtfStation = 0; iBmtfStation <= 3; iBmtfStation++) {
 				// Skip if already associated to a BMTF
-
-				// For Mb1, TrackAddress has to be 3, but for MB2, MB3 and MB4 it has to be 15
+				if (product->isDttpMatchedBmtf.at(iDttp)) { continue;}
+				// For Mb1, TrackAddress it should not be 3, but for MB2, MB3 and MB4 it should not be 15
 				if (iBmtfStation == 0) {
 					if (product->bmtfTrackerAddresses.at(iBmtf).at(iBmtfStation) == 3) { continue;}
 				} else {
