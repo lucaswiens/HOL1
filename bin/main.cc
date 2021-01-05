@@ -19,10 +19,11 @@ int main(int argc, char* argv[]) {
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
 	std::string inputFile = std::string(argv[1]);
+	std::string outputFile = std::string(argv[2]);
 
 	DataReader* dataReader = new DataReader(inputFile);
 
-	TFile *file = new TFile("L1Histograms.root", "RECREATE");
+	TFile *file = new TFile((outputFile + ".root").c_str(), "RECREATE");
 
 	//Declare vector of Producers which will fill Histograms
 	std::vector<std::shared_ptr<BaseProducer>> producers = {
@@ -38,7 +39,7 @@ int main(int argc, char* argv[]) {
 	while(dataReader->Next()){
 		//ProgressBar
 		//if(processed % 10000) {
-		ProgressBar(processed, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+		ProgressBar((int) 101 * processed/dataReader->GetEntries(), processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
 		//}
 		processed++;
 
@@ -48,6 +49,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	ProgressBar(100, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+	std::cout << std::endl;
 
 	file->Write();
 	file->Close();
@@ -74,7 +76,5 @@ void ProgressBar(const int &progress, const int &rate) {
 
 	progressBar = progressBar + "] " + std::to_string(progress) + "% of Events processed at a rate of " + std::to_string(rate) + " Hz." ;
 	std::cout << "\r" << progressBar << std::flush;
-
-	if (progress == 100) std::cout << std::endl;
 }
 

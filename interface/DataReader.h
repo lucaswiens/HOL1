@@ -12,6 +12,7 @@ class DataReader {
 		TTree *l1HoTree, *l1MuonRecoTree, *l1BmtfInputTree;
 		TBranch *l1BmtfInputBranch;
 		TTreeReader *l1HoReader, *l1MuonRecoReader, *l1BmtfInputReader;
+		int nEvents;
 	public:
 		//HO Variables
 		std::unique_ptr<TTreeReaderValue<unsigned int>> nHcalDetIds, nHcalQIESamples;
@@ -37,4 +38,5 @@ class DataReader {
 		~DataReader();
 		bool Next();
 		void clear();
+		int GetEntries();
 };

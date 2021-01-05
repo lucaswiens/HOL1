@@ -23,6 +23,8 @@ DataReader::DataReader(std::string inputFileName) {
 	l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
 	//l1BmtfInputBranch = l1BmtfInputTree->GetBranch("L1UpgradeBmtfInputs");
 
+	nEvents = l1HoTree->GetEntries();
+
 	l1HoReader = new TTreeReader(l1HoTree);
 	l1MuonRecoReader = new TTreeReader(l1MuonRecoTree);
 	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);
@@ -110,6 +112,9 @@ DataReader::~DataReader(){
 	delete inputFile;
 }
 
+int DataReader::GetEntries() {
+	return nEvents;
+}
 bool DataReader::Next() {
 	return l1HoReader->Next() && l1MuonRecoReader->Next() && l1BmtfInputReader->Next();
 }
