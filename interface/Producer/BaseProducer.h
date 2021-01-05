@@ -21,4 +21,5 @@ class BaseProducer {
 		BaseProducer();
 		virtual void Produce(DataReader* dataReader, HoProduct* product) = 0;
 
+		//static float DeltaR(const float &eta1, const float &phi1, const float &eta2, const float &phi2);
 };

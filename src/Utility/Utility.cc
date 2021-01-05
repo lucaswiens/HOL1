@@ -94,9 +94,9 @@ double Utility::HoIPhiToCmsPhi(int hoIPhi) {
 	// Phi segmentation in HO is 0.087
 	double dPhi = 2.0 * M_PI / 72.0;
 	// Take the mean phi
-	//double phi = (fabs(iPhi)-1 + fabs(iPhi)) / 2 * dPhi;
-	int sign = (hoIPhi > 0) - (hoIPhi < 0);
-	double meanPhi = (hoIPhi - sign / 2) * dPhi;
+	//int sign = (hoIPhi > 0) - (hoIPhi < 0);
+	//double meanPhi = (hoIPhi - sign / 2) * dPhi;
+	double meanPhi = hoIPhi * dPhi;
 	return (meanPhi > M_PI) ? meanPhi - 2 * M_PI : meanPhi;
 }
 
