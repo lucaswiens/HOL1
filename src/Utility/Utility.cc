@@ -1,5 +1,11 @@
 #include <HOAnalysis/HOL1/interface/Utility/Utility.h>
 
+/*
+bool Utility::Contains(std::vector<T> vector, T element) {
+	return std::find(vector.begin(), vector.end(), element) != vector.end()
+}
+*/
+
 double Utility::DeltaPhi(double phi1, double phi2) {
 	double deltaPhi = phi1 - phi2;
 	while (deltaPhi > M_PI) deltaPhi -= 2 * M_PI;
@@ -22,17 +28,28 @@ double Utility::DeltaR(const double &eta1, const double &phi1, const double &eta
 //DTTP conversion functions
 double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
 	// dttpSection must be [1, 12]
-	//if ((dttpSection < 1) && (12 < dttpSection)) { return -999;} // TODO use assure instead
+	if ((dttpSection < 1) && (12 < dttpSection)) { return -999;} // TODO use assure instead
 
-	double cmsPhi = phi / 4096.0 + M_PI / 6 * (dttpSection - 1);
-	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
+	//// double cmsPhi = (phi) / 4096.0 + M_PI / 6 * (dttpSection - 1);
+	//// return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
+	//Ashrafs COde:
+	// secNum must be [1, 12]
+	double globalPhi = phi / 4096.0;
+	globalPhi += M_PI / 6 * (dttpSection - 1);
+
+	if(globalPhi > M_PI)
+	{
+		globalPhi -= M_PI * 2;
+	}
+
+	return globalPhi;
 }
 
 double Utility::CmsPhiToHoIPhi(double cmsPhi) {
 	// [-pi, pi] to [1, 72]
 	double dPhi = 2 * M_PI / 72;
-	cmsPhi = (cmsPhi < 0) ? cmsPhi + 2 * M_PI : cmsPhi;
-	int iPhi = (int) (fabs(cmsPhi)/dPhi + 1);
+	cmsPhi = (cmsPhi <= 0) ? cmsPhi + 2 * M_PI : cmsPhi;
+	int iPhi = cmsPhi/dPhi + 0.5;
 	return iPhi;
 }
 
@@ -40,7 +57,7 @@ double Utility::CmsPhiToHoIPhi(double cmsPhi) {
 // https://github.com/HOTriggerLink/cmssw/blob/HO_dev/DataFormats/L1TMuon/interface/RegionalMuonCand.h
 double Utility::BmtfGlobalPhiToCmsPhi(int bmtfGlobalPhi) {
 	// globalPhi in [0, 576]
-	double cmsPhi = 2 * M_PI / 576 * bmtfGlobalPhi;
+	double cmsPhi = 2 * M_PI / 576 * (bmtfGlobalPhi- 0.5);
 	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
 }
 
@@ -91,13 +108,10 @@ double Utility::HoIEtaToCmsEta(int hoIEta) {
 }
 
 double Utility::HoIPhiToCmsPhi(int hoIPhi) {
-	// Phi segmentation in HO is 0.087
-	double dPhi = 2.0 * M_PI / 72.0;
-	// Take the mean phi
-	//int sign = (hoIPhi > 0) - (hoIPhi < 0);
-	//double meanPhi = (hoIPhi - sign / 2) * dPhi;
-	double meanPhi = hoIPhi * dPhi;
-	return (meanPhi > M_PI) ? meanPhi - 2 * M_PI : meanPhi;
+	/// // Phi segmentation in HO is 0.087
+	//double cmsPhi = 2 * M_PI * (hoIPhi + 0.5) / 72;
+	double cmsPhi = 2 * M_PI * (hoIPhi - 0.5) / 72;
+	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
 }
 
 int Utility::HoIPhiToSection(int iPhi) {

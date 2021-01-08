@@ -4,7 +4,7 @@
 
 class HoProducer : public BaseProducer {
 	private:
-		TH1D *histSumQ, *histHoCmsPhi, *histHoCmsEta;
+		TH1D *histSumQ, *histHcalCmsPhi, *histHcalCmsEta;
 		TH1I *histNHcalDetIds, *histNHcalQIESamples, *histHcalDetIdIEta, *histHcalDetIdIPhi, *histHcalQIESample, *histHcalQIESampleAdc, *histHcalQIESampleDv, *histHcalQIESampleEr;
 		TH1F *histSampleEnergy, *histQIESampleFc,  *histQIESamplePedestal, *histQIESampleFc_MPedestals;
 

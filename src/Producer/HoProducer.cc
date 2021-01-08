@@ -6,13 +6,14 @@ HoProducer::HoProducer() {
 	histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
 	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
 	histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
-	histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 50, 0, 50);
+	histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 10, 1, 11);
 	histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
 	histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
 	histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
 
-	histHoCmsEta = new TH1D("HoCmsEta", "HoCmsEta", 68, -3, 3);
-	histHoCmsPhi = new TH1D("HoCmsPhi", "HoCmsPhi", 72, -M_PI, M_PI);
+	histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
+	//histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
+	histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
 
 	histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
 	histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
@@ -63,8 +64,8 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		histQIESamplePedestal->Fill(product->QIESamplePedestal.back());
 		histQIESampleFc_MPedestals->Fill(product->QIESampleFc_MPedestals.back());
 
-		histHoCmsEta->Fill(product->hcalCmsEta.back());
-		histHoCmsPhi->Fill(product->hcalCmsPhi.back());
+		histHcalCmsEta->Fill(product->hcalCmsEta.back());
+		histHcalCmsPhi->Fill(product->hcalCmsPhi.back());
 	}
 }
 

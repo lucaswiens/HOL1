@@ -1,8 +1,8 @@
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
 
 MuonProducer::MuonProducer() {
-	histMuonMet = new TH1D("muonMet", "muonMet", 30, 0, 1000);
-	histMuonMt = new TH1D("muonMt", "muonMt", 30, 0, 1000);
+	histMuonMet = new TH1D("muonMet", "muonMet", 30, 0, 300);
+	histMuonMt = new TH1D("muonMt", "muonMt", 30, 0, 300);
 
 	histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
 	histIsMediumMuon = new TH1I("isMediumMuon", "isMediumMuon", 2, 0, 2);
@@ -13,9 +13,9 @@ MuonProducer::MuonProducer() {
 	histMuonCharge = new TH1I("muonCharge", "muonCharge", 3, -1, 1);
 	histMuonIEta = new TH1I("muonIEta", "muonIEta", 20, 0, 20);
 
-	histMuonE = new TH1F("muonE", "muonE", 30, 0, 1000);
-	histMuonEt = new TH1F("muonEt", "muonEt", 30, 0, 1000);
-	histMuonPt = new TH1F("muonPt", "muonPt", 30, 0, 1000);
+	histMuonE = new TH1F("muonE", "muonE", 30, 0, 300);
+	histMuonEt = new TH1F("muonEt", "muonEt", 30, 0, 300);
+	histMuonPt = new TH1F("muonPt", "muonPt", 30, 0, 300);
 	histMuonEta = new TH1F("muonEta", "muonEta", 30, -3, 3);
 	histMuonPhi = new TH1F("muonPhi", "muonPhi", 30, -M_PI, M_PI);
 	histMuonIso = new TH1F("muonIso", "muonIso", 30, 0, 1);

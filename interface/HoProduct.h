@@ -54,7 +54,8 @@ public:
 	std::vector<std::vector<int>> bmtfMatchedDttpIndices;
 	std::vector<int> bmtfMatchedDttpWheel,
 		bmtfMatchedDttpSection,
-		bmtfMatchedDttpStation;
+		bmtfMatchedDttpStation,
+		bmtfMatchedDttpIndex;
 	std::vector<double> bmtfMatchedDttpDeltaPhi,
 		bmtfMatchedDttpPt,
 		bmtfMatchedDttpPhi,
@@ -115,7 +116,8 @@ public:
 		bmtfMatchedMuonTrackType,
 		bmtfMatchedMuonDeltaPhi;
 	std::vector<int> bmtfMatchedMuonCharge;
-	std::vector<unsigned int> bmtfMatchedMuonIndex;
+	std::vector<unsigned short> bmtfMatchedMuonIndex,
+		muonMatchedBmtfIndex;
 	std::vector<bool> isMuonMatchedBmtf,
 		isBmtfMatchedMuon;
 	// Matching MB34 with HO
@@ -137,6 +139,9 @@ public:
 		bmtfMb3MatchedHoDeltaIPhi,
 		bmtfMb4MatchedHoIPhi,
 		bmtfMb4MatchedHoDeltaIPhi;
+	std::vector<unsigned int> bmtfMb34MatchedHoIndex,
+		bmtfMb3MatchedHoIndex,
+		bmtfMb4MatchedHoIndex;
 	std::vector<bool> isBmtfMb34HoMatched,
 		isMb3HoIEtaMatched,
 		isMb4HoIEtaMatched;
@@ -145,14 +150,17 @@ public:
 	std::vector<int> dttpMatchedHoDeltaIPhi,
 		dttpMatchedHoIPhi,
 		dttpMatchedHoIEta;
+	std::vector<unsigned int> dttpMatchedHoIndex;
 	std::vector<double> dttpMatchedHoCmsPhi,
 		dttpMatchedHoCmsEta;
 	// DTTP matching Muon
 	std::vector<bool> isMuonMatchedDttp,
 		isDttpMatchedMuon;
-	std::vector<unsigned int> dttpMatchedMuonIndex;
+	std::vector<unsigned short> dttpMatchedMuonIndex,
+		dttpMatchedBmtfIndex;
 	std::vector<double> dttpMatchedMuonDeltaR;
 	// Reco Muon matching Ho
-	std::vector<int> muonMatchedDttpNHo3x3Hit;
+	std::vector<int> muonMatchedDttpNHo3x3Hit,
+		muonMatchedDttpIndex;
 
 };

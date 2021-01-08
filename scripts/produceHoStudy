@@ -1,6 +1,4 @@
 #!/bin/sh
-cd $CMSSW_BASE/L1Ntuple/2021_01_04
-for job in job*; do HOStudy $job/L1Ntuple.root L1Histogram${job:3}; done
-hadd L1Histogram.root L1Histogram*
-cd $CMSSW_BASE/src
-python3 Plotting/Plotter/python/histPlotter.py -i $CMSSW_BASE/L1Ntuple/2021_01_04/L1Histogram.root
+cd /nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1
+HOStudy data/L1Ntuple.root L1Hist
+python3 ../../Plotting/Plotter/python/histPlotter.py -i L1Hist.root
