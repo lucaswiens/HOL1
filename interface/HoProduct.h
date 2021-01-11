@@ -60,6 +60,8 @@ public:
 		bmtfMatchedDttpPt,
 		bmtfMatchedDttpPhi,
 		bmtfMatchedDttpCmsPhi;
+	std::vector<std::vector<double>> bmtfMatchedDttpDeltaPhiPerStation;
+	std::vector<std::vector<int>> bmtfMatchedDttpIndexPerStation;
 	// Reco Muons
 	unsigned short nMuon;
 	std::vector<bool> isLooseMuon,

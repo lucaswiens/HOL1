@@ -11,7 +11,7 @@ namespace Utility {
 	double DeltaR(const double &eta1, const double &phi1, const double &eta2, const double &phi2);
 	// DTTP
 	double DttpPhiToCmsPhi(double phi, int secNum);
-	double CmsPhiToHoIPhi(double cmsPhi);
+	int CmsPhiToHoIPhi(double cmsPhi);
 	// BMTF
 	double BmtfPtToCmsPt(int bmtfPt);
 	double BmtfGlobalPhiToCmsPhi(int globalPhi);

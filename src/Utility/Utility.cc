@@ -45,7 +45,7 @@ double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
 	return globalPhi;
 }
 
-double Utility::CmsPhiToHoIPhi(double cmsPhi) {
+int Utility::CmsPhiToHoIPhi(double cmsPhi) {
 	// [-pi, pi] to [1, 72]
 	double dPhi = 2 * M_PI / 72;
 	cmsPhi = (cmsPhi <= 0) ? cmsPhi + 2 * M_PI : cmsPhi;
@@ -57,7 +57,7 @@ double Utility::CmsPhiToHoIPhi(double cmsPhi) {
 // https://github.com/HOTriggerLink/cmssw/blob/HO_dev/DataFormats/L1TMuon/interface/RegionalMuonCand.h
 double Utility::BmtfGlobalPhiToCmsPhi(int bmtfGlobalPhi) {
 	// globalPhi in [0, 576]
-	double cmsPhi = 2 * M_PI / 576 * (bmtfGlobalPhi- 0.5);
+	double cmsPhi = 2 * M_PI / 576 * bmtfGlobalPhi;
 	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
 }
 

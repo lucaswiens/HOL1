@@ -41,6 +41,9 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 	product->bmtfMatchedDttpPhi = std::vector(product->bmtfSize, -9999.); // dttpPhi range is [-2048, 2048]
 	product->bmtfMatchedDttpCmsPhi = std::vector(product->bmtfSize, -999.);
 
+	product->bmtfMatchedDttpDeltaPhiPerStation = std::vector<std::vector<double>>(product->bmtfSize, {-999., -999., -999., -999.});
+	product->bmtfMatchedDttpIndexPerStation = std::vector<std::vector<int>>(product->bmtfSize, {-999, -999, -999, -999});
+
 	// Bmtf Matched Muon
 	product->bmtfMatchedMuonDeltaR = std::vector(product->bmtfSize, -999.);
 	product->bmtfMatchedMuonPt = std::vector(product->bmtfSize, -999.);
@@ -104,6 +107,9 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 
 				double bmtfMatchedDttpDeltaPhi = Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), product->dttpCmsPhi.at(iDttp));
 				if (fabs(bmtfMatchedDttpDeltaPhi) < fabs(product->bmtfMatchedDttpDeltaPhi.at(iBmtf))) {
+					product->bmtfMatchedDttpDeltaPhiPerStation.at(iBmtf).at(iBmtfStation) = bmtfMatchedDttpDeltaPhi;
+					product->bmtfMatchedDttpIndexPerStation.at(iBmtf).at(iBmtfStation) = iDttp;
+
 					product->bmtfMatchedDttpDeltaPhi.at(iBmtf) = bmtfMatchedDttpDeltaPhi;
 					product->bmtfMatchedDttpPt.at(iBmtf) = product->dttpPt.at(iDttp);
 					product->bmtfMatchedDttpPhi.at(iBmtf) = product->dttpPhi.at(iDttp);

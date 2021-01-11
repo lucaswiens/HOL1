@@ -12,6 +12,7 @@ BmtfInputProducer::BmtfInputProducer() {
 	histDttpStation = new TH1I("dttpStation", "dttpStation", nBinsStation, minStation, maxStation);
 	histDttpQualityCode = new TH1I("dttpQualitytCode", "dttpQualitytCode", nBinsQualityCode, minQualityCode, maxQualityCode);
 	histDttpTs2Tag = new TH1I("dttpTs2Tag", "dttpTs2Tag", 2, 0, 2);
+	histDttpIPhi = new TH1I("dttpIPhi", "dttpIPhi", 72, 1, 73);
 	histDttpPhi = new TH1F("dttpPhi", "dttpPhi", 64, -2048, 2048);
 	histDttpPhiB = new TH1F("dttpPhiB", "dttpPhiB", 125, -250, 250);
 	histDttpCmsPhi = new TH1D("dttpCmsPhi", "dttpCmsPhi", nBinsPhi, minPhi, maxPhi);
@@ -26,12 +27,12 @@ BmtfInputProducer::BmtfInputProducer() {
 
 	// TODO FIND PROPER HIST BINS
 	histNBmtf = new TH1S("nTfMuon", "nTfMuon", 25, 0, 25);
-	histBmtfHwPt = new TH1S("tfMuonHwPt", "tfMuonHwPt", 25, 0, 25);
+	histBmtfHwPt = new TH1S("tfMuonHwPt", "tfMuonHwPt", 25, 0, 300);
 	histBmtfHwEta = new TH1S("tfMuonHwEta", "tfMuonHwEta", 25, 0, 25);
 	histBmtfHwPhi = new TH1S("tfMuonHwPhi", "tfMuonHwPhi", 56, 0, 56);
 	histBmtfGlobalPhi = new TH1S("tfMuonGlobalPhi", "tfMuonGlobalPhi", 576, 0, 576);
-	histBmtfHwSign = new TH1S("tfMuonHwSign", "tfMuonHwSign", 25, 0, 25);
-	histBmtfHwSignValid = new TH1S("tfMuonHwSignValid", "tfMuonHwSignValid", 25, 0, 25);
+	histBmtfHwSign = new TH1S("tfMuonHwSign", "tfMuonHwSign", 5, -2, 3);
+	histBmtfHwSignValid = new TH1S("tfMuonHwSignValid", "tfMuonHwSignValid", 2, 0, 2);
 	histBmtfHwQual = new TH1S("tfMuonHwQual", "TfMuonHwQual", 25, 0, 25);
 	histBmtfLink = new TH1S("tfMuonLink", "TfMuonLink", 25, 0, 25);
 	histBmtfProcessor = new TH1S("tfMuonProcessor", "TfMuonProcessor", 25, 0, 25);
