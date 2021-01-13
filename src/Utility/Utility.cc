@@ -8,14 +8,14 @@ bool Utility::Contains(std::vector<T> vector, T element) {
 
 double Utility::DeltaPhi(double phi1, double phi2) {
 	double deltaPhi = phi1 - phi2;
-	while (deltaPhi > M_PI) deltaPhi -= 2 * M_PI;
+	while (deltaPhi >  M_PI) deltaPhi -= 2 * M_PI;
 	while (deltaPhi < -M_PI) deltaPhi += 2 * M_PI;
 	return deltaPhi;
 }
 
 int Utility::DeltaIPhi(int iPhi1, int iPhi2) {
 	int deltaIPhi = iPhi1 - iPhi2;
-	deltaIPhi = (deltaIPhi > 36) ? deltaIPhi - 72 : deltaIPhi;
+	deltaIPhi = (deltaIPhi >  36) ? deltaIPhi - 72 : deltaIPhi;
 	deltaIPhi = (deltaIPhi < -36) ? deltaIPhi + 72 : deltaIPhi;
 	return deltaIPhi;
 }
@@ -30,27 +30,26 @@ double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
 	// dttpSection must be [1, 12]
 	if ((dttpSection < 1) && (12 < dttpSection)) { return -999;} // TODO use assure instead
 
-	//// double cmsPhi = (phi) / 4096.0 + M_PI / 6 * (dttpSection - 1);
-	//// return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
+	double cmsPhi = (phi) / 4096.0 + M_PI / 6 * (dttpSection);
+	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
 	//Ashrafs COde:
 	// secNum must be [1, 12]
-	double globalPhi = phi / 4096.0;
-	globalPhi += M_PI / 6 * (dttpSection - 1);
+	/// double globalPhi = phi / 4096.0;
+	/// globalPhi += M_PI / 6 * (dttpSection - 1);
 
-	if(globalPhi > M_PI)
-	{
-		globalPhi -= M_PI * 2;
-	}
+	/// if(globalPhi > M_PI)
+	/// {
+	/// 	globalPhi -= M_PI * 2;
+	/// }
 
-	return globalPhi;
+	/// return globalPhi + 0.5;
 }
 
 int Utility::CmsPhiToHoIPhi(double cmsPhi) {
 	// [-pi, pi] to [1, 72]
-	double dPhi = 2 * M_PI / 72;
-	cmsPhi = (cmsPhi <= 0) ? cmsPhi + 2 * M_PI : cmsPhi;
-	int iPhi = cmsPhi/dPhi + 0.5;
-	return iPhi;
+	cmsPhi = (cmsPhi < 0) ? cmsPhi + 2 * M_PI : cmsPhi;
+	double iPhi  = cmsPhi * 72 / 2 / M_PI + 0.5;
+	return (int)std::round(iPhi);
 }
 
 // BMTF Muon conversion functions

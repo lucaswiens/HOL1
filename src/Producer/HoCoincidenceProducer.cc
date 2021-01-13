@@ -86,12 +86,13 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 	for (unsigned short iBmtf = 0; iBmtf < product->bmtfSize; iBmtf++){
 		if (product->bmtfBx.at(iBmtf) != 0) { continue;}
 
-		int bmtfMatchedDttpIndex = -999;
+		int bmtfMatchedDttpIndex = -999, bmtfStation = -999;
 		for (int iDttp = 0; iDttp < product->dttpSize; iDttp ++) {
 			if (product->dttpBx.at(iDttp) != 0) { continue;}
 
 			for (int iBmtfStation = 0; iBmtfStation <= 3; iBmtfStation++) {
-				if(std::find(product->bmtfMatchedDttpIndex.begin(), product->bmtfMatchedDttpIndex.end(), iDttp) != product->bmtfMatchedDttpIndex.end()) { continue;}
+				if(std::find(product->bmtfMatchedDttpIndexPerStation.at(iBmtf).begin(), product->bmtfMatchedDttpIndexPerStation.at(iBmtf).end(), iDttp) != product->bmtfMatchedDttpIndexPerStation.at(iBmtf).end()) { continue;}
+				//if(std::find(product->bmtfMatchedDttpIndex.begin(), product->bmtfMatchedDttpIndex.end(), iDttp) != product->bmtfMatchedDttpIndex.end()) { continue;}
 				// Skip if already associated to a BMTF
 				//if (product->isDttpMatchedBmtf.at(iDttp)) { continue;}
 				// For Mb1, TrackAddress it should not be 3, but for MB2, MB3 and MB4 it should not be 15
@@ -106,15 +107,14 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 				if (abs(product->dttpWheel.at(iDttp)) == 2) { continue;} // Exclude wheels +-2
 
 				double bmtfMatchedDttpDeltaPhi = Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), product->dttpCmsPhi.at(iDttp));
-				if (fabs(bmtfMatchedDttpDeltaPhi) < fabs(product->bmtfMatchedDttpDeltaPhi.at(iBmtf))) {
+				if (fabs(bmtfMatchedDttpDeltaPhi) < fabs(product->bmtfMatchedDttpDeltaPhiPerStation.at(iBmtf).at(iBmtfStation))) {
 					product->bmtfMatchedDttpDeltaPhiPerStation.at(iBmtf).at(iBmtfStation) = bmtfMatchedDttpDeltaPhi;
-					product->bmtfMatchedDttpIndexPerStation.at(iBmtf).at(iBmtfStation) = iDttp;
+					bmtfStation = iBmtfStation;
 
 					product->bmtfMatchedDttpDeltaPhi.at(iBmtf) = bmtfMatchedDttpDeltaPhi;
 					product->bmtfMatchedDttpPt.at(iBmtf) = product->dttpPt.at(iDttp);
 					product->bmtfMatchedDttpPhi.at(iBmtf) = product->dttpPhi.at(iDttp);
 					product->bmtfMatchedDttpCmsPhi.at(iBmtf) = product->dttpCmsPhi.at(iDttp);
-					product->isDttpMatchedBmtf.at(iDttp) = true;
 					product->isBmtfMatchedDttp.at(iBmtf) = true;
 					bmtfMatchedDttpIndex = iDttp;
 				}
@@ -124,6 +124,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) 
 		if (product->isBmtfMatchedDttp.at(iBmtf)) {
 			product->bmtfMatchedDttpIndex.at(iBmtf) = bmtfMatchedDttpIndex;
 			product->dttpMatchedBmtfIndex.at(bmtfMatchedDttpIndex) = iBmtf;
+			product->isDttpMatchedBmtf.at(bmtfMatchedDttpIndex) = true;
+			product->bmtfMatchedDttpIndexPerStation.at(iBmtf).at(bmtfStation) = bmtfMatchedDttpIndex;
 		}
 
 		if (product->bmtfCmsPt.at(iBmtf) < 0 || fabs(product->bmtfCmsEta.at(iBmtf)) > 0.83) { continue;}
