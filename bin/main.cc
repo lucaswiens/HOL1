@@ -38,9 +38,9 @@ int main(int argc, char* argv[]) {
 	ProgressBar(0, 0);
 	while(dataReader->Next()){
 		//ProgressBar
-		//if(processed % 10000) {
-		ProgressBar((int) 101 * processed/dataReader->GetEntries(), processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
-		//}
+		if(processed % 400) {
+			ProgressBar((int) 101 * processed/dataReader->GetEntries(), processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+		}
 		processed++;
 
 		HoProduct product;
