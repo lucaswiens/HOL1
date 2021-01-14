@@ -1,9 +1,9 @@
 #include <HOAnalysis/HOL1/interface/Producer/BmtfInputProducer.h>
 
 BmtfInputProducer::BmtfInputProducer() {
-	int nBinsPt = 200, nBinsPhi = 128, nBinsEta = 68, nBinsWheel = 7, nBinsStation = 5, nBinsSection = 12, nBinsQualityCode = 10;
-	double maxPt = 30, maxPhi = M_PI, minEta = -3, minWheel = -3, minStation = 0, minSection = 0, minQualityCode = 0;
+	double maxPt = 300, maxPhi = M_PI, minEta = -3, minWheel = -3, minStation = 1, minSection = 0, minQualityCode = 0;
 	double minPt = 0, minPhi = -M_PI, maxEta = 3, maxWheel = 4, maxStation = 5, maxSection = 12, maxQualityCode = 10;
+	int nBinsPt = (maxPt - minPt), nBinsPhi = 256, nBinsEta = 68, nBinsWheel = 7, nBinsStation = 4, nBinsSection = 12, nBinsQualityCode = 10;
 
 	histDttpSize = new TH1I("dttpSize", "dttpSize", 15, 0, 15);
 	histDttpBx = new TH1I("dttpBx", "dttpBx", 5, -2, 2);
@@ -13,24 +13,32 @@ BmtfInputProducer::BmtfInputProducer() {
 	histDttpQualityCode = new TH1I("dttpQualitytCode", "dttpQualitytCode", nBinsQualityCode, minQualityCode, maxQualityCode);
 	histDttpTs2Tag = new TH1I("dttpTs2Tag", "dttpTs2Tag", 2, 0, 2);
 	histDttpIPhi = new TH1I("dttpIPhi", "dttpIPhi", 72, 1, 73);
-	histDttpPhi = new TH1F("dttpPhi", "dttpPhi", 64, -2048, 2048);
-	histDttpPhiB = new TH1F("dttpPhiB", "dttpPhiB", 125, -250, 250);
+	histDttpPhi = new TH1F("dttpPhi", "dttpPhi", 512, -2048, 2048);
+	histDttpPhiB = new TH1F("dttpPhiB", "dttpPhiB", 500, -250, 250);
+	histDttpPt = new TH1D("dttpPt", "dttpPt", 300, 0, 300);
 	histDttpCmsPhi = new TH1D("dttpCmsPhi", "dttpCmsPhi", nBinsPhi, minPhi, maxPhi);
 
-	histBmtfThSize = new TH1I("bmtfThSize", "bmtfThSize", 25, 0, 25);
-	histBmtfThBx = new TH1I("bmtfThBx", "bmtfThBx", 6, -3, 3);
-	histBmtfThWh = new TH1I("bmtfThWh", "bmtfThWh", 6, -3, 3);
-	histBmtfThSe = new TH1I("bmtfThSe", "bmtfThSe", 15, 0, 15);
-	histBmtfThSt = new TH1I("bmtfThSt", "bmtfThSt", 5, 0, 5);
-	histBmtfThTheta = new TH1I("bmtfThTheta", "bmtfThTheta", 100, 8e7, 1e8);
-	histBmtfThCode = new TH1I("bmtfThCode", "bmtfThCode", 10, 8e7, 2e8);
+	histDttpCmsPhiSection1 = new TH1D("dttpCmsPhiSection1", "dttpCmsPhiSection1", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection2 = new TH1D("dttpCmsPhiSection2", "dttpCmsPhiSection2", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection3 = new TH1D("dttpCmsPhiSection3", "dttpCmsPhiSection3", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection4 = new TH1D("dttpCmsPhiSection4", "dttpCmsPhiSection4", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection5 = new TH1D("dttpCmsPhiSection5", "dttpCmsPhiSection5", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection6 = new TH1D("dttpCmsPhiSection6", "dttpCmsPhiSection6", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection7 = new TH1D("dttpCmsPhiSection7", "dttpCmsPhiSection7", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection8 = new TH1D("dttpCmsPhiSection8", "dttpCmsPhiSection8", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection9 = new TH1D("dttpCmsPhiSection9", "dttpCmsPhiSection9", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection10 = new TH1D("dttpCmsPhiSection10", "dttpCmsPhiSection10", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection11 = new TH1D("dttpCmsPhiSection11", "dttpCmsPhiSection11", nBinsPhi, minPhi, maxPhi);
+	histDttpCmsPhiSection12 = new TH1D("dttpCmsPhiSection12", "dttpCmsPhiSection12", nBinsPhi, minPhi, maxPhi);
 
-	// TODO FIND PROPER HIST BINS
 	histNBmtf = new TH1S("nBmtf", "nBmtf", 25, 0, 25);
-	histBmtfHwPt = new TH1S("bmtfHwPt", "bmtfHwPt", 25, 0, 300);
+	histBmtfHwPt = new TH1S("bmtfHwPt", "bmtfHwPt", nBinsPt, minPt, maxPt);
+	histBmtfCmsPt = new TH1D("bmtfCmsPt", "bmtfCmsPt", nBinsPt/2, minPt, maxPt/2);
 	histBmtfHwEta = new TH1S("bmtfHwEta", "bmtfHwEta", 25, 0, 25);
+	histBmtfCmsEta = new TH1D("bmtfCmsEta", "bmtfCmsEta", nBinsEta, minEta, maxEta);
 	histBmtfHwPhi = new TH1S("bmtfHwPhi", "bmtfHwPhi", 56, 0, 56);
 	histBmtfGlobalPhi = new TH1S("bmtfGlobalPhi", "bmtfGlobalPhi", 576, 0, 576);
+	histBmtfCmsPhi = new TH1D("bmtfCmsPhi", "bmtfCmsPhi", 144, minPhi, maxPhi);
 	histBmtfHwSign = new TH1S("bmtfHwSign", "bmtfHwSign", 5, -2, 3);
 	histBmtfHwSignValid = new TH1S("bmtfHwSignValid", "bmtfHwSignValid", 2, 0, 2);
 	histBmtfHwQual = new TH1S("bmtfHwQual", "bmtfHwQual", 25, 0, 25);
@@ -46,9 +54,6 @@ BmtfInputProducer::BmtfInputProducer() {
 	histBmtfTrAddSt2 = new TH1S("bmtfTrAddSt2", "bmtfTrAddSt2", 25, 0, 25);
 	histBmtfTrAddSt3 = new TH1S("bmtfTrAddSt3", "bmtfTrAddSt3", 25, 0, 25);
 	histBmtfTrAddSt4 = new TH1S("bmtfTrAddSt4", "bmtfTrAddSt4", 25, 0, 25);
-	histBmtfCmsPt = new TH1D("bmtfCmsPt", "bmtfCmsPt", nBinsPt, minPt, maxPt);
-	histBmtfCmsEta = new TH1D("bmtfCmsEta", "bmtfCmsEta", nBinsEta, minEta, maxEta);
-	histBmtfCmsPhi = new TH1D("bmtfCmsPhi", "bmtfCmsPhi", 144, minPhi, maxPhi);
 
 	//histDttpStation_vs_DttpWheel = new TH2D("MB_station_vs_wheel", "MB_station_vs_wheel", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
 	//histDttpStation_vs_DttpWheel_Hq = new TH2D("MB_station_vs_wheel_Hq", "MB_station_vs_wheel_Hq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
@@ -59,6 +64,14 @@ BmtfInputProducer::BmtfInputProducer() {
 	//histUnusedDttpStation_vs_DttpWheel = new TH2D("unusedMB_station_vs_wheel", "unusedMB_station_vs_wheel", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
 	//histUnusedDttpStation_vs_DttpWheel_Hq = new TH2D("unusedMB_station_vs_wheel_Hq", "unusedMB_station_vs_wheel_Hq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
 	//histUnusedDttpStation_vs_DttpWheel_Lq = new TH2D("unusedMB_station_vs_wheel_Lq", "unusedMB_station_vs_wheel_Lq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+
+	histBmtfThSize = new TH1I("bmtfThSize", "bmtfThSize", 25, 0, 25);
+	histBmtfThBx = new TH1I("bmtfThBx", "bmtfThBx", 6, -3, 3);
+	histBmtfThWh = new TH1I("bmtfThWh", "bmtfThWh", 6, -3, 3);
+	histBmtfThSe = new TH1I("bmtfThSe", "bmtfThSe", 15, 0, 15);
+	histBmtfThSt = new TH1I("bmtfThSt", "bmtfThSt", 5, 0, 5);
+	histBmtfThTheta = new TH1I("bmtfThTheta", "bmtfThTheta", 100, 8e7, 1e8);
+	histBmtfThCode = new TH1I("bmtfThCode", "bmtfThCode", 10, 8e7, 2e8);
 }
 
 void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product) {
@@ -98,16 +111,23 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		histDttpTs2Tag->Fill(product->dttpTs2Tag.back());
 		histDttpPhi->Fill(product->dttpPhi.back());
 		histDttpPhiB->Fill(product->dttpPhiB.back());
+		histDttpPt->Fill(product->dttpPt.back());
 		histDttpCmsPhi->Fill(product->dttpCmsPhi.back());
 		histDttpIPhi->Fill(product->dttpIPhi.back());
 
-		if (product->dttpStation.back() == 1) {
-			product->dttpPt.push_back(Utility::PhiBMb1ToPt.at(product->dttpPhiB.back()) * 0.5);
-		} else if (product->dttpStation.back() == 2) {
-			product->dttpPt.push_back(Utility::PhiBMb2ToPt.at(product->dttpPhiB.back()) * 0.5);
-		} else {
-			product->dttpPt.push_back(-999);
-		}
+		histDttpCmsPhiSection1->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 0);
+		histDttpCmsPhiSection2->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 1);
+		histDttpCmsPhiSection3->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 2);
+		histDttpCmsPhiSection4->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 3);
+		histDttpCmsPhiSection5->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 4);
+		histDttpCmsPhiSection6->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 5);
+		histDttpCmsPhiSection7->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 6);
+		histDttpCmsPhiSection8->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 7);
+		histDttpCmsPhiSection9->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 8);
+		histDttpCmsPhiSection10->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 9);
+		histDttpCmsPhiSection11->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 10);
+		histDttpCmsPhiSection12->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 11);
+
 
 		product->dttpIsHq.push_back((3 < product->dttpQualityCode.back()) && (product->dttpQualityCode.back() < 7));
 	}
