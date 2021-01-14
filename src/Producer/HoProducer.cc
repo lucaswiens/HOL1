@@ -1,21 +1,20 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 
 HoProducer::HoProducer() {
-	histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
 	histNHcalDetIds = new TH1I("hcalDetIds", "hcalDetIds", 50, 500, 1000);
-	histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
+	histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
 	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
 	histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
+	histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
+	histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
+	histHcalWheel = new TH1I("hcalWheel", "hcalWheel", 5, -2, 3);
+	histHcalSection = new TH1I("hcalSection", "hcalSection", 12, 0, 12);
+	histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
+	histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
 	histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 10, 1, 11);
 	histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
 	histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
 	histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
-
-	histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
-	//histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
-	histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
-
-	histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
 	histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
 	histQIESamplePedestal = new TH1F("QIESamplePedestal", "QIESamplePedestal", 30, -10, 10);
 	histQIESampleFc_MPedestals = new TH1F("QIESampleFc_MPedestals", "QIESampleFc_MPedestals", 50, 0, 100);
@@ -66,6 +65,9 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product) {
 
 		histHcalCmsEta->Fill(product->hcalCmsEta.back());
 		histHcalCmsPhi->Fill(product->hcalCmsPhi.back());
+
+		histHcalWheel->Fill(product->hcalWheel.back());
+		histHcalSection->Fill(product->hcalSection.back());
 	}
 }
 

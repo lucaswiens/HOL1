@@ -114,9 +114,10 @@ double Utility::HoIPhiToCmsPhi(int hoIPhi) {
 }
 
 int Utility::HoIPhiToSection(int iPhi) {
-	int secNum = (iPhi + 1) % 72;
-	secNum = (int) (secNum / 6.0 + 1);
-	return secNum;
+	//int secNum = (iPhi + 1) % 72;
+	//secNum = (int) (secNum / 6.0);
+	//return secNum;
+	return iPhi / 6;
 }
 int Utility::HoIEtaToWheel(int iEta) {
 	if(iEta < -10) { return -2;}
