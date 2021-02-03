@@ -178,7 +178,8 @@ public:
 		dttpMatchedHoIEta;
 	std::vector<unsigned int> dttpMatchedHoIndex;
 	std::vector<double> dttpMatchedHoCmsPhi,
-		dttpMatchedHoCmsEta;
+		dttpMatchedHoCmsEta,
+		dttpMatchedHoDeltaPhi;
 	// DTTP matching Muon
 	std::vector<bool> isMuonMatchedDttp,
 		isDttpMatchedMuon;

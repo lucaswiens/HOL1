@@ -74,6 +74,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 	// Dttp matched HO
 	product->dttpMatchedHoDeltaIPhi = std::vector(product->dttpSize, -999);
+	product->dttpMatchedHoDeltaPhi = std::vector(product->dttpSize, -999.);
 	product->dttpMatchedHoIPhi = std::vector(product->dttpSize, -999);
 	product->dttpMatchedHoIEta = std::vector(product->dttpSize, -999);
 	product->dttpMatchedHoCmsPhi = std::vector(product->dttpSize, -999.);
@@ -171,13 +172,13 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 	for (unsigned short iBmtf = 0; iBmtf < product->bmtfSize; iBmtf++){
 		// BMTF Tracks with Hits only in MB3 and MB4
-		if (product->bmtfTrackerAddresses.at(iBmtf).at(0) == 3 &&
-			product->bmtfTrackerAddresses.at(iBmtf).at(1) == 15 &&
-			product->bmtfTrackerAddresses.at(iBmtf).at(2) != 15 &&
-			product->bmtfTrackerAddresses.at(iBmtf).at(3) != 15
+		if (product->bmtfTrackerAddresses.at(iBmtf).at(0) == 3
+			&& product->bmtfTrackerAddresses.at(iBmtf).at(1) == 15
+			&& product->bmtfTrackerAddresses.at(iBmtf).at(2) != 15
+			&& product->bmtfTrackerAddresses.at(iBmtf).at(3) != 15
 		) {
 			unsigned int bmtfMb34MatchedHoIndex = 999;
-			for (unsigned int iHo = 0; iHo < product->hcalIEta.size(); iHo++) {
+			for (unsigned int iHo = 0; iHo < product->nHcalDetIds; iHo++) {
 				if(std::find(product->bmtfMb34MatchedHoIndex.begin(), product->bmtfMb34MatchedHoIndex.end(), iHo) != product->bmtfMb34MatchedHoIndex.end()) { continue;}
 				const double &bmtfMb34MatchedHoDeltaR = Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), product->hcalCmsEta.at(iHo), product->hcalCmsPhi.at(iHo));
 				if (bmtfMb34MatchedHoDeltaR < fabs(product->bmtfMb34MatchedHoDeltaR.at(iBmtf))) {
@@ -250,29 +251,38 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 			product->dttpStation.at(iDttp) > 2 ||
 			abs(product->dttpWheel.at(iDttp)) == 2 ||
 			!product->dttpIsHq.at(iDttp) ||
-			//product->isDttpMatchedBmtf.at(iDttp) ||
+			product->isDttpMatchedBmtf.at(iDttp) ||
 			product->dttpPt.at(iDttp) < 0
 		) { continue;}
 
-		unsigned int dttpMatchedHoIndex = 999;
+		unsigned int dttpMatchedHoIndex = 99999;
+		int deltaIPhiMin = -999;
+		double deltaPhiMin = -999;
 		for (unsigned int iHo = 0; iHo < product->nHcalDetIds; iHo++) {
-			if(std::find(product->dttpMatchedHoIndex.begin(), product->dttpMatchedHoIndex.end(), iHo) != product->dttpMatchedHoIndex.end()) { continue;}
+			unsigned int tmpHo = iHo;
+			//tmpHo = product->nHcalDetIds - iHo - 1;
 
-			const int deltaIPhi = Utility::DeltaIPhi(product->dttpIPhi.at(iDttp), product->hcalIPhi.at(iHo));
+			if(std::find(product->dttpMatchedHoIndex.begin(), product->dttpMatchedHoIndex.end(), tmpHo) != product->dttpMatchedHoIndex.end()) { continue;}
 
-			if (abs(deltaIPhi) < abs(product->dttpMatchedHoDeltaIPhi.at(iDttp))) {
-				product->dttpMatchedHoDeltaIPhi.at(iDttp) = deltaIPhi;
-
-				if (((product->dttpStation.at(iDttp) == 1 && abs(product->dttpMatchedHoDeltaIPhi.at(iDttp)) <= 1) || (product->dttpStation.at(iDttp) == 2 && abs(product->dttpMatchedHoDeltaIPhi.at(iDttp)) <= 2)) &&
-					product->dttpSection.at(iDttp) == product->hcalSection.at(iHo) &&
-					product->dttpWheel.at(iDttp) == product->hcalWheel.at(iHo)
+			const int deltaIPhi = Utility::DeltaIPhi(product->dttpIPhi.at(iDttp), product->hcalIPhi.at(tmpHo));
+			const double deltaPhi = Utility::DeltaPhi(product->dttpPhi.at(iDttp), product->hcalCmsPhi.at(tmpHo));
+			if (abs(deltaPhi) < abs(deltaPhiMin)) {
+				//std::cout << product->dttpSection.at(iDttp) << "?=" << product->hcalSection.at(tmpHo) << ",";
+				//std::cout << product->dttpWheel.at(iDttp) << "?=" << product->hcalWheel.at(tmpHo) << "; ";
+				if (((product->dttpStation.at(iDttp) == 1 && abs(deltaIPhi) <= 1) || (product->dttpStation.at(iDttp) == 2 && abs(deltaIPhi) <= 2))
+					&& product->dttpSection.at(iDttp) == product->hcalSection.at(tmpHo)
+					&& product->dttpWheel.at(iDttp) == product->hcalWheel.at(tmpHo)
 				) {
+					deltaPhiMin = deltaPhi;
+					deltaIPhiMin = deltaIPhi;
+					product->dttpMatchedHoDeltaIPhi.at(iDttp) = deltaIPhiMin;
+					product->dttpMatchedHoDeltaPhi.at(iDttp) = deltaPhiMin;
 					product->isDttpMatchedHo.at(iDttp) = true;
-					product->dttpMatchedHoCmsPhi.at(iDttp) = product->hcalCmsPhi.at(iHo);
-					product->dttpMatchedHoCmsEta.at(iDttp) = product->hcalCmsEta.at(iHo);
-					product->dttpMatchedHoIPhi.at(iDttp) = product->hcalIPhi.at(iHo);
-					product->dttpMatchedHoIEta.at(iDttp) = product->hcalIEta.at(iHo);
-					dttpMatchedHoIndex = iHo;
+					product->dttpMatchedHoCmsPhi.at(iDttp) = product->hcalCmsPhi.at(tmpHo);
+					product->dttpMatchedHoCmsEta.at(iDttp) = product->hcalCmsEta.at(tmpHo);
+					product->dttpMatchedHoIPhi.at(iDttp) = product->hcalIPhi.at(tmpHo);
+					product->dttpMatchedHoIEta.at(iDttp) = product->hcalIEta.at(tmpHo);
+					dttpMatchedHoIndex = tmpHo;
 				}
 			}
 		}
@@ -282,7 +292,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 			product->dttpMatchedHoIndex.at(dttpMatchedHoIndex) = iDttp;
 		}
 
-		//if (product->isDttpMatchedHo.at(iDttp)) { continue;}
+		if (!product->isDttpMatchedHo.at(iDttp)) { continue;}
 
 		unsigned short dttpMatchedMuonIndex = 999;
 		for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
