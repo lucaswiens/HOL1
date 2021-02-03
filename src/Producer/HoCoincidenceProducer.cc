@@ -149,16 +149,18 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 			if (bmtfMatchedMuonDeltaR < fabs(product->bmtfMatchedMuonDeltaR.at(iBmtf))) {
 				bool isBmtfMatchedMuon = bmtfMatchedMuonDeltaR < 0.4;
-				product->isMuonMatchedBmtf.at(iMuon) = isBmtfMatchedMuon;
-				product->isBmtfMatchedMuon.at(iBmtf) = isBmtfMatchedMuon;
-				product->bmtfMatchedMuonDeltaR.at(iBmtf) = bmtfMatchedMuonDeltaR;
-				product->bmtfMatchedMuonDeltaPhi.at(iBmtf) = bmtfMatchedMuonDeltaPhi;
-				product->bmtfMatchedMuonPt.at(iBmtf) = product->muonPt.at(iMuon);
-				product->bmtfMatchedMuonEta.at(iBmtf) = product->muonEta.at(iMuon);
-				product->bmtfMatchedMuonPhi.at(iBmtf) = product->muonPhi.at(iMuon);
-				product->bmtfMatchedMuonCharge.at(iBmtf) = product->muonCharge.at(iMuon);
-				product->bmtfMatchedMuonDeltaPhi.at(iBmtf) = bmtfMatchedMuonDeltaPhi;
-				bmtfMatchedMuonIndex = iMuon;
+				if (isBmtfMatchedMuon) {
+					product->isMuonMatchedBmtf.at(iMuon) = isBmtfMatchedMuon;
+					product->isBmtfMatchedMuon.at(iBmtf) = isBmtfMatchedMuon;
+					product->bmtfMatchedMuonDeltaR.at(iBmtf) = bmtfMatchedMuonDeltaR;
+					product->bmtfMatchedMuonDeltaPhi.at(iBmtf) = bmtfMatchedMuonDeltaPhi;
+					product->bmtfMatchedMuonPt.at(iBmtf) = product->muonPt.at(iMuon);
+					product->bmtfMatchedMuonEta.at(iBmtf) = product->muonEta.at(iMuon);
+					product->bmtfMatchedMuonPhi.at(iBmtf) = product->muonPhi.at(iMuon);
+					product->bmtfMatchedMuonCharge.at(iBmtf) = product->muonCharge.at(iMuon);
+					product->bmtfMatchedMuonDeltaPhi.at(iBmtf) = bmtfMatchedMuonDeltaPhi;
+					bmtfMatchedMuonIndex = iMuon;
+				}
 				//product->bmtfMatchedMuonIndex.at(iBmtf) = iMuon;
 				//product->bmtfMatchedMuonTrackType.at(iBmtf) = bmtfMatchedMuonTrackType;
 			}
@@ -297,9 +299,9 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		unsigned short dttpMatchedMuonIndex = 999;
 		for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
 			if(std::find(product->dttpMatchedMuonIndex.begin(), product->dttpMatchedMuonIndex.end(), iMuon) != product->dttpMatchedMuonIndex.end()) { continue;}
-			if (!product->isMediumMuon.at(iMuon) ||
-				!product->muonHasMb1.at(iMuon) ||
-				product->muonIEta.at(iMuon) > 10
+			if (!product->isMediumMuon.at(iMuon)
+				|| !product->muonHasMb1.at(iMuon)
+				|| product->muonIEta.at(iMuon) > 10
 			) { continue;}
 
 			const double &deltaR = Utility::DeltaR(product->dttpMatchedHoCmsEta.at(iDttp), product->dttpMatchedHoCmsPhi.at(iDttp), product->muonEta.at(iMuon), product->muonPhi.at(iMuon));
