@@ -323,7 +323,29 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 	for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
 		//unused muons
-		if (!(product->isMuonMatchedBmtf.at(iMuon) || product->isMuonMatchedDttp.at(iMuon))) {
+		if (product->isMuonMatchedBmtf.at(iMuon) || product->isMuonMatchedDttp.at(iMuon)) {
+			product->isMediumUsedMuon.push_back(product->isMediumMuon.at(iMuon));
+			product->usedMuonHltIsoMu.push_back(product->muonHltIsoMu.at(iMuon));
+			product->usedMuonHltMu.push_back(product->muonHltMu.at(iMuon));
+			product->usedMuonPassesSingleMuon.push_back(product->muonPassesSingleMuon.at(iMuon));
+			product->usedMuonHasMb1.push_back(product->muonHasMb1.at(iMuon));
+			product->usedMuonCharge.push_back(product->muonCharge.at(iMuon));
+			product->usedMuonIEta.push_back(product->muonIEta.at(iMuon));
+			product->usedMuonE.push_back(product->muonE.at(iMuon));
+			product->usedMuonEt.push_back(product->muonEt.at(iMuon));
+			product->usedMuonPt.push_back(product->muonPt.at(iMuon));
+			product->usedMuonEta.push_back(product->muonEta.at(iMuon));
+			product->usedMuonPhi.push_back(product->muonPhi.at(iMuon));
+			product->usedMuonIso.push_back(product->muonIso.at(iMuon));
+			product->usedMuonHltIsoDeltaR.push_back(product->muonHltIsoDeltaR.at(iMuon));
+			product->usedMuonDeltaR.push_back(product->muonDeltaR.at(iMuon));
+			product->usedMuonEtaSt1.push_back(product->muonEtaSt1.at(iMuon));
+			product->usedMuonPhiSt1.push_back(product->muonPhiSt1.at(iMuon));
+			product->usedMuonEtaSt2.push_back(product->muonEtaSt2.at(iMuon));
+			product->usedMuonPhiSt2.push_back(product->muonPhiSt2.at(iMuon));
+			product->usedMuonMet.push_back(product->muonMet.at(iMuon));
+			product->usedMuonMt.push_back(product->muonMt.at(iMuon));
+		} else {
 			product->isMediumUnusedMuon.push_back(product->isMediumMuon.at(iMuon));
 			product->unusedMuonHltIsoMu.push_back(product->muonHltIsoMu.at(iMuon));
 			product->unusedMuonHltMu.push_back(product->muonHltMu.at(iMuon));
@@ -347,5 +369,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 			product->unusedMuonMt.push_back(product->muonMt.at(iMuon));
 		}
 		product->nUnusedMuon = product->isMediumUnusedMuon.size();
+		product->nUsedMuon = product->isMediumUsedMuon.size();
 	}
 }
+
+void HoCoincidenceProducer::EndJob(HoHistogramCollection* histCollection) {}

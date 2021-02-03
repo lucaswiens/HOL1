@@ -88,6 +88,29 @@ public:
 		muonPhiSt2;
 	std::vector<double> muonMet,
 		muonMt;
+	// Used Muons
+	unsigned short nUsedMuon;
+	std::vector<bool> isMediumUsedMuon,
+		usedMuonHltIsoMu,
+		usedMuonHltMu,
+		usedMuonPassesSingleMuon,
+		usedMuonHasMb1;
+	std::vector<int> usedMuonCharge,
+		usedMuonIEta;
+	std::vector<float> usedMuonE,
+		usedMuonEt,
+		usedMuonPt,
+		usedMuonEta,
+		usedMuonPhi,
+		usedMuonIso,
+		usedMuonHltIsoDeltaR,
+		usedMuonDeltaR,
+		usedMuonEtaSt1,
+		usedMuonPhiSt1,
+		usedMuonEtaSt2,
+		usedMuonPhiSt2;
+	std::vector<double> usedMuonMet,
+		usedMuonMt;
 	// Unused Muons
 	unsigned short nUnusedMuon;
 	std::vector<bool> isMediumUnusedMuon,
