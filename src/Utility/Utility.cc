@@ -47,7 +47,7 @@ double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
 
 int Utility::CmsPhiToHoIPhi(double cmsPhi) {
 	// [-pi, pi] to [1, 72]
-	cmsPhi = (cmsPhi < 0) ? cmsPhi + 2 * M_PI : cmsPhi;
+	cmsPhi = (cmsPhi <= 0) ? cmsPhi + 2 * M_PI : cmsPhi;
 	double iPhi  = cmsPhi * 72 / 2 / M_PI + 0.5;
 	return (int)std::round(iPhi);
 }
@@ -114,10 +114,10 @@ double Utility::HoIPhiToCmsPhi(int hoIPhi) {
 }
 
 int Utility::HoIPhiToSection(int iPhi) {
-	//int secNum = (iPhi + 1) % 72;
-	//secNum = (int) (secNum / 6.0);
-	//return secNum;
-	return iPhi / 6;
+	int secNum = (iPhi + 1) % 72;
+	secNum = (int) (secNum / 6.0);
+	return secNum;
+	//return iPhi / 6;
 }
 int Utility::HoIEtaToWheel(int iEta) {
 	if(iEta < -10) { return -2;}

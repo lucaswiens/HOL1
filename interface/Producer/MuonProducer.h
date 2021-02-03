@@ -4,12 +4,10 @@
 
 class MuonProducer : public BaseProducer {
 	private:
-		TH1D *histMuonMet, *histMuonMt;
-		TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta;
-		TH1F *histMuonE, *histMuonEt, *histMuonPt, *histMuonEta, *histMuonPhi, *histMuonIso, *histMuonHltIsoDeltaR, *histMuonDeltaR, *histMuonEtaSt1, *histMuonPhiSt1, *histMuonEtaSt2, *histMuonPhiSt2;
 
 	public:
-		MuonProducer();
+		MuonProducer(HoHistogramCollection* histCollection);
 		~MuonProducer();
-		void Produce(DataReader* dataReader, HoProduct* product);
+		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
+		void EndJob(HoHistogramCollection* histCollection);
 };

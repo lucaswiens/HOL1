@@ -4,12 +4,10 @@
 
 class HoProducer : public BaseProducer {
 	private:
-		TH1D *histSumQ, *histHcalCmsPhi, *histHcalCmsEta;
-		TH1I *histNHcalDetIds, *histNHcalQIESamples, *histHcalDetIdIEta, *histHcalDetIdIPhi, *histHcalQIESample, *histHcalQIESampleAdc, *histHcalQIESampleDv, *histHcalQIESampleEr, *histHcalWheel, *histHcalSection;
-		TH1F *histSampleEnergy, *histQIESampleFc,  *histQIESamplePedestal, *histQIESampleFc_MPedestals;
 
 	public:
-		HoProducer();
+		HoProducer(HoHistogramCollection* histCollection);
 		~HoProducer();
-		void Produce(DataReader* dataReader, HoProduct* product);
+		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
+		void EndJob(HoHistogramCollection* histCollection);
 };

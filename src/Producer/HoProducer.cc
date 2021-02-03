@@ -1,33 +1,33 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 
-HoProducer::HoProducer() {
-	histNHcalDetIds = new TH1I("hcalDetIds", "hcalDetIds", 50, 500, 1000);
-	histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
-	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
-	histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
-	histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
-	histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
-	histHcalWheel = new TH1I("hcalWheel", "hcalWheel", 5, -2, 3);
-	histHcalSection = new TH1I("hcalSection", "hcalSection", 12, 0, 12);
-	histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
-	histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
-	histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 10, 1, 11);
-	histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
-	histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
-	histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
-	histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
-	histQIESamplePedestal = new TH1F("QIESamplePedestal", "QIESamplePedestal", 30, -10, 10);
-	histQIESampleFc_MPedestals = new TH1F("QIESampleFc_MPedestals", "QIESampleFc_MPedestals", 50, 0, 100);
+HoProducer::HoProducer(HoHistogramCollection* histCollection) {
+	histCollection->histNHcalDetIds = new TH1I("hcalDetIds", "hcalDetIds", 50, 500, 1000);
+	histCollection->histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
+	histCollection->histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
+	histCollection->histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
+	histCollection->histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
+	histCollection->histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
+	histCollection->histHcalWheel = new TH1I("hcalWheel", "hcalWheel", 5, -2, 3);
+	histCollection->histHcalSection = new TH1I("hcalSection", "hcalSection", 12, 0, 12);
+	histCollection->histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
+	histCollection->histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
+	histCollection->histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 10, 1, 11);
+	histCollection->histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
+	histCollection->histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
+	histCollection->histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
+	histCollection->histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
+	histCollection->histQIESamplePedestal = new TH1F("QIESamplePedestal", "QIESamplePedestal", 30, -10, 10);
+	histCollection->histQIESampleFc_MPedestals = new TH1F("QIESampleFc_MPedestals", "QIESampleFc_MPedestals", 50, 0, 100);
 }
 
-void HoProducer::Produce(DataReader* dataReader, HoProduct* product) {
+void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	product->sumQ = *dataReader->sumQ->Get();
 	product->nHcalDetIds = *dataReader->nHcalDetIds->Get();
 	product->nHcalQIESamples = *dataReader->nHcalQIESamples->Get();
 
-	histSumQ->Fill(product->sumQ);
-	histNHcalDetIds->Fill(product->nHcalDetIds);
-	histNHcalQIESamples->Fill(product->nHcalQIESamples);
+	histCollection->histSumQ->Fill(product->sumQ);
+	histCollection->histNHcalDetIds->Fill(product->nHcalDetIds);
+	histCollection->histNHcalQIESamples->Fill(product->nHcalQIESamples);
 
 	//unsigned int size = dataReader->hcalDetIdIEta->GetSize();
 	for (unsigned i = 0; i < dataReader->hcalDetIdIEta->GetSize(); i++) {
@@ -51,24 +51,25 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product) {
 		product->hcalWheel.push_back(Utility::HoIEtaToWheel(product->hcalIEta.back()));
 		product->hcalSection.push_back(Utility::HoIPhiToSection(product->hcalIPhi.back()));
 
-		histHcalDetIdIEta->Fill(product->hcalIEta.back());
-		histHcalDetIdIPhi->Fill(product->hcalIPhi.back());
-		histHcalQIESample->Fill(product->hcalQIESample.back());
-		histHcalQIESampleAdc->Fill(product->hcalQIESampleAdc.back());
-		histHcalQIESampleDv->Fill(product->hcalQIESampleDv.back());
-		histHcalQIESampleEr->Fill(product->hcalQIESampleEr.back());
+		histCollection->histHcalDetIdIEta->Fill(product->hcalIEta.back());
+		histCollection->histHcalDetIdIPhi->Fill(product->hcalIPhi.back());
+		histCollection->histHcalQIESample->Fill(product->hcalQIESample.back());
+		histCollection->histHcalQIESampleAdc->Fill(product->hcalQIESampleAdc.back());
+		histCollection->histHcalQIESampleDv->Fill(product->hcalQIESampleDv.back());
+		histCollection->histHcalQIESampleEr->Fill(product->hcalQIESampleEr.back());
 
-		histSampleEnergy->Fill(product->SampleEnergy.back());
-		histQIESampleFc->Fill(product->QIESampleFc.back());
-		histQIESamplePedestal->Fill(product->QIESamplePedestal.back());
-		histQIESampleFc_MPedestals->Fill(product->QIESampleFc_MPedestals.back());
+		histCollection->histSampleEnergy->Fill(product->SampleEnergy.back());
+		histCollection->histQIESampleFc->Fill(product->QIESampleFc.back());
+		histCollection->histQIESamplePedestal->Fill(product->QIESamplePedestal.back());
+		histCollection->histQIESampleFc_MPedestals->Fill(product->QIESampleFc_MPedestals.back());
 
-		histHcalCmsEta->Fill(product->hcalCmsEta.back());
-		histHcalCmsPhi->Fill(product->hcalCmsPhi.back());
+		histCollection->histHcalCmsEta->Fill(product->hcalCmsEta.back());
+		histCollection->histHcalCmsPhi->Fill(product->hcalCmsPhi.back());
 
-		histHcalWheel->Fill(product->hcalWheel.back());
-		histHcalSection->Fill(product->hcalSection.back());
+		histCollection->histHcalWheel->Fill(product->hcalWheel.back());
+		histCollection->histHcalSection->Fill(product->hcalSection.back());
 	}
 }
 
+void HoProducer::EndJob(HoHistogramCollection* histCollection) {}
 HoProducer::~HoProducer() {}

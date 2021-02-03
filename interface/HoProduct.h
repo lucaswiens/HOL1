@@ -19,7 +19,8 @@ public:
 		dttpPhi,
 		dttpPhiB;
 	std::vector<double> dttpCmsPhi;
-	std::vector<bool> dttpIsHq;
+	std::vector<bool> dttpIsHq,
+		dttpIsLq;
 	// Track Finder Muons
 	unsigned short bmtfSize;
 	std::vector<int> bmtfTrackType;

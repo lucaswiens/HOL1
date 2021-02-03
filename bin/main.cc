@@ -6,6 +6,7 @@
 
 #include <HOAnalysis/HOL1/interface/DataReader.h>
 #include <HOAnalysis/HOL1/interface/HoProduct.h>
+#include <HOAnalysis/HOL1/interface/HoHistogramCollection.h>
 #include <HOAnalysis/HOL1/interface/Producer/BaseProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
@@ -25,13 +26,14 @@ int main(int argc, char* argv[]) {
 
 	TFile *file = new TFile((outputFile + ".root").c_str(), "RECREATE");
 
+	HoHistogramCollection histCollection;
 	//Declare vector of Producers which will fill Histograms
 	std::vector<std::shared_ptr<BaseProducer>> producers = {
-		std::shared_ptr<HoProducer>(new HoProducer()),
-		std::shared_ptr<MuonProducer>(new MuonProducer()),
-		std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer()),
+		std::shared_ptr<HoProducer>(new HoProducer(&histCollection)),
+		std::shared_ptr<MuonProducer>(new MuonProducer(&histCollection)),
+		std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(&histCollection)),
 		std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()),
-		std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()),
+		std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)),
 	};
 
 	int processed = 0;
@@ -45,11 +47,15 @@ int main(int argc, char* argv[]) {
 
 		HoProduct product;
 		for (std::shared_ptr<BaseProducer> producer: producers) {
-			producer->Produce(dataReader, &product);
+			producer->Produce(dataReader, &product, &histCollection);
 		}
 	}
 	ProgressBar(100, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
 	std::cout << std::endl;
+
+	for (std::shared_ptr<BaseProducer> producer: producers) {
+		producer->EndJob(&histCollection);
+	}
 
 	file->Write();
 	file->Close();

@@ -8,5 +8,6 @@ class HoCoincidenceProducer : public BaseProducer {
 	public:
 		HoCoincidenceProducer();
 		~HoCoincidenceProducer();
-		void Produce(DataReader *dataReader, HoProduct *product);
+		void Produce(DataReader *dataReader, HoProduct *product, HoHistogramCollection* histCollection);
+		void EndJob(HoHistogramCollection* histCollection);
 };

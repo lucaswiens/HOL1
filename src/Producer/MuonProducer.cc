@@ -1,35 +1,35 @@
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
 
-MuonProducer::MuonProducer() {
-	histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
-	histIsMediumMuon = new TH1I("isMediumMuon", "isMediumMuon", 2, 0, 2);
-	histIsTightMuon = new TH1I("isTightMuon", "isTightMuon", 2, 0, 2);
+MuonProducer::MuonProducer(HoHistogramCollection* histCollection) {
+	histCollection->histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
+	histCollection->histIsMediumMuon = new TH1I("isMediumMuon", "isMediumMuon", 2, 0, 2);
+	histCollection->histIsTightMuon = new TH1I("isTightMuon", "isTightMuon", 2, 0, 2);
 
-	histMuonE = new TH1F("muonE", "muonE", 30, 0, 300);
-	histMuonEt = new TH1F("muonEt", "muonEt", 30, 0, 300);
-	histMuonPt = new TH1F("muonPt", "muonPt", 30, 0, 300);
-	histMuonEta = new TH1F("muonEta", "muonEta", 30, -3, 3);
-	histMuonPhi = new TH1F("muonPhi", "muonPhi", 30, -M_PI, M_PI);
-	histMuonIso = new TH1F("muonIso", "muonIso", 30, 0, 1);
-	histMuonHltIsoDeltaR = new TH1F("muonHlt_isoDeltaR", "muonHlt_isoDeltaR", 30, 0, 5);
-	histMuonDeltaR = new TH1F("muonHlt_deltaR", "muonHlt_deltaR", 30, 0, 5);
-	histMuonEtaSt1 = new TH1F("muonEtaSt1", "muonEtaSt1", 30, -3, 3);
-	histMuonPhiSt1 = new TH1F("muonPhiSt1", "muonPhiSt1", 30, -M_PI, M_PI);
-	histMuonEtaSt2 = new TH1F("muonEtaSt2", "muonEtaSt2", 30, -3, 3);
-	histMuonPhiSt2 = new TH1F("muonPhiSt2", "muonPhiSt2", 30, -M_PI, M_PI);
+	histCollection->histMuonE = new TH1F("muonE", "muonE", 30, 0, 300);
+	histCollection->histMuonEt = new TH1F("muonEt", "muonEt", 30, 0, 300);
+	histCollection->histMuonPt = new TH1F("muonPt", "muonPt", 20, 0, 20);
+	histCollection->histMuonEta = new TH1F("muonEta", "muonEta", 30, -3, 3);
+	histCollection->histMuonPhi = new TH1F("muonPhi", "muonPhi", 30, -M_PI, M_PI);
+	histCollection->histMuonIso = new TH1F("muonIso", "muonIso", 30, 0, 1);
+	histCollection->histMuonHltIsoDeltaR = new TH1F("muonHlt_isoDeltaR", "muonHlt_isoDeltaR", 30, 0, 5);
+	histCollection->histMuonDeltaR = new TH1F("muonHlt_deltaR", "muonHlt_deltaR", 30, 0, 5);
+	histCollection->histMuonEtaSt1 = new TH1F("muonEtaSt1", "muonEtaSt1", 30, -3, 3);
+	histCollection->histMuonPhiSt1 = new TH1F("muonPhiSt1", "muonPhiSt1", 30, -M_PI, M_PI);
+	histCollection->histMuonEtaSt2 = new TH1F("muonEtaSt2", "muonEtaSt2", 30, -3, 3);
+	histCollection->histMuonPhiSt2 = new TH1F("muonPhiSt2", "muonPhiSt2", 30, -M_PI, M_PI);
 
-	histMuonMet = new TH1D("muonMet", "muonMet", 30, 0, 300);
-	histMuonMt = new TH1D("muonMt", "muonMt", 30, 0, 300);
+	histCollection->histMuonMet = new TH1D("muonMet", "muonMet", 30, 0, 300);
+	histCollection->histMuonMt = new TH1D("muonMt", "muonMt", 30, 0, 300);
 
-	histMuonHltIsoMu = new TH1I("muonHlt_isomu", "muonHlt_isomu", 2, 0, 2);
-	histMuonHltMu = new TH1I("muonHlt_mu", "muonHlt_mu", 2, 0, 2);
-	histMuonPassesSingleMuon = new TH1I("muonPassesSingleMuon", "muonPassesSingleMuon", 2, 0, 2);
-	histMuonCharge = new TH1I("muonCharge", "muonCharge", 3, -1, 1);
-	histMuonIEta = new TH1I("muonIEta", "muonIEta", 20, 0, 20);
+	histCollection->histMuonHltIsoMu = new TH1I("muonHlt_isomu", "muonHlt_isomu", 2, 0, 2);
+	histCollection->histMuonHltMu = new TH1I("muonHlt_mu", "muonHlt_mu", 2, 0, 2);
+	histCollection->histMuonPassesSingleMuon = new TH1I("muonPassesSingleMuon", "muonPassesSingleMuon", 2, 0, 2);
+	histCollection->histMuonCharge = new TH1I("muonCharge", "muonCharge", 3, -1, 1);
+	histCollection->histMuonIEta = new TH1I("muonIEta", "muonIEta", 20, 0, 20);
 
 }
 
-void MuonProducer::Produce(DataReader* dataReader, HoProduct* product) {
+void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	product->nMuon = *dataReader->nMuon->Get();
 
 	for (unsigned short i = 0; i < product->nMuon; i++){
@@ -59,32 +59,33 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product) {
 
 		product->muonHasMb1.push_back((fabs(product->muonEtaSt1.back()) < 5) && (fabs(product->muonPhiSt1.back()) < M_PI));
 
-		histMuonMet->Fill(product->muonMet.back());
-		histMuonMt->Fill(product->muonMt.back());
+		histCollection->histMuonMet->Fill(product->muonMet.back());
+		histCollection->histMuonMt->Fill(product->muonMt.back());
 
-		histIsLooseMuon->Fill(product->isLooseMuon.back());
-		histIsMediumMuon->Fill(product->isMediumMuon.back());
-		histIsTightMuon->Fill(product->isTightMuon.back());
-		histMuonHltIsoMu->Fill(product->muonHltIsoMu.back());
-		histMuonHltMu->Fill(product->muonHltMu.back());
-		histMuonPassesSingleMuon->Fill(product->muonPassesSingleMuon.back());
-		histMuonCharge->Fill(product->muonCharge.back());
+		histCollection->histIsLooseMuon->Fill(product->isLooseMuon.back());
+		histCollection->histIsMediumMuon->Fill(product->isMediumMuon.back());
+		histCollection->histIsTightMuon->Fill(product->isTightMuon.back());
+		histCollection->histMuonHltIsoMu->Fill(product->muonHltIsoMu.back());
+		histCollection->histMuonHltMu->Fill(product->muonHltMu.back());
+		histCollection->histMuonPassesSingleMuon->Fill(product->muonPassesSingleMuon.back());
+		histCollection->histMuonCharge->Fill(product->muonCharge.back());
 
-		histMuonE->Fill(product->muonE.back());
-		histMuonEt->Fill(product->muonEt.back());
-		histMuonPt->Fill(product->muonPt.back());
-		histMuonEta->Fill(product->muonEta.back());
-		histMuonPhi->Fill(product->muonPhi.back());
-		histMuonIso->Fill(product->muonIso.back());
-		histMuonHltIsoDeltaR->Fill(product->muonHltIsoDeltaR.back());
-		histMuonDeltaR->Fill(product->muonDeltaR.back());
-		histMuonEtaSt1->Fill(product->muonEtaSt1.back());
-		histMuonPhiSt1->Fill(product->muonPhiSt1.back());
-		histMuonEtaSt2->Fill(product->muonEtaSt2.back());
-		histMuonPhiSt2->Fill(product->muonPhiSt2.back());
+		histCollection->histMuonE->Fill(product->muonE.back());
+		histCollection->histMuonEt->Fill(product->muonEt.back());
+		histCollection->histMuonPt->Fill(product->muonPt.back());
+		histCollection->histMuonEta->Fill(product->muonEta.back());
+		histCollection->histMuonPhi->Fill(product->muonPhi.back());
+		histCollection->histMuonIso->Fill(product->muonIso.back());
+		histCollection->histMuonHltIsoDeltaR->Fill(product->muonHltIsoDeltaR.back());
+		histCollection->histMuonDeltaR->Fill(product->muonDeltaR.back());
+		histCollection->histMuonEtaSt1->Fill(product->muonEtaSt1.back());
+		histCollection->histMuonPhiSt1->Fill(product->muonPhiSt1.back());
+		histCollection->histMuonEtaSt2->Fill(product->muonEtaSt2.back());
+		histCollection->histMuonPhiSt2->Fill(product->muonPhiSt2.back());
 
-		histMuonIEta->Fill(product->muonIEta.back());
+		histCollection->histMuonIEta->Fill(product->muonIEta.back());
 	}
 }
 
+void MuonProducer::EndJob(HoHistogramCollection* histCollection) {}
 MuonProducer::~MuonProducer() {}

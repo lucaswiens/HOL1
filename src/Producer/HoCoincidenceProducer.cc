@@ -10,7 +10,7 @@ HoCoincidenceProducer::~HoCoincidenceProducer() {}
 	muon prefix -> Reco level muons
 	xMatchedY   -> y type variables matched to x
 */
-void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product) {
+void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	// Match BMTF with DTTP and Reco Muons
 	product->isBmtfMatchedMuon = std::vector(product->bmtfSize, false);
 	product->isBmtfMatchedDttp = std::vector(product->bmtfSize, false);

@@ -4,16 +4,10 @@
 
 class BmtfInputProducer : public BaseProducer {
 	private:
-		TH1I *histDttpSize, *histBmtfThSize, *histDttpBx, *histDttpWheel, *histDttpSection, *histDttpStation, *histDttpQualityCode, *histDttpTs2Tag, *histBmtfThBx, *histBmtfThWh, *histBmtfThSe, *histBmtfThSt, *histBmtfThTheta, *histBmtfThCode, *histDttpIPhi;
-		TH1S *histNBmtf, *histBmtfHwPt, *histBmtfHwEta, *histBmtfHwPhi, *histBmtfGlobalPhi, *histBmtfHwSign, *histBmtfHwSignValid, *histBmtfHwQual, *histBmtfLink, *histBmtfProcessor, *histBmtfTrackFinderType, *histBmtfTrackType, *histBmtfHwHF, *histBmtfBx, *histBmtfWh, *histBmtfTrAdd, *histBmtfTrAddSt1, *histBmtfTrAddSt2, *histBmtfTrAddSt3, *histBmtfTrAddSt4;
-		TH1F *histDttpPhi, *histDttpPhiB;
-		TH1D *histBmtfCmsPt, *histBmtfCmsEta, *histBmtfCmsPhi, *histDttpCmsPhi, *histDttpPt, *histDttpCmsPhiSection1, *histDttpCmsPhiSection2, *histDttpCmsPhiSection3, *histDttpCmsPhiSection4, *histDttpCmsPhiSection5, *histDttpCmsPhiSection6, *histDttpCmsPhiSection7, *histDttpCmsPhiSection8, *histDttpCmsPhiSection9, *histDttpCmsPhiSection10, *histDttpCmsPhiSection11, *histDttpCmsPhiSection12;
 
-	//TH2D *histDttpStation_vs_DttpWheel, *histDttpStation_vs_DttpWheel_Hq, *histDttpStation_vs_DttpWheel_Lq,
-		//*histUsedDttpStation_vs_DttpWheel, *histUsedDttpStation_vs_DttpWheel_Hq, *histUsedDttpStation_vs_DttpWheel_Lq,
-		//*histUnusedDttpStation_vs_DttpWheel, *histUnusedDttpStation_vs_DttpWheel_Hq, *histUnusedDttpStation_vs_DttpWheel_Lq;
 	public:
-		BmtfInputProducer();
+		BmtfInputProducer(HoHistogramCollection* histCollection);
 		~BmtfInputProducer();
-		void Produce(DataReader* dataReader, HoProduct* product);
+		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
+		void EndJob(HoHistogramCollection* histCollection);
 };
