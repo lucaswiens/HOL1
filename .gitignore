@@ -2,4 +2,5 @@
 *.pyc
 *.log
 *.swp
+*.root
 crab_projects
