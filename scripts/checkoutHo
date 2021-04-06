@@ -6,19 +6,16 @@ git cms-init
 git remote add cms-l1t-offline git@github.com:cms-l1t-offline/cmssw.git
 git fetch cms-l1t-offline l1t-integration-CMSSW_11_0_2
 git cms-merge-topic -u cms-l1t-offline:l1t-integration-v104.5
-
 git cms-addpkg L1Trigger/L1TCommon
 git cms-addpkg L1Trigger/L1TMuon
 git clone https://github.com/cms-l1t-offline/L1Trigger-L1TMuon.git L1Trigger/L1TMuon/data
 git cms-addpkg L1Trigger/L1TCalorimeter
 git clone https://github.com/cms-l1t-offline/L1Trigger-L1TCalorimeter.git L1Trigger/L1TCalorimeter/data
 
-git remote add panoskatsoulis https://github.com/panoskatsoulis/cmssw.git
-git config merge.renameLimit 999999
-git config diff.renameLimit 999999
-git cms-merge-topic panoskatsoulis:fix_empty_bmtf_ntuples
+git cms-checkdeps -A -a
 
 git remote add HOTriggerLink git@github.com:HOTriggerLink/cmssw.git
-git cms-merge-topic -u HOTriggerLink:HO_dev
-
-git cms-checkdeps -A -a
+git fetch HOTriggerLink
+git cherry-pick 1510d781dac27474516a10d633a41735ba83aa74 # add HO energy variables
+git cherry-pick 1f13791c955b08a96cfac4f3b09fc9d322ce0add #  add the HO energy in GeV
+#git cms-merge-topic -u HOTriggerLink:HO_dev
