@@ -19,12 +19,9 @@ void ProgressBar(const int &, const int &);
 int main(int argc, char* argv[]) {
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
-	std::string inputFile = std::string(argv[1]);
-	std::string outputFile = std::string(argv[2]);
-
-	DataReader* dataReader = new DataReader(inputFile);
-
+	std::string outputFile = std::string(argv[1]);
 	TFile *file = new TFile((outputFile + ".root").c_str(), "RECREATE");
+
 
 	HoHistogramCollection histCollection;
 	//Declare vector of Producers which will fill Histograms
@@ -36,31 +33,40 @@ int main(int argc, char* argv[]) {
 		std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)),
 	};
 
-	int processed = 0;
-	ProgressBar(0, 0);
-	while(dataReader->Next()){
-		//ProgressBar
-		if(processed % 400) {
-			ProgressBar((int) 101 * processed/dataReader->GetEntries(), processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
-		}
-		processed++;
+	for (int iFile = 2; iFile < argc; iFile ++) {
+		std::string inputFile = std::string(argv[iFile]);
+		//std::cout << "Working on File: " << argv[iFile] << std::endl;
 
-		HoProduct product;
-		for (std::shared_ptr<BaseProducer> producer: producers) {
-			producer->Produce(dataReader, &product, &histCollection);
+		DataReader* dataReader = new DataReader(inputFile);
+
+		int processed = 0;
+		ProgressBar(0, 0);
+		while(dataReader->Next()){
+			//ProgressBar
+			if(processed % 400) {
+				ProgressBar((int) 101 * processed/dataReader->GetEntries(), processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+			}
+			processed++;
+
+			HoProduct product;
+			for (std::shared_ptr<BaseProducer> producer: producers) {
+				producer->Produce(dataReader, &product, &histCollection);
+			}
 		}
+		ProgressBar(100, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+		std::cout << std::endl;
+
+		delete dataReader;
 	}
-	ProgressBar(100, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
-	std::cout << std::endl;
 
 	for (std::shared_ptr<BaseProducer> producer: producers) {
+		file->cd()
 		producer->EndJob(&histCollection);
 	}
 
 	file->Write();
 	file->Close();
 
-	delete dataReader;
 	delete file;
 
 	return 0;
@@ -83,4 +89,3 @@ void ProgressBar(const int &progress, const int &rate) {
 	progressBar = progressBar + "] " + std::to_string(progress) + "% of Events processed at a rate of " + std::to_string(rate) + " Hz." ;
 	std::cout << "\r" << progressBar << std::flush;
 }
-
