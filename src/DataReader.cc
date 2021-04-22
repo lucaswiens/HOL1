@@ -17,7 +17,7 @@ DataReader::DataReader(std::string inputFileName) {
 	//"l1ElectronRecoTree/L1ElectronRecoTree",
 	//"l1TauRecoTree/L1TauRecoTree",
 
-	inputFile = new TFile(inputFileName.c_str());
+	inputFile = TFile::Open(inputFileName.c_str(), "READ");
 	l1HoTree = (TTree*)inputFile->Get("l1HOTree/L1HOTree");
 	l1MuonRecoTree = (TTree*)inputFile->Get("l1MuonRecoTree/Muon2RecoTree");
 	l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");

@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	for (std::shared_ptr<BaseProducer> producer: producers) {
-		file->cd()
+		file->cd();
 		producer->EndJob(&histCollection);
 	}
 
