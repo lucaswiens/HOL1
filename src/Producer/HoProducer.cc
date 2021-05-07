@@ -1,24 +1,6 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 
-HoProducer::HoProducer(HoHistogramCollection* histCollection) {
-	histCollection->histNHcalDetIds = new TH1I("hcalDetIds", "hcalDetIds", 50, 500, 1000);
-	histCollection->histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
-	histCollection->histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
-	histCollection->histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
-	histCollection->histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
-	histCollection->histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
-	histCollection->histHcalWheel = new TH1I("hcalWheel", "hcalWheel", 5, -2, 3);
-	histCollection->histHcalSection = new TH1I("hcalSection", "hcalSection", 12, 0, 12);
-	histCollection->histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
-	histCollection->histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
-	histCollection->histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 10, 1, 11);
-	histCollection->histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
-	histCollection->histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
-	histCollection->histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
-	histCollection->histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
-	histCollection->histQIESamplePedestal = new TH1F("QIESamplePedestal", "QIESamplePedestal", 30, -10, 10);
-	histCollection->histQIESampleFc_MPedestals = new TH1F("QIESampleFc_MPedestals", "QIESampleFc_MPedestals", 50, 0, 100);
-}
+HoProducer::HoProducer(HoHistogramCollection* histCollection) {}
 
 void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	product->sumQ = *dataReader->sumQ->Get();

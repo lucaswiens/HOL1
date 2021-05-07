@@ -1,33 +1,6 @@
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
 
-MuonProducer::MuonProducer(HoHistogramCollection* histCollection) {
-	histCollection->histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
-	histCollection->histIsMediumMuon = new TH1I("isMediumMuon", "isMediumMuon", 2, 0, 2);
-	histCollection->histIsTightMuon = new TH1I("isTightMuon", "isTightMuon", 2, 0, 2);
-
-	histCollection->histMuonE = new TH1F("muonE", "muonE", 30, 0, 300);
-	histCollection->histMuonEt = new TH1F("muonEt", "muonEt", 30, 0, 300);
-	histCollection->histMuonPt = new TH1F("muonPt", "muonPt", 20, 0, 20);
-	histCollection->histMuonEta = new TH1F("muonEta", "muonEta", 30, -3, 3);
-	histCollection->histMuonPhi = new TH1F("muonPhi", "muonPhi", 30, -M_PI, M_PI);
-	histCollection->histMuonIso = new TH1F("muonIso", "muonIso", 30, 0, 1);
-	histCollection->histMuonHltIsoDeltaR = new TH1F("muonHlt_isoDeltaR", "muonHlt_isoDeltaR", 30, 0, 5);
-	histCollection->histMuonDeltaR = new TH1F("muonHlt_deltaR", "muonHlt_deltaR", 30, 0, 5);
-	histCollection->histMuonEtaSt1 = new TH1F("muonEtaSt1", "muonEtaSt1", 30, -3, 3);
-	histCollection->histMuonPhiSt1 = new TH1F("muonPhiSt1", "muonPhiSt1", 30, -M_PI, M_PI);
-	histCollection->histMuonEtaSt2 = new TH1F("muonEtaSt2", "muonEtaSt2", 30, -3, 3);
-	histCollection->histMuonPhiSt2 = new TH1F("muonPhiSt2", "muonPhiSt2", 30, -M_PI, M_PI);
-
-	histCollection->histMuonMet = new TH1D("muonMet", "muonMet", 30, 0, 300);
-	histCollection->histMuonMt = new TH1D("muonMt", "muonMt", 30, 0, 300);
-
-	histCollection->histMuonHltIsoMu = new TH1I("muonHlt_isomu", "muonHlt_isomu", 2, 0, 2);
-	histCollection->histMuonHltMu = new TH1I("muonHlt_mu", "muonHlt_mu", 2, 0, 2);
-	histCollection->histMuonPassesSingleMuon = new TH1I("muonPassesSingleMuon", "muonPassesSingleMuon", 2, 0, 2);
-	histCollection->histMuonCharge = new TH1I("muonCharge", "muonCharge", 3, -1, 1);
-	histCollection->histMuonIEta = new TH1I("muonIEta", "muonIEta", 20, 0, 20);
-
-}
+MuonProducer::MuonProducer(HoHistogramCollection* histCollection) {}
 
 void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	product->nMuon = *dataReader->nMuon->Get();

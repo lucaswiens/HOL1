@@ -1,10 +1,131 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoHistogramProducer.h>
 
 HoHistogramProducer::HoHistogramProducer(HoHistogramCollection* histCollection) {
-	double maxE = 300, maxPt = 20, maxPhi = M_PI, maxEta = 3, maxDeltaR = 3, maxTrackType = 25, minIPhi = 1, minIEta = -20;
-	double minE = 0, minPt = 0, minPhi = -M_PI, minEta = -3, minDeltaR = 0, minTrackType = 0, maxIPhi = 73, maxIEta = 20;
-	int nBinsE = 100, nBinsPt = (maxPt - minPt), nBinsPhi = 72, nBinsEta = 68, nBinsDeltaR = 50, nBinsTrackType = 25, nBinsIPhi = 72, nBinsIEta = 40;
+	//BMTF
+	double minE   = 0,    minPt   = 0,    minPhi   = -M_PI, minEta   = -3, minWheel  = -3, minStation   = 1, minSection   =  0, minQualityCode   =  0, minDeltaR   = 0, minTrackType   =  0, minIPhi   =  1, minIEta   = -20;
+	double maxE   = 1000, maxPt   = 1000, maxPhi   =  M_PI, maxEta   =  3, maxWheel  =  4, maxStation   = 5, maxSection   = 12, maxQualityCode   = 10, maxDeltaR   = 3, maxTrackType   = 25, maxIPhi   = 73, maxIEta   =  20;
+	int    nBinsE = 1000, nBinsPt = 1000, nBinsPhi = 256,   nBinsEta = 68, nBinsWheel = 7, nBinsStation = 4, nBinsSection = 12, nBinsQualityCode = 10, nBinsDeltaR = 3, nBinsTrackType = 25, nBinsIPhi = 72, nBinsIEta =  40;
 
+	// Muon Histograms
+	histCollection->histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
+	histCollection->histIsMediumMuon = new TH1I("isMediumMuon", "isMediumMuon", 2, 0, 2);
+	histCollection->histIsTightMuon = new TH1I("isTightMuon", "isTightMuon", 2, 0, 2);
+
+	histCollection->histMuonE = new TH1F("muonE", "muonE", nBinsE, minE, maxE);
+	histCollection->histMuonEt = new TH1F("muonEt", "muonEt", nBinsE, minE, maxE);
+	histCollection->histMuonPt = new TH1F("muonPt", "muonPt", nBinsPt, minPt, maxPt);
+	histCollection->histMuonEta = new TH1F("muonEta", "muonEta", nBinsEta, minEta, maxEta);
+	histCollection->histMuonPhi = new TH1F("muonPhi", "muonPhi", nBinsPhi, minPhi, maxPhi);
+	histCollection->histMuonIso = new TH1F("muonIso", "muonIso", 100, 0, 1);
+	histCollection->histMuonHltIsoDeltaR = new TH1F("muonHlt_isoDeltaR", "muonHlt_isoDeltaR", nBinsDeltaR, minDeltaR, maxDeltaR);
+	histCollection->histMuonDeltaR = new TH1F("muonHlt_deltaR", "muonHlt_deltaR", nBinsDeltaR, minDeltaR, maxDeltaR);
+	histCollection->histMuonEtaSt1 = new TH1F("muonEtaSt1", "muonEtaSt1", nBinsEta, minEta, maxEta);
+	histCollection->histMuonPhiSt1 = new TH1F("muonPhiSt1", "muonPhiSt1", nBinsPhi, minPhi, maxPhi);
+	histCollection->histMuonEtaSt2 = new TH1F("muonEtaSt2", "muonEtaSt2", nBinsEta, minEta, maxEta);
+	histCollection->histMuonPhiSt2 = new TH1F("muonPhiSt2", "muonPhiSt2", nBinsPhi, minPhi, maxPhi);
+
+	histCollection->histMuonMet = new TH1D("muonMet", "muonMet", nBinsPt, minPt, maxPt);
+	histCollection->histMuonMt = new TH1D("muonMt", "muonMt", nBinsPt, minPt, maxPt);
+
+	histCollection->histMuonHltIsoMu = new TH1I("muonHlt_isomu", "muonHlt_isomu", 2, 0, 2);
+	histCollection->histMuonHltMu = new TH1I("muonHlt_mu", "muonHlt_mu", 2, 0, 2);
+	histCollection->histMuonPassesSingleMuon = new TH1I("muonPassesSingleMuon", "muonPassesSingleMuon", 2, 0, 2);
+	histCollection->histMuonCharge = new TH1I("muonCharge", "muonCharge", 3, -1, 1);
+	histCollection->histMuonIEta = new TH1I("muonIEta", "muonIEta", nBinsIEta, minIEta, maxIEta);
+
+	// DTTP Histograms
+	histCollection->histDttpSize = new TH1I("dttpSize", "dttpSize", 15, 0, 15);
+	histCollection->histDttpBx = new TH1I("dttpBx", "dttpBx", 5, -2, 2);
+	histCollection->histDttpWheel = new TH1I("dttpWheel", "dttpWheel", nBinsWheel, minWheel, maxWheel);
+	histCollection->histDttpSection = new TH1I("dttpSection", "dttpSection", nBinsSection, minSection, maxSection);
+	histCollection->histDttpStation = new TH1I("dttpStation", "dttpStation", nBinsStation, minStation, maxStation);
+	histCollection->histDttpQualityCode = new TH1I("dttpQualitytCode", "dttpQualitytCode", nBinsQualityCode, minQualityCode, maxQualityCode);
+	histCollection->histDttpTs2Tag = new TH1I("dttpTs2Tag", "dttpTs2Tag", 2, 0, 2);
+	histCollection->histDttpIPhi = new TH1I("dttpIPhi", "dttpIPhi", 72, 1, 73);
+	histCollection->histDttpPhi = new TH1F("dttpPhi", "dttpPhi", 512, -2048, 2048);
+	histCollection->histDttpPhiB = new TH1F("dttpPhiB", "dttpPhiB", 500, -250, 250);
+	histCollection->histDttpPt = new TH1D("dttpPt", "dttpPt", 300, 0, 300);
+	histCollection->histDttpCmsPhi = new TH1D("dttpCmsPhi", "dttpCmsPhi", nBinsPhi, minPhi, maxPhi);
+
+	/*
+	histCollection->histDttpCmsPhiSection1 = new TH1D("dttpCmsPhiSection1", "dttpCmsPhiSection1", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection2 = new TH1D("dttpCmsPhiSection2", "dttpCmsPhiSection2", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection3 = new TH1D("dttpCmsPhiSection3", "dttpCmsPhiSection3", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection4 = new TH1D("dttpCmsPhiSection4", "dttpCmsPhiSection4", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection5 = new TH1D("dttpCmsPhiSection5", "dttpCmsPhiSection5", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection6 = new TH1D("dttpCmsPhiSection6", "dttpCmsPhiSection6", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection7 = new TH1D("dttpCmsPhiSection7", "dttpCmsPhiSection7", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection8 = new TH1D("dttpCmsPhiSection8", "dttpCmsPhiSection8", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection9 = new TH1D("dttpCmsPhiSection9", "dttpCmsPhiSection9", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection10 = new TH1D("dttpCmsPhiSection10", "dttpCmsPhiSection10", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection11 = new TH1D("dttpCmsPhiSection11", "dttpCmsPhiSection11", nBinsPhi, minPhi, maxPhi);
+	histCollection->histDttpCmsPhiSection12 = new TH1D("dttpCmsPhiSection12", "dttpCmsPhiSection12", nBinsPhi, minPhi, maxPhi);
+	*/
+
+	// BMTF Producer
+	histCollection->histNBmtf = new TH1S("nBmtf", "nBmtf", 25, 0, 25);
+	histCollection->histBmtfHwPt = new TH1S("bmtfHwPt", "bmtfHwPt", nBinsPt, minPt, maxPt);
+	histCollection->histBmtfCmsPt = new TH1D("bmtfCmsPt", "bmtfCmsPt", nBinsPt, minPt, maxPt);
+	histCollection->histBmtfHwEta = new TH1S("bmtfHwEta", "bmtfHwEta", 25, 0, 25);
+	histCollection->histBmtfCmsEta = new TH1D("bmtfCmsEta", "bmtfCmsEta", nBinsEta, minEta, maxEta);
+	histCollection->histBmtfHwPhi = new TH1S("bmtfHwPhi", "bmtfHwPhi", 56, 0, 56);
+	histCollection->histBmtfGlobalPhi = new TH1S("bmtfGlobalPhi", "bmtfGlobalPhi", 576, 0, 576);
+	histCollection->histBmtfCmsPhi = new TH1D("bmtfCmsPhi", "bmtfCmsPhi", 144, minPhi, maxPhi);
+	histCollection->histBmtfHwSign = new TH1S("bmtfHwSign", "bmtfHwSign", 5, -2, 3);
+	histCollection->histBmtfHwSignValid = new TH1S("bmtfHwSignValid", "bmtfHwSignValid", 2, 0, 2);
+	histCollection->histBmtfHwQual = new TH1S("bmtfHwQual", "bmtfHwQual", 25, 0, 25);
+	histCollection->histBmtfLink = new TH1S("bmtfLink", "bmtfLink", 25, 0, 25);
+	histCollection->histBmtfProcessor = new TH1S("bmtfProcessor", "bmtfProcessor", 25, 0, 25);
+	histCollection->histBmtfTrackFinderType = new TH1S("bmtfTrackFinderType", "bmtfTrackFinderType", 25, 0, 25);
+	histCollection->histBmtfTrackType = new TH1S("bmtfTrackType", "bmtfTrackType", 25, 0, 25);
+	histCollection->histBmtfHwHF = new TH1S("bmtfHwHF", "bmtfHwHF", 25, 0, 25);
+	histCollection->histBmtfBx = new TH1S("bmtfBx", "bmtfBx", 25, 0, 25);
+	histCollection->histBmtfWh = new TH1S("bmtfWh", "bmtfWh", 25, 0, 25);
+	histCollection->histBmtfTrAdd = new TH1S("bmtfTrAdd", "bmtfTrAdd", 25, 0, 25);
+	histCollection->histBmtfTrAddSt1 = new TH1S("bmtfTrAddSt1", "bmtfTrAddSt1", 25, 0, 25);
+	histCollection->histBmtfTrAddSt2 = new TH1S("bmtfTrAddSt2", "bmtfTrAddSt2", 25, 0, 25);
+	histCollection->histBmtfTrAddSt3 = new TH1S("bmtfTrAddSt3", "bmtfTrAddSt3", 25, 0, 25);
+	histCollection->histBmtfTrAddSt4 = new TH1S("bmtfTrAddSt4", "bmtfTrAddSt4", 25, 0, 25);
+
+	//histCollection->histDttpStation_vs_DttpWheel = new TH2D("MB_station_vs_wheel", "MB_station_vs_wheel", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histDttpStation_vs_DttpWheel_Hq = new TH2D("MB_station_vs_wheel_Hq", "MB_station_vs_wheel_Hq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histDttpStation_vs_DttpWheel_Lq = new TH2D("MB_station_vs_wheel_Lq", "MB_station_vs_wheel_Lq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histUsedDttpStation_vs_DttpWheel = new TH2D("usedMB_station_vs_wheel", "usedMB_station_vs_wheel", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histUsedDttpStation_vs_DttpWheel_Hq = new TH2D("usedMB_station_vs_wheel_Hq", "usedMB_station_vs_wheel_Hq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histUsedDttpStation_vs_DttpWheel_Lq = new TH2D("usedMB_station_vs_wheel_Lq", "usedMB_station_vs_wheel_Lq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histUnusedDttpStation_vs_DttpWheel = new TH2D("unusedMB_station_vs_wheel", "unusedMB_station_vs_wheel", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histUnusedDttpStation_vs_DttpWheel_Hq = new TH2D("unusedMB_station_vs_wheel_Hq", "unusedMB_station_vs_wheel_Hq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+	//histCollection->histUnusedDttpStation_vs_DttpWheel_Lq = new TH2D("unusedMB_station_vs_wheel_Lq", "unusedMB_station_vs_wheel_Lq", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
+
+	// BMTFTheta Histograms, just for completenes
+	histCollection->histBmtfThSize = new TH1I("bmtfThSize", "bmtfThSize", 25, 0, 25);
+	histCollection->histBmtfThBx = new TH1I("bmtfThBx", "bmtfThBx", 6, -3, 3);
+	histCollection->histBmtfThWh = new TH1I("bmtfThWh", "bmtfThWh", 6, -3, 3);
+	histCollection->histBmtfThSe = new TH1I("bmtfThSe", "bmtfThSe", 15, 0, 15);
+	histCollection->histBmtfThSt = new TH1I("bmtfThSt", "bmtfThSt", 5, 0, 5);
+	histCollection->histBmtfThTheta = new TH1I("bmtfThTheta", "bmtfThTheta", 100, 8e7, 1e8);
+	histCollection->histBmtfThCode = new TH1I("bmtfThCode", "bmtfThCode", 10, 8e7, 2e8);
+
+	// HOTP Histogram
+	histCollection->histNHcalDetIds = new TH1I("hcalDetIds", "hcalDetIds", 50, 500, 1000);
+	histCollection->histSampleEnergy = new TH1F("SampleEnergy", "SampleEnergy", 25, 0, 1);
+	histCollection->histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
+	histCollection->histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
+	histCollection->histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
+	histCollection->histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
+	histCollection->histHcalWheel = new TH1I("hcalWheel", "hcalWheel", 5, -2, 3);
+	histCollection->histHcalSection = new TH1I("hcalSection", "hcalSection", 12, 0, 12);
+	histCollection->histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
+	histCollection->histNHcalQIESamples = new TH1I("hcalQIESamples", "hcalQIESamples", 50, 5000, 12500);
+	histCollection->histHcalQIESample = new TH1I("hcalQIESample", "hcalQIESample", 10, 1, 11);
+	histCollection->histHcalQIESampleAdc = new TH1I("hcalQIESampleAdc", "hcalQIESampleAdc", 50, 0, 50);
+	histCollection->histHcalQIESampleDv = new TH1I("hcalQIESampleDv", "hcalQIESampleDv", 2, 0, 2);
+	histCollection->histHcalQIESampleEr = new TH1I("hcalQIESampleEr", "hcalQIESampleEr", 25, 0, 1);
+	histCollection->histQIESampleFc = new TH1F("QIESampleFc", "QIESampleFc", 50, 0, 100);
+	histCollection->histQIESamplePedestal = new TH1F("QIESamplePedestal", "QIESamplePedestal", 30, -10, 10);
+	histCollection->histQIESampleFc_MPedestals = new TH1F("QIESampleFc_MPedestals", "QIESampleFc_MPedestals", 50, 0, 100);
+
+	// Ho Matched Variables
 	histCollection->histIsMb3HoIEtaMatched = new TH1S("isMb3HoIEtaMatched", "isMb3HoIEtaMatched", 2, 0, 2);
 	histCollection->histIsMb4HoIEtaMatched = new TH1S("isMb4HoIEtaMatched", "isMb4HoIEtaMatched", 2, 0, 2);
 	histCollection->histBmtfMb34MatchedHoIEta = new TH1I("bmtfMb34MatchedHoIEta", "bmtfMb34MatchedHoIEta", nBinsIEta, minIEta, maxIEta);
@@ -233,10 +354,10 @@ void HoHistogramProducer::EndJob(HoHistogramCollection* histCollection) {
 	//histTmp->Add(histCollection->histUsedMuonPt, histCollection->histUnusedMuonPt);
 
 	//histCollection->efficiencyBmtfPt->Divide(histCollection->histUsedMuonPt, histCollection->histMuonPt, "cl=0.683 b(1,1) mode");
-	histCollection->efficiencyBmtfPt->Divide(histCollection->histBmtfMatchedMuonPt, histCollection->histMuonPt, "cl=0.683 b(1,1) mode");
-	histCollection->efficiencyBmtf34MatchedHoPt->Divide(histCollection->histBmtfMb34MatchedMuonPt, histCollection->histMuonPt, "cl=0.683 b(1,1) mode");
+	//histCollection->efficiencyBmtfPt->Divide(histCollection->histBmtfMatchedMuonPt, histCollection->histMuonPt, "cl=0.683 b(1,1) mode");
+	//histCollection->efficiencyBmtf34MatchedHoPt->Divide(histCollection->histBmtfMb34MatchedMuonPt, histCollection->histMuonPt, "cl=0.683 b(1,1) mode");
 
-	histCollection->efficiencyBmtfPt->Write("efficiencyBmtfPt");
-	histCollection->efficiencyBmtf34MatchedHoPt->Write("efficiencyBmtf34MatchedHoPt");
+	//histCollection->efficiencyBmtfPt->Write("efficiencyBmtfPt");
+	//histCollection->efficiencyBmtf34MatchedHoPt->Write("efficiencyBmtf34MatchedHoPt");
 }
 HoHistogramProducer::~HoHistogramProducer() {}
