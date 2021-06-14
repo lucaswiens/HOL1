@@ -8,20 +8,20 @@ config.General.workArea = 'crab_projects'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'data.py'
+config.JobType.psetName = 'zeroBiasCrab.py'
 config.JobType.maxMemoryMB = 2000
 config.JobType.maxJobRuntimeMin = 400
 config.section_("Data")
 
 config.Data.inputDBS = 'global'
-config.Data.inputDataset = '/ZeroBias1/Run2017F-v1/RAW'
+config.Data.inputDataset = '/ZeroBias/Run2018C-v1/RAW'
 config.Data.splitting = 'FileBased'#'Automatic' #'EventBased'#'EventAwareLumiBased'
 config.Data.unitsPerJob = 3
-config.Data.totalUnits = 1#number of event for testing
-config.Data.outLFNDirBase = '/store/user/lwiens/ZeroBias1_Run2017F_v1_L1Ntuple'
+config.Data.totalUnits = 1 #number of event for testing
+config.Data.outLFNDirBase = '/store/user/lwiens/ZeroBias1_Run2018C_v1_L1Ntuple'
 #config.Data.publication = True
 config.Data.publication = False
-config.Data.outputDatasetTag = 'Run2017C_ZMu_17Nov2017_v1_L1Ntuple_test'
+config.Data.outputDatasetTag = 'Run2018C_ZeroBias_v1_L1Ntuple'
 
 config.section_("Site")
 #config.Site.whitelist = ['T2_DE_DESY']
