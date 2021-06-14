@@ -17,7 +17,9 @@
 #include <HOAnalysis/HOL1/interface/Utility/Utility.h>
 
 class BaseProducer {
+	private:
 	public:
+		std::string Name;
 		virtual ~BaseProducer(){};
 		BaseProducer();
 		virtual void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) = 0;
@@ -25,3 +27,4 @@ class BaseProducer {
 
 		//static float DeltaR(const float &eta1, const float &phi1, const float &eta2, const float &phi2);
 };
+

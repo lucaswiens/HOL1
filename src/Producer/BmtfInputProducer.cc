@@ -3,6 +3,7 @@
 BmtfInputProducer::BmtfInputProducer(HoHistogramCollection* histCollection) {}
 
 void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
+	Name = "BMTF Producer";
 	const int &dttpSize = *dataReader->bmtfPhSize->Get();
 	histCollection->histDttpSize->Fill(dttpSize);
 	product->dttpSize = dttpSize;

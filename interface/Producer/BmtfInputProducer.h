@@ -11,3 +11,4 @@ class BmtfInputProducer : public BaseProducer {
 		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);
 };
+

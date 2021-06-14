@@ -3,9 +3,15 @@
 MuonProducer::MuonProducer(HoHistogramCollection* histCollection) {}
 
 void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
+	Name = "Reco Muon Producer";
+
 	product->nMuon = *dataReader->nMuon->Get();
 
 	for (unsigned short i = 0; i < product->nMuon; i++){
+		const float muonPt = dataReader->muonPt->At(i);
+		const float muonEta = dataReader->muonEta->At(i);
+		//if (muonPt < 0 || fabs(muonEta) < 0.83) { continue;}
+
 		product->isLooseMuon.push_back(dataReader->muonIsLooseMuon->At(i));
 		product->isMediumMuon.push_back(dataReader->muonIsMediumMuon->At(i));
 		product->isTightMuon.push_back(dataReader->muonIsTightMuon->At(i));
@@ -15,8 +21,8 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 		product->muonCharge.push_back(dataReader->muonCharge->At(i));
 		product->muonE.push_back(dataReader->muonE->At(i));
 		product->muonEt.push_back(dataReader->muonEt->At(i));
-		product->muonPt.push_back(dataReader->muonPt->At(i));
-		product->muonEta.push_back(dataReader->muonEta->At(i));
+		product->muonPt.push_back(muonPt);
+		product->muonEta.push_back(muonEta);
 		product->muonPhi.push_back(dataReader->muonPhi->At(i));
 		product->muonIso.push_back(dataReader->muonIso->At(i));
 		product->muonHltIsoDeltaR.push_back(dataReader->muonHlt_isoDeltaR->At(i));
@@ -30,6 +36,7 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 
 		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(product->muonEta.back()));
 
+		//Eta < 5 does not make sense.. We already cut Eta < 0.83 to be in HO range
 		product->muonHasMb1.push_back((fabs(product->muonEtaSt1.back()) < 5) && (fabs(product->muonPhiSt1.back()) < M_PI));
 
 		histCollection->histMuonMet->Fill(product->muonMet.back());
@@ -58,6 +65,8 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 
 		histCollection->histMuonIEta->Fill(product->muonIEta.back());
 	}
+	//product->nMuon = product->muonPt.size();
+	//std::cout << "nMuon " << product->nMuon << std::endl;
 }
 
 void MuonProducer::EndJob(HoHistogramCollection* histCollection) {}

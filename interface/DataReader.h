@@ -13,6 +13,7 @@ class DataReader {
 		TBranch *l1BmtfInputBranch;
 		TTreeReader *l1HoReader, *l1MuonRecoReader, *l1BmtfInputReader;
 		int nEvents;
+		bool hasRecoMuon;
 	public:
 		//HO Variables
 		std::unique_ptr<TTreeReaderValue<unsigned int>> nHcalDetIds, nHcalQIESamples;
@@ -34,9 +35,12 @@ class DataReader {
 		std::unique_ptr<TTreeReaderValue<unsigned short>> nTfMuon;
 		std::unique_ptr<TTreeReaderArray<short>> tfMuonHwPt, tfMuonHwEta, tfMuonHwPhi, tfMuonGlobalPhi, tfMuonHwSign, tfMuonHwSignValid, tfMuonHwQual, tfMuonLink, tfMuonProcessor, tfMuonTrackFinderType, tfMuonHwHF, tfMuonBx, tfMuonWh, tfMuonTrAdd;
 
-		DataReader(std::string);
+		//DataReader(std::string);
+		DataReader(const char*);
 		~DataReader();
 		bool Next();
 		void clear();
 		int GetEntries();
+		bool GetHasRecoMuon();
 };
+

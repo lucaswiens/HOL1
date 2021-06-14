@@ -3,6 +3,8 @@
 HoProducer::HoProducer(HoHistogramCollection* histCollection) {}
 
 void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
+	Name = "HO Producer";
+
 	product->sumQ = *dataReader->sumQ->Get();
 	product->nHcalDetIds = *dataReader->nHcalDetIds->Get();
 	product->nHcalQIESamples = *dataReader->nHcalQIESamples->Get();

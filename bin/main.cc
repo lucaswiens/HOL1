@@ -20,22 +20,30 @@ int main(int argc, char* argv[]) {
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
 	std::string outputFile = std::string(argv[1]);
+	std::cout << "The name of the outputfile is " << outputFile << ".root" << std::endl;
 	TFile *file = new TFile((outputFile + ".root").c_str(), "RECREATE");
 
-
+	// Histograms are stored inside a specific class to allow access to them for all producers
 	HoHistogramCollection histCollection;
+
 	//Declare vector of Producers which will fill Histograms
-	std::vector<std::shared_ptr<BaseProducer>> producers = {
-		std::shared_ptr<HoProducer>(new HoProducer(&histCollection)),
-		std::shared_ptr<MuonProducer>(new MuonProducer(&histCollection)),
-		std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(&histCollection)),
-		std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()),
-		std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)),
-	};
+	std::vector<std::shared_ptr<BaseProducer>> producers;
+	if(strstr(argv[2], "SingleMuon") != NULL) {
+		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer(&histCollection)));
+		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer(&histCollection)));
+		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(&histCollection)));
+		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()));
+		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)));
+	} else {
+		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer(&histCollection)));
+		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(&histCollection)));
+		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()));
+		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)));
+	}
 
 	for (int iFile = 2; iFile < argc; iFile ++) {
-		std::string inputFile = std::string(argv[iFile]);
-		//std::cout << "Working on File: " << argv[iFile] << std::endl;
+		const char* inputFile = argv[iFile];
+		std::cout << "Processing :"<< inputFile << std::endl;
 
 		DataReader* dataReader = new DataReader(inputFile);
 

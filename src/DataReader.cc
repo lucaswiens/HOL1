@@ -1,7 +1,7 @@
 #include <HOAnalysis/HOL1/interface/DataReader.h>
 
 
-DataReader::DataReader(std::string inputFileName) {
+DataReader::DataReader(const char* inputFileName) {
 	//"l1EventTree/L1EventTree",
 	//"l1CaloTowerTree/L1CaloTowerTree",
 	//"l1UpgradeTfMuonTree/L1UpgradeTfMuonTree",
@@ -17,19 +17,12 @@ DataReader::DataReader(std::string inputFileName) {
 	//"l1ElectronRecoTree/L1ElectronRecoTree",
 	//"l1TauRecoTree/L1TauRecoTree",
 
-	//inputFile = new TFile(inputFileName.c_str(), "READ");
-	inputFile       = TFile::Open(inputFileName.c_str(), "READ");
+	//inputFile = TFile::Open(inputFileName.c_str(), "READ");
+	inputFile = TFile::Open(TString(inputFileName), "READ");
+
 	l1HoTree        = (TTree*)inputFile->Get("l1HOTree/L1HOTree");
-	l1MuonRecoTree  = (TTree*)inputFile->Get("l1MuonRecoTree/Muon2RecoTree");
-	l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
-	//l1BmtfInputBranch = l1BmtfInputTree->GetBranch("L1UpgradeBmtfInputs");
-
-	nEvents = l1HoTree->GetEntries();
-
 	l1HoReader        = new TTreeReader(l1HoTree);
-	l1MuonRecoReader  = new TTreeReader(l1MuonRecoTree);
-	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);
-
+	nEvents = l1HoTree->GetEntries();
 	//Set Reader for HO Variables
 	nHcalDetIds            = std::make_unique<TTreeReaderValue<unsigned int>>(*l1HoReader, "nHcalDetIds");
 	nHcalQIESamples        = std::make_unique<TTreeReaderValue<unsigned int>>(*l1HoReader, "nHcalQIESamples");
@@ -45,30 +38,41 @@ DataReader::DataReader(std::string inputFileName) {
 	QIESamplePedestal      = std::make_unique<TTreeReaderArray<float>>(*l1HoReader, "QIESamplePedestal");
 	QIESampleFc_MPedestals = std::make_unique<TTreeReaderArray<float>>(*l1HoReader, "QIESampleFc_MPedestals");
 
-	//Set Reader for MuonReco Variables
-	nMuon                = std::make_unique<TTreeReaderValue<unsigned short>>(*l1MuonRecoReader, "nMuons");
-	muonIsLooseMuon      = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isLooseMuon");
-	muonIsMediumMuon     = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isMediumMuon");
-	muonIsTightMuon      = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isTightMuon");
-	muonHlt_isomu        = std::make_unique<TTreeReaderArray<short>>(*l1MuonRecoReader, "hlt_isomu");
-	muonHlt_mu           = std::make_unique<TTreeReaderArray<short>>(*l1MuonRecoReader, "hlt_mu");
-	muonPassesSingleMuon = std::make_unique<TTreeReaderArray<int>>(*l1MuonRecoReader, "passesSingleMuon");
-	muonCharge           = std::make_unique<TTreeReaderArray<int>>(*l1MuonRecoReader, "charge");
-	muonE                = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "e");
-	muonEt               = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "et");
-	muonPt               = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "pt");
-	muonEta              = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "eta");
-	muonPhi              = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phi");
-	muonIso              = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "iso");
-	muonHlt_isoDeltaR    = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "hlt_isoDeltaR");
-	muonHlt_deltaR       = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "hlt_deltaR");
-	muonEtaSt1           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "etaSt1");
-	muonPhiSt1           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt1");
-	muonEtaSt2           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "etaSt2");
-	muonPhiSt2           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt2");
-	muonMet              = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "met");
-	muonMt               = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "mt");
+	hasRecoMuon = false;
+	if (strstr((char*)inputFileName, "SingleMuon") != NULL) {
+		//std::cout << "Dataset has reco muons!" << std::endl;
+		hasRecoMuon = true;
+		l1MuonRecoTree  = (TTree*)inputFile->Get("l1MuonRecoTree/Muon2RecoTree");
+		l1MuonRecoReader  = new TTreeReader(l1MuonRecoTree);
+		//Set Reader for MuonReco Variables
+		nMuon                = std::make_unique<TTreeReaderValue<unsigned short>>(*l1MuonRecoReader, "nMuons");
+		muonIsLooseMuon      = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isLooseMuon");
+		muonIsMediumMuon     = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isMediumMuon");
+		muonIsTightMuon      = std::make_unique<TTreeReaderArray<bool>>(*l1MuonRecoReader, "isTightMuon");
+		muonHlt_isomu        = std::make_unique<TTreeReaderArray<short>>(*l1MuonRecoReader, "hlt_isomu");
+		muonHlt_mu           = std::make_unique<TTreeReaderArray<short>>(*l1MuonRecoReader, "hlt_mu");
+		muonPassesSingleMuon = std::make_unique<TTreeReaderArray<int>>(*l1MuonRecoReader, "passesSingleMuon");
+		muonCharge           = std::make_unique<TTreeReaderArray<int>>(*l1MuonRecoReader, "charge");
+		muonE                = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "e");
+		muonEt               = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "et");
+		muonPt               = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "pt");
+		muonEta              = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "eta");
+		muonPhi              = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phi");
+		muonIso              = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "iso");
+		muonHlt_isoDeltaR    = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "hlt_isoDeltaR");
+		muonHlt_deltaR       = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "hlt_deltaR");
+		muonEtaSt1           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "etaSt1");
+		muonPhiSt1           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt1");
+		muonEtaSt2           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "etaSt2");
+		muonPhiSt2           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt2");
+		muonMet              = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "met");
+		muonMt               = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "mt");
+	} /* else {
+		std::cout << "Dataset does not reco muons!" << std::endl;
+	} */
 
+	l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
+	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);
 	//Set Reader for BMTF Input Variables
 	bmtfPhSize    = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "phSize");
 	bmtfThSize    = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "thSize");
@@ -106,8 +110,11 @@ DataReader::DataReader(std::string inputFileName) {
 
 DataReader::~DataReader(){
 	delete l1HoReader;
-	delete l1MuonRecoReader;
 	delete l1BmtfInputReader;
+
+	if (hasRecoMuon) {
+		delete l1MuonRecoReader;
+	}
 
 	inputFile->Close();
 	delete inputFile;
@@ -116,9 +123,17 @@ DataReader::~DataReader(){
 int DataReader::GetEntries() {
 	return nEvents;
 }
-bool DataReader::Next() {
-	return l1HoReader->Next() && l1MuonRecoReader->Next() && l1BmtfInputReader->Next();
+
+bool DataReader::GetHasRecoMuon() {
+	return hasRecoMuon;
 }
 
-void DataReader::clear() {
+bool DataReader::Next() {
+	if (hasRecoMuon) {
+		return l1HoReader->Next() && l1MuonRecoReader->Next() && l1BmtfInputReader->Next();
+	} else {
+		return l1HoReader->Next() && l1BmtfInputReader->Next();
+	}
 }
+
+void DataReader::clear() {}
