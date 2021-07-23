@@ -1,11 +1,5 @@
 #include <HOAnalysis/HOL1/interface/Utility/Utility.h>
 
-/*
-bool Utility::Contains(std::vector<T> vector, T element) {
-	return std::find(vector.begin(), vector.end(), element) != vector.end()
-}
-*/
-
 double Utility::DeltaPhi(double phi1, double phi2) {
 	double deltaPhi = phi1 - phi2;
 	while (deltaPhi >  M_PI) deltaPhi -= 2 * M_PI;
@@ -26,26 +20,11 @@ double Utility::DeltaR(const double &eta1, const double &phi1, const double &eta
 	return std::sqrt(std::pow(deltaPhi, 2) + std::pow(deltaEta, 2));
 }
 
-//double Utility::PhiBToPt(int phiB, std::vector <int> *v_phiB, std::vector <double> *v_pT);
 //DTTP conversion functions
 double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
-
 	// dttpSection must be [0, 11]
-	if ((dttpSection < 0) && (11 < dttpSection)) { return -999;} // TODO use assure instead
-
 	double cmsPhi = phi / 4096.0 + M_PI / 6 * dttpSection;
 	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
-	//Ashrafs COde:
-	// secNum must be [1, 12]
-	/// double globalPhi = phi / 4096.0;
-	/// globalPhi += M_PI / 6 * (dttpSection - 1);
-
-	/// if(globalPhi > M_PI)
-	/// {
-	/// 	globalPhi -= M_PI * 2;
-	/// }
-
-	/// return globalPhi + 0.5;
 }
 
 int Utility::CmsPhiToHoIPhi(double cmsPhi) {
@@ -122,6 +101,7 @@ int Utility::HoIPhiToSection(int iPhi) {
 	return secNum;
 	//return iPhi / 6;
 }
+
 int Utility::HoIEtaToWheel(int iEta) {
 	if(iEta < -10) { return -2;}
 	if(-11 < iEta && iEta < -4) { return -1;}
@@ -130,10 +110,3 @@ int Utility::HoIEtaToWheel(int iEta) {
 	if(iEta > 10) { return 2;}
 	return -999;
 }
-
-//double Utility::IEtaToEta(int iEta);
-//double Utility::IPhiToPhi(int iPhi);
-//int Utility::PhiToIPhi(double phi);
-//int Utility::GetBmtfstationMask(int trackerAddressMB1, int trackerAddressMB2, int trackerAddressMB3, int trackerAddressMB4) {
-//bool Utility::IsEtaMatchedMB34HO(int iEtaHO, int whNumDttp, int stNumDttp);
-//int Utility::GetHo3x3Hits(int HoTpIEta, int HoTpIPhi, std::vector <int> *v_HoTpIEta, std::vector <int> *v_HoTpIPhi, std::vector <int> *v_HoTpBits, int HoTpBitsSoi);
