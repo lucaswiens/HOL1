@@ -1,12 +1,12 @@
 #!/bin/sh
-cmsrel CMSSW_11_0_2
-cd CMSSW_11_0_2/src
+cmsrel CMSSW_11_2_0
+cd CMSSW_11_2_0/src
 cmsenv
 git cms-init
 git remote add cms-l1t-offline git@github.com:cms-l1t-offline/cmssw.git
-git fetch cms-l1t-offline l1t-integration-CMSSW_11_0_2
-git cms-merge-topic -u cms-l1t-offline:l1t-integration-v104.5
-git cms-addpkg L1Trigger/L1TCommon
+git fetch cms-l1t-offline l1t-integration-CMSSW_11_2_0
+git cms-merge-topic -u cms-l1t-offline:l1t-integration-v105.12
+git cms-addpkg L1Trigger/Configuration
 git cms-addpkg L1Trigger/L1TMuon
 git clone https://github.com/cms-l1t-offline/L1Trigger-L1TMuon.git L1Trigger/L1TMuon/data
 git cms-addpkg L1Trigger/L1TCalorimeter
@@ -18,4 +18,7 @@ git remote add HOTriggerLink git@github.com:HOTriggerLink/cmssw.git
 git fetch HOTriggerLink
 git cherry-pick 1510d781dac27474516a10d633a41735ba83aa74 # add HO energy variables
 git cherry-pick 1f13791c955b08a96cfac4f3b09fc9d322ce0add #  add the HO energy in GeV
-#git cms-merge-topic -u HOTriggerLink:HO_dev
+
+git clone git@github.com:lucaswiens/HOL1.git HOAnalysis/HOL1
+
+scram b -j 8
