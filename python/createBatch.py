@@ -2,7 +2,7 @@
 import sys, os
 import argparse
 import subprocess
-import shutil
+#import shutil
 from re import findall
 
 def GetOsVariable(Var):
@@ -23,13 +23,17 @@ if __name__=="__main__":
 	parser.add_argument("-i", "--input-file", required=True, help="Path to the file containing a list of samples.")
 	parser.add_argument("-o", "--output", help="Path to the output directory", default = cmsswBase + "/" "Batch/" + date)
 	parser.add_argument("-n", "--number-of-files", help="Number of files that will be processed at once", default = 100)
+	parser.add_argument("--test", default = False, action = "store_true", help = "Use only the first five file for each sample for a quick run")
 
 	args = parser.parse_args()
+	fileName = "SingleMuon" if "SingleMuon" in args.input_file else "ZeroBias"
+	fileName = args.input_file.split("/")[1].split(".")[0]
+	args.output = args.output + "/" + fileName
 
 	#executable = cmsswBase + "/nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1/scripts/produceL1Ntuple"
 
-	if os.path.exists(args.output):
-		shutil.rmtree(str(args.output))
+	#if os.path.exists(args.output):
+		#shutil.rmtree(str(args.output))
 	os.makedirs(str(args.output) + "/L1Hist")
 	os.makedirs(str(args.output) + "/error")
 	os.makedirs(str(args.output) + "/log")
@@ -43,7 +47,7 @@ if __name__=="__main__":
 	condorFile.write("arguments = L1Hist_$(Process) $(arguments)\n")
 	condorFile.write("getenv = True\n")
 	condorFile.write("universe = vanilla\n")
-	condorFile.write("request_memory = 400 MB\n")
+	condorFile.write("request_memory = 300MB\n")
 	condorFile.write("output = " + args.output + "/output/job$(Cluster)_$(Process).stdout\n")
 	condorFile.write("error ="   + args.output + "/error/job$(Cluster)_$(Process).stderr\n")
 	condorFile.write("log = "    + args.output + "/log/job$(Cluster)_$(Process).log\n")
@@ -58,6 +62,9 @@ if __name__=="__main__":
 	execFile.write("bash " + args.output + "/${1}\n")
 	os.system("chmod 744 " + args.output + "/produceNtuple")
 	argumentFile = open(args.output + "/arguments.md", "w")
+
+	if args.test:
+		numberOfFiles = 5
 
 	shellNumber = 0
 	sampleFile = open(args.input_file, "r")
@@ -82,6 +89,8 @@ if __name__=="__main__":
 			shellFile.close()
 			number = 0
 			shellNumber += 1
+			if args.test:
+				break
 
 			#argumentFile.write(sample + "\n")
 	sampleFile.close()
