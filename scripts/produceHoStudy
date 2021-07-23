@@ -1,4 +1,0 @@
-#!/bin/sh
-cd /nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1
-HOStudy data/L1Ntuple.root L1Hist
-python3 ../../Plotting/Plotter/python/histPlotter.py -i L1Hist.root
