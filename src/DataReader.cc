@@ -2,21 +2,6 @@
 
 
 DataReader::DataReader(const char* inputFileName) {
-	//"l1EventTree/L1EventTree",
-	//"l1CaloTowerTree/L1CaloTowerTree",
-	//"l1UpgradeTfMuonTree/L1UpgradeTfMuonTree",
-	//"l1UpgradeTree/L1UpgradeTree",
-	//"l1uGTTree/L1uGTTree",
-	//"l1UpgradeTfMuonEmuTree/L1UpgradeTfMuonEmuTree",
-	//"l1CaloTowerEmuTree/L1CaloTowerEmuTree",
-	//"l1UpgradeEmuTree/L1UpgradeEmuTree",
-	//"l1uGTEmuTree/L1uGTEmuTree",
-	//"l1RecoTree/L1RecoTree",
-	//"l1JetRecoTree/L1JetRecoTree",
-	//"l1MetFilterRecoTree/L1MetFilterRecoTree",
-	//"l1ElectronRecoTree/L1ElectronRecoTree",
-	//"l1TauRecoTree/L1TauRecoTree",
-
 	//inputFile = TFile::Open(inputFileName.c_str(), "READ");
 	inputFile = TFile::Open(TString(inputFileName), "READ");
 
@@ -39,7 +24,7 @@ DataReader::DataReader(const char* inputFileName) {
 	QIESampleFc_MPedestals = std::make_unique<TTreeReaderArray<float>>(*l1HoReader, "QIESampleFc_MPedestals");
 
 	hasRecoMuon = false;
-	if (strstr((char*)inputFileName, "SingleMuon") != NULL) {
+	if (strstr((char*)inputFileName, "SingleMuon") != NULL || strstr((char*)inputFileName, "MET") != NULL) {
 		//std::cout << "Dataset has reco muons!" << std::endl;
 		hasRecoMuon = true;
 		l1MuonRecoTree  = (TTree*)inputFile->Get("l1MuonRecoTree/Muon2RecoTree");

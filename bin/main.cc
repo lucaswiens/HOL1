@@ -28,40 +28,53 @@ int main(int argc, char* argv[]) {
 
 	//Declare vector of Producers which will fill Histograms
 	std::vector<std::shared_ptr<BaseProducer>> producers;
-	if(strstr(argv[2], "SingleMuon") != NULL) {
+	if(strstr(argv[2], "SingleMuon") != NULL || strstr(argv[2], "MET") != NULL) {
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer(&histCollection)));
 		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer(&histCollection)));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(&histCollection)));
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)));
+
+		histCollection.SetHasRecoMuon(true);
 	} else {
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer(&histCollection)));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(&histCollection)));
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer()));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer(&histCollection)));
+
+		histCollection.SetHasRecoMuon(false);
 	}
 
+	int totalProcessed = 0;
 	for (int iFile = 2; iFile < argc; iFile ++) {
 		const char* inputFile = argv[iFile];
-		std::cout << "Processing :"<< inputFile << std::endl;
+		std::cout << "Processing(" << iFile - 1 << "/" << argc - 2 << "): "<< inputFile << std::endl;
 
 		DataReader* dataReader = new DataReader(inputFile);
 
 		int processed = 0;
+		int rate = 0;
+		float elapsedTime = 0;
 		ProgressBar(0, 0);
 		while(dataReader->Next()){
-			//ProgressBar
-			if(processed % 400) {
-				ProgressBar((int) 101 * processed/dataReader->GetEntries(), processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+			// Progress Bar
+			elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count();
+			rate = totalProcessed / elapsedTime;
+			/*
+			if(processed % 1000) {
+				ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate);
 			}
+			*/
+			ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate);
 			processed++;
+			totalProcessed++;
 
 			HoProduct product;
 			for (std::shared_ptr<BaseProducer> producer: producers) {
 				producer->Produce(dataReader, &product, &histCollection);
 			}
 		}
-		ProgressBar(100, processed / std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count());
+		ProgressBar(100, rate);
 		std::cout << std::endl;
 
 		delete dataReader;
@@ -76,6 +89,8 @@ int main(int argc, char* argv[]) {
 	file->Close();
 
 	delete file;
+
+	std::cout << "Processed " << argc - 2 << " files in " << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count() << "s" << std::endl;
 
 	return 0;
 }

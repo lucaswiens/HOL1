@@ -2,9 +2,9 @@
 
 HoHistogramCollection::HoHistogramCollection(){
 	//BMTF
-	double minE   = 0,    minPt   = 0,    minPhi   = -M_PI, minEta   = -3, minWheel  = -3, minStation   = 1, minSection   =  0, minQualityCode   =  0, minDeltaR   =  0, minTrackType   =  0, minIPhi   =  1, minIEta   = -20;
-	double maxE   = 1000, maxPt   = 1000, maxPhi   =  M_PI, maxEta   =  3, maxWheel  =  4, maxStation   = 5, maxSection   = 12, maxQualityCode   = 10, maxDeltaR   =  3, maxTrackType   = 25, maxIPhi   = 73, maxIEta   =  20;
-	int    nBinsE = 1000, nBinsPt = 1000, nBinsPhi = 256,   nBinsEta = 68, nBinsWheel = 7, nBinsStation = 4, nBinsSection = 12, nBinsQualityCode = 10, nBinsDeltaR = 30, nBinsTrackType = 25, nBinsIPhi = 72, nBinsIEta =  40;
+	double minE   = 0,    minPt   = 0,    minPhi   = -M_PI, minEta   = -1.267, minWheel  = -3, minStation   = 1, minSection   =  0, minQualityCode   =  0, minDeltaR   =  0, minTrackType   =  0, minIPhi   =  1, minIEta   = -20;
+	double maxE   = 500,  maxPt   = 500,  maxPhi   =  M_PI, maxEta   =  1.355, maxWheel  =  4, maxStation   = 5, maxSection   = 12, maxQualityCode   = 10, maxDeltaR   =  3, maxTrackType   = 25, maxIPhi   = 73, maxIEta   =  20;
+	int    nBinsE = 1000, nBinsPt = 1000, nBinsPhi =  72,   nBinsEta =  30,    nBinsWheel = 7, nBinsStation = 4, nBinsSection = 12, nBinsQualityCode = 10, nBinsDeltaR = 30, nBinsTrackType = 25, nBinsIPhi = 72, nBinsIEta =  40;
 
 	// Muon Histograms
 	histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
@@ -222,5 +222,4 @@ HoHistogramCollection::HoHistogramCollection(){
 	histUsedMuonPhiSt2 = new TH1D("usedMuonPhiSt2", "usedMuonPhiSt2", nBinsPhi, minPhi, maxPhi);
 }
 
-HoHistogramCollection::~HoHistogramCollection(){
-}
+HoHistogramCollection::~HoHistogramCollection(){}

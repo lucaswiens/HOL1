@@ -65,8 +65,7 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 
 		histCollection->histMuonIEta->Fill(product->muonIEta.back());
 	}
-	//product->nMuon = product->muonPt.size();
-	//std::cout << "nMuon " << product->nMuon << std::endl;
+	product->nMuon = product->muonPt.size();
 }
 
 void MuonProducer::EndJob(HoHistogramCollection* histCollection) {}

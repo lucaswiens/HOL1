@@ -76,7 +76,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 	}
 
 
-	if (dataReader->GetHasRecoMuon()) {
+	if (dataReader->GetHasRecoMuon() && product->nMuon != 0) {
 		// Match BMTF with DTTP
 		product->isBmtfMatchedMuon = std::vector(product->bmtfSize, false);
 		product->isDttpMatchedMuon = std::vector(product->dttpSize, false);
@@ -155,8 +155,9 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 		if (product->bmtfCmsPt.at(iBmtf) < 0 || fabs(product->bmtfCmsEta.at(iBmtf)) > 0.83) { continue;}
 
-		if (dataReader->GetHasRecoMuon()) {
-			unsigned short bmtfMatchedMuonIndex = 999;
+		unsigned short bmtfMatchedMuonIndex = 999;
+		bool isBmtfMatchedMuon = false;
+		if (dataReader->GetHasRecoMuon() && product->nMuon != 0) {
 			for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
 				if(std::find(product->bmtfMatchedMuonIndex.begin(), product->bmtfMatchedMuonIndex.end(), iMuon) != product->bmtfMatchedMuonIndex.end()) { continue;}
 				//if (product->isMuonMatchedBmtf.at(iMuon)){ continue;}
@@ -217,15 +218,20 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 					product->bmtfMb34MatchedHoIPhi.at(iBmtf) = product->hcalIPhi.at(iHo);
 					bmtfMb34MatchedHoIndex = iHo;
 
-					// Store the muon variables matched to this particular BMTF Muon
-					if (dataReader->GetHasRecoMuon()) {
-						if (product->bmtfMatchedMuonIndex.at(iBmtf) != 999) {
-							unsigned int iMuon = product->bmtfMatchedMuonIndex.at(iBmtf);
-							product->bmtfMb34MatchedMuonPt.at(iBmtf) = product->muonPt.at(iMuon);
-							product->bmtfMb34MatchedMuonEta.at(iBmtf) = product->muonEta.at(iMuon);
-							product->bmtfMb34MatchedMuonPhi.at(iBmtf) = product->muonPhi.at(iMuon);
-						}
-					}
+				}
+			}
+
+			// Store the muon variables matched to this particular BMTF Muon
+			if (dataReader->GetHasRecoMuon() && product->nMuon != 0) {
+				if (product->bmtfMatchedMuonIndex.at(iBmtf) != 999) {
+					unsigned int iMuon = product->bmtfMatchedMuonIndex.at(iBmtf);
+					product->bmtfMb34MatchedMuonPt.at(iBmtf) = product->muonPt.at(iMuon);
+					product->bmtfMb34MatchedMuonEta.at(iBmtf) = product->muonEta.at(iMuon);
+					product->bmtfMb34MatchedMuonPhi.at(iBmtf) = product->muonPhi.at(iMuon);
+				} else if (product->isBmtfMb34HoMatched.at(iBmtf)) {
+					product->bmtfMb34MatchedMuonPt.at(iBmtf) = product->bmtfCmsPt.at(iBmtf);
+					product->bmtfMb34MatchedMuonEta.at(iBmtf) = product->bmtfCmsEta.at(iBmtf);
+					product->bmtfMb34MatchedMuonPhi.at(iBmtf) = product->bmtfCmsPhi.at(iBmtf);
 				}
 			}
 
@@ -362,7 +368,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		}
 	}
 
-	if (dataReader->GetHasRecoMuon()) {
+	if (dataReader->GetHasRecoMuon() && product->nMuon != 0) {
 		for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
 			//unused muons
 			if (product->isMuonMatchedBmtf.at(iMuon) || product->isMuonMatchedDttp.at(iMuon)) {
