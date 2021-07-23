@@ -21,16 +21,19 @@ int Utility::DeltaIPhi(int iPhi1, int iPhi2) {
 }
 
 double Utility::DeltaR(const double &eta1, const double &phi1, const double &eta2, const double &phi2) {
-	return std::sqrt(std::pow(phi1 - phi2, 2) + std::pow(eta1 - eta2, 2));
+	double deltaEta = eta1 - eta2;
+	double deltaPhi = Utility::DeltaPhi(phi1, phi2);
+	return std::sqrt(std::pow(deltaPhi, 2) + std::pow(deltaEta, 2));
 }
 
 //double Utility::PhiBToPt(int phiB, std::vector <int> *v_phiB, std::vector <double> *v_pT);
 //DTTP conversion functions
 double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
-	// dttpSection must be [1, 12]
-	if ((dttpSection < 1) && (12 < dttpSection)) { return -999;} // TODO use assure instead
 
-	double cmsPhi = (phi) / 4096.0 + M_PI / 6 * (dttpSection);
+	// dttpSection must be [0, 11]
+	if ((dttpSection < 0) && (11 < dttpSection)) { return -999;} // TODO use assure instead
+
+	double cmsPhi = phi / 4096.0 + M_PI / 6 * dttpSection;
 	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
 	//Ashrafs COde:
 	// secNum must be [1, 12]

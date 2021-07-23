@@ -10,10 +10,12 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 	for (unsigned short i = 0; i < product->nMuon; i++){
 		const float muonPt = dataReader->muonPt->At(i);
 		const float muonEta = dataReader->muonEta->At(i);
-		//if (muonPt < 0 || fabs(muonEta) < 0.83) { continue;}
+		const bool isMediumMuon = dataReader->muonIsMediumMuon->At(i);
+
+		if (muonPt < 0 || fabs(muonEta) > 0.83 || !isMediumMuon) { continue;}
 
 		product->isLooseMuon.push_back(dataReader->muonIsLooseMuon->At(i));
-		product->isMediumMuon.push_back(dataReader->muonIsMediumMuon->At(i));
+		product->isMediumMuon.push_back(isMediumMuon);
 		product->isTightMuon.push_back(dataReader->muonIsTightMuon->At(i));
 		product->muonHltIsoMu.push_back(dataReader->muonHlt_isomu->At(i));
 		product->muonHltMu.push_back(dataReader->muonHlt_mu->At(i));

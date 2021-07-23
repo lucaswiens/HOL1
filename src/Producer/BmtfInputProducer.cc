@@ -8,7 +8,7 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 	histCollection->histDttpSize->Fill(dttpSize);
 	product->dttpSize = dttpSize;
 
-	// The bmtfPh variables are input variables for the bmtf algorithm and here called DTTP, because they are trigger primitves constructed with the drift tube information
+	// The bmtfPh variables are input variables for the bmtf algorithm and are assigned the DTTP prefix, because they are trigger primitves constructed with the drift tube information
 	for (int i = 0; i < dttpSize; i++) {
 		product->dttpBx.push_back(dataReader->bmtfPhBx->At(i));
 		product->dttpWheel.push_back(dataReader->bmtfPhWh->At(i));
@@ -81,12 +81,21 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 	histCollection->histNBmtf->Fill(bmtfSize);
 	product->bmtfSize = bmtfSize;
 	for (unsigned short i = 0; i < bmtfSize; i++) {
+		const short bmtfPt = dataReader->tfMuonHwPt->At(i);
+		const short bmtfEta = dataReader->tfMuonHwEta->At(i);
+
+		const double bmtfCmsPt = Utility::BmtfPtToCmsPt(bmtfPt);
+		const double bmtfCmsEta = Utility::BmtfEtaToCmsEta(bmtfEta);
+
+		// Not sure if I should select here or only during matching.. Probably during matching
+		//if (bmtfCmsEta < 0 || fabs(bmtfCmsEta) > 0.83) { continue;}
+
 		product->bmtfBx.push_back(dataReader->tfMuonBx->At(i));
+		product->bmtfPt.push_back(bmtfPt);
+		product->bmtfEta.push_back(bmtfEta);
 		product->bmtfGlobalPhi.push_back(dataReader->tfMuonGlobalPhi->At(i));
-		product->bmtfPt.push_back(dataReader->tfMuonHwPt->At(i));
-		product->bmtfEta.push_back(dataReader->tfMuonHwEta->At(i));
-		product->bmtfCmsPt.push_back(Utility::BmtfPtToCmsPt(product->bmtfPt.back()));
-		product->bmtfCmsEta.push_back(Utility::BmtfEtaToCmsEta(product->bmtfEta.back()));
+		product->bmtfCmsPt.push_back(bmtfCmsPt);
+		product->bmtfCmsEta.push_back(bmtfCmsEta);
 		product->bmtfCmsPhi.push_back(Utility::BmtfGlobalPhiToCmsPhi(product->bmtfGlobalPhi.back()));
 		product->bmtfTrackerAddresses.push_back({
 			dataReader->tfMuonTrAdd->At(4 * i + 0),
