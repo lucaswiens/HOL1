@@ -53,6 +53,7 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 		histCollection->histMuonE->Fill(product->muonE.back());
 		histCollection->histMuonEt->Fill(product->muonEt.back());
 		histCollection->histMuonPt->Fill(product->muonPt.back());
+		histCollection->histMuonPt20->Fill(product->muonPt.back());
 		histCollection->histMuonEta->Fill(product->muonEta.back());
 		histCollection->histMuonPhi->Fill(product->muonPhi.back());
 		histCollection->histMuonIso->Fill(product->muonIso.back());

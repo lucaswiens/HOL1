@@ -119,9 +119,11 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 		histCollection->histBmtfTrAddSt4->Fill(product->bmtfTrackerAddresses.back().at(3));
 		histCollection->histBmtfTrackType->Fill(product->bmtfTrackType.back());
 		histCollection->histBmtfCmsPt->Fill(product->bmtfCmsPt.back());
+		histCollection->histBmtfCmsPt20->Fill(product->bmtfCmsPt.back());
 		histCollection->histBmtfCmsEta->Fill(product->bmtfCmsEta.back());
 		histCollection->histBmtfCmsPhi->Fill(product->bmtfCmsPhi.back());
 	}
+	//product->bmtfSize = product->bmtfCmsPt.size();
 }
 
 void BmtfInputProducer::EndJob(HoHistogramCollection* histCollection) {}

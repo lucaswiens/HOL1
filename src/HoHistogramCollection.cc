@@ -14,6 +14,7 @@ HoHistogramCollection::HoHistogramCollection(){
 	histMuonE = new TH1F("muonE", "muonE", nBinsE, minE, maxE);
 	histMuonEt = new TH1F("muonEt", "muonEt", nBinsE, minE, maxE);
 	histMuonPt = new TH1F("muonPt", "muonPt", nBinsPt, minPt, maxPt);
+	histMuonPt20 = new TH1F("muonPt20", "muonPt20", 40, minPt, 20);
 	histMuonEta = new TH1F("muonEta", "muonEta", nBinsEta, minEta, maxEta);
 	histMuonPhi = new TH1F("muonPhi", "muonPhi", nBinsPhi, minPhi, maxPhi);
 	histMuonIso = new TH1F("muonIso", "muonIso", 100, 0, 1);
@@ -66,11 +67,13 @@ HoHistogramCollection::HoHistogramCollection(){
 	histNBmtf = new TH1S("nBmtf", "nBmtf", 25, 0, 25);
 	histBmtfHwPt = new TH1S("bmtfHwPt", "bmtfHwPt", nBinsPt, minPt, maxPt);
 	histBmtfCmsPt = new TH1D("bmtfCmsPt", "bmtfCmsPt", nBinsPt, minPt, maxPt);
+	histBmtfCmsPt20 = new TH1D("bmtfCmsPt20", "bmtfCmsPt20", 40, minPt, 20);
 	histBmtfHwEta = new TH1S("bmtfHwEta", "bmtfHwEta", 25, 0, 25);
 	histBmtfCmsEta = new TH1D("bmtfCmsEta", "bmtfCmsEta", nBinsEta, minEta, maxEta);
 	histBmtfHwPhi = new TH1S("bmtfHwPhi", "bmtfHwPhi", 56, 0, 56);
 	histBmtfGlobalPhi = new TH1S("bmtfGlobalPhi", "bmtfGlobalPhi", 576, 0, 576);
-	histBmtfCmsPhi = new TH1D("bmtfCmsPhi", "bmtfCmsPhi", 144, minPhi, maxPhi);
+	//histBmtfCmsPhi = new TH1D("bmtfCmsPhi", "bmtfCmsPhi", 144, minPhi, maxPhi);
+	histBmtfCmsPhi = new TH1D("bmtfCmsPhi", "bmtfCmsPhi", nBinsPhi, minPhi, maxPhi);
 	histBmtfHwSign = new TH1S("bmtfHwSign", "bmtfHwSign", 5, -2, 3);
 	histBmtfHwSignValid = new TH1S("bmtfHwSignValid", "bmtfHwSignValid", 2, 0, 2);
 	histBmtfHwQual = new TH1S("bmtfHwQual", "bmtfHwQual", 25, 0, 25);
@@ -112,7 +115,7 @@ HoHistogramCollection::HoHistogramCollection(){
 	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "hcalDetIdIEta", 40, -20, 20);
 	histHcalDetIdIPhi = new TH1I("hcalDetIdIPhi", "hcalDetIdIPhi", 72, 1, 73);
 	histHcalCmsEta = new TH1D("hcalCmsEta", "hcalCmsEta", 68, -3, 3);
-	histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", 72, -M_PI, M_PI);
+	histHcalCmsPhi = new TH1D("hcalCmsPhi", "hcalCmsPhi", nBinsPhi, -M_PI, M_PI);
 	histHcalWheel = new TH1I("hcalWheel", "hcalWheel", 5, -2, 3);
 	histHcalSection = new TH1I("hcalSection", "hcalSection", 12, 0, 12);
 	histSumQ = new TH1D("sumQ", "sumQ", 50, 0, 50);
@@ -133,10 +136,12 @@ HoHistogramCollection::HoHistogramCollection(){
 	histBmtfMb34MatchedHoDeltaIPhi = new TH1I("bmtfMb34MatchedHoDeltaIPhi", "bmtfMb34MatchedHoDeltaIPhi", 2*nBinsIPhi+1, -maxIPhi+1, maxIPhi);
 	histBmtfMb34MatchedHoDeltaR = new TH1D("bmtfMb34MatchedHoDeltaR", "bmtfMb34MatchedHoDeltaR", nBinsDeltaR, minDeltaR, maxDeltaR);
 	histBmtfMb34MatchedHoPt = new TH1D("bmtfMb34MatchedHoPt", "bmtfMb34MatchedHoPt", nBinsPt, minPt, maxPt);
+	histBmtfMb34MatchedHoPt20 = new TH1D("bmtfMb34MatchedHoPt20", "bmtfMb34MatchedHoPt20", 40, minPt, 20);
 	histBmtfMb34MatchedHoCmsEta = new TH1D("bmtfMb34MatchedHoCmsEta", "bmtfMb34MatchedHoCmsEta", nBinsEta, minEta, maxEta);
 	histBmtfMb34MatchedHoCmsPhi = new TH1D("bmtfMb34MatchedHoCmsPhi", "bmtfMb34MatchedHoCmsPhi", nBinsPhi, minPhi, maxPhi);
 	histBmtfMb34MatchedHoDeltaPhi = new TH1D("bmtfMb34MatchedHoDeltaPhi", "bmtfMb34MatchedHoDeltaPhi", nBinsPhi, -maxPhi, maxPhi);
 	histBmtfMb34MatchedMuonPt = new TH1D("bmtfMb34MatchedMuonPt", "bmtfMb34MatchedMuonPt", nBinsPt, minPt, maxPt);
+	histBmtfMb34MatchedMuonPt20 = new TH1D("bmtfMb34MatchedMuonPt20", "bmtfMb34MatchedMuonPt20", 40, minPt, 20);
 	histBmtfMb34MatchedMuonEta = new TH1D("bmtfMb34MatchedMuonEta", "bmtfMb34MatchedMuonEta", nBinsEta, minEta, maxEta);
 	histBmtfMb34MatchedMuonPhi = new TH1D("bmtfMb34MatchedMuonPhi", "bmtfMb34MatchedMuonPhi", nBinsPhi, minPhi, maxPhi);
 	histBmtfMb34MatchedMuonDeltaPhi = new TH1D("bmtfMb34MatchedMuonDeltaPhi", "bmtfMb34MatchedMuonDeltaPhi", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
@@ -145,12 +150,18 @@ HoHistogramCollection::HoHistogramCollection(){
 	histIsBmtfMatchedMuon = new TH1S("isBmtfMatchedMuon", "isBmtfMatchedMuon", 2, 0, 2);
 	histBmtfMatchedMuonDeltaR = new TH1D("bmtfMatchedMuonDeltaR", "bmtfMatchedMuonDeltaR", nBinsDeltaR, minDeltaR, maxDeltaR);
 	histBmtfMatchedMuonPt = new TH1D("bmtfMatchedMuonPt", "bmtfMatchedMuonPt", nBinsPt, minPt, maxPt);
+	histBmtfMatchedMuonPt20 = new TH1D("bmtfMatchedMuonPt20", "bmtfMatchedMuonPt20", 40, minPt, 20);
 	histBmtfMatchedMuonEta = new TH1D("bmtfMatchedMuonEta", "bmtfMatchedMuonEta", nBinsEta, minEta, maxEta);
 	histBmtfMatchedMuonPhi = new TH1D("bmtfMatchedMuonPhi", "bmtfMatchedMuonPhi", nBinsPhi, minPhi, maxPhi);
 	histBmtfMatchedMuonTrackType = new TH1D("bmtfMatchedMuonTrackType", "bmtfMatchedMuonTrackType", nBinsTrackType, minTrackType, maxTrackType);
 	histBmtfMatchedMuonDeltaPhi = new TH1D("bmtfMatchedMuonDeltaPhi", "bmtfMatchedMuonDeltaPhi", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
+
+	histMuonMatchedBmtfCmsPt = new TH1D("muonMatchedBmtfCmsPt", "muonMatchedBmtfCmsPt", nBinsPt, minPt, maxPt);
+	histMuonMatchedBmtfCmsEta = new TH1D("muonMatchedBmtfCmsEta", "muonMatchedBmtfCmsEta", nBinsEta, minEta, maxEta);
+
 	histIsBmtfMatchedDttp = new TH1S("isBmtfMatchedDttp", "isBmtfMatchedDttp", 2, 0, 2);
-	histBmtfMatchedDttpPhi = new TH1I("bmtfMatchedDttpPhi", "bmtfMatchedDttpPhi", 64, -2048, 2048);
+	//histBmtfMatchedDttpPhi = new TH1I("bmtfMatchedDttpPhi", "bmtfMatchedDttpPhi", 64, -2048, 2048);
+	histBmtfMatchedDttpPhi = new TH1I("bmtfMatchedDttpPhi", "bmtfMatchedDttpPhi", nBinsPhi, -2048, 2048);
 	histBmtfMatchedDttpPt = new TH1D("bmtfMatchedDttpPt", "bmtfMatchedDttpPt", nBinsPt, minPt, maxPt);
 	histBmtfMatchedDttpDeltaPhi = new TH1D("bmtfMatchedDttpDeltaPhi", "bmtfMatchedDttpDeltaPhi", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
 	histBmtfMatchedDttpCmsPhi = new TH1D("bmtfMatchedDttpCmsPhi", "bmtfMatchedDttpCmsPhi", nBinsPhi, minPhi, maxPhi);
@@ -187,6 +198,7 @@ HoHistogramCollection::HoHistogramCollection(){
 	histUnusedMuonMet = new TH1D("unusedMuonMet", "unusedMuonMet", nBinsPt, minPt, maxPt);
 	histUnusedMuonMt = new TH1D("unusedMuonMt", "unusedMuonMt", nBinsE, minE, maxE);
 	histUnusedMuonPt = new TH1D("unusedMuonPt", "unusedMuonPt", nBinsPt, minPt, maxPt);
+	histUnusedMuonPt20 = new TH1D("unusedMuonPt20", "unusedMuonPt20", 40, minPt, 20);
 	histUnusedMuonEta = new TH1D("unusedMuonEta", "unusedMuonEta", nBinsEta, minEta, maxEta);
 	histUnusedMuonPhi = new TH1D("unusedMuonPhi", "unusedMuonPhi", nBinsPhi, minPhi, maxPhi);
 	histUnusedMuonIso = new TH1D("unusedMuonIso", "unusedMuonIso", 2, 0, 2);
@@ -211,6 +223,7 @@ HoHistogramCollection::HoHistogramCollection(){
 	histUsedMuonMet = new TH1D("usedMuonMet", "usedMuonMet", nBinsPt, minPt, maxPt);
 	histUsedMuonMt = new TH1D("usedMuonMt", "usedMuonMt", nBinsE, minE, maxE);
 	histUsedMuonPt = new TH1D("usedMuonPt", "usedMuonPt", nBinsPt, minPt, maxPt);
+	histUsedMuonPt20 = new TH1D("usedMuonPt20", "usedMuonPt20", 40, minPt, 20);
 	histUsedMuonEta = new TH1D("usedMuonEta", "usedMuonEta", nBinsEta, minEta, maxEta);
 	histUsedMuonPhi = new TH1D("usedMuonPhi", "usedMuonPhi", nBinsPhi, minPhi, maxPhi);
 	histUsedMuonIso = new TH1D("usedMuonIso", "usedMuonIso", 2, 0, 2);

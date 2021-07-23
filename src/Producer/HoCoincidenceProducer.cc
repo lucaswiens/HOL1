@@ -89,6 +89,10 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		product->muonMatchedBmtfIndex = std::vector(product->nMuon, (unsigned short)999);
 		product->muonMatchedDttpIndex = std::vector(product->nMuon, -999);
 
+		// Bmtf matched Muon
+		product->muonMatchedBmtfCmsPt = std::vector(product->nMuon, -999.);
+		product->muonMatchedBmtfCmsEta = std::vector(product->nMuon, -999.);
+
 		// Bmtf Matched Dttp
 		product->bmtfMatchedMuonDeltaR = std::vector(product->bmtfSize, -999.);
 		product->bmtfMatchedMuonPt = std::vector(product->bmtfSize, -999.);

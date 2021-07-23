@@ -144,6 +144,8 @@ public:
 	std::vector<int> bmtfMatchedMuonCharge;
 	std::vector<unsigned short> bmtfMatchedMuonIndex,
 		muonMatchedBmtfIndex;
+	std::vector<double> muonMatchedBmtfCmsPt,
+		muonMatchedBmtfCmsEta;
 	std::vector<bool> isMuonMatchedBmtf,
 		isBmtfMatchedMuon;
 	// Matching MB34 with HO
@@ -186,6 +188,7 @@ public:
 	std::vector<unsigned short> dttpMatchedMuonIndex,
 		dttpMatchedBmtfIndex;
 	std::vector<double> dttpMatchedMuonDeltaR;
+	std::vector<int> dttpMatchedMuonNHo3x3Hit;
 	// Reco Muon matching Ho
 	std::vector<int> muonMatchedDttpNHo3x3Hit,
 		muonMatchedDttpIndex;
