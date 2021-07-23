@@ -1,0 +1,9 @@
+{
+	"muonE;1" : {"xlabel" : "$E$ / GeV", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"},
+	"muonPt;1" : {"xlabel" : "$p_T$ / GeV", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"},
+	"muonEta;1" : {"xlabel" : "$\\eta$", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"},
+	"muonPhi;1" : {"xlabel" : "$\\varphi$", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"},
+	"efficiencyBmtfPt20;1" : {"xlabel" : "$p_T$ / GeV", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"},
+	"efficiencyBmtfEta;1" : {"xlabel" : "$\\eta$", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"},
+	"efficiencyBmtfPhi;1" : {"xlabel" : "$\\varphi$", "ylabel" : "efficiency", "color" : "black", "subdir" : "efficiency", "histtype" : "step"}
+}
