@@ -96,6 +96,12 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		for (int i = 0; i < product->nMuon; i++) {
 			histCollection->histMuonMatchedBmtfCmsPt->Fill(product->muonMatchedBmtfCmsPt.at(i), product->isMuonMatchedBmtf.at(i));
 			histCollection->histMuonMatchedBmtfCmsEta->Fill(product->muonMatchedBmtfCmsEta.at(i), product->isMuonMatchedBmtf.at(i));
+
+			histCollection->histMuonPt_vs_MuonEta->Fill(product->muonPt.at(i), product->muonEta.at(i));
+			histCollection->histMuonEta_vs_MuonPt->Fill(product->muonEta.at(i), product->muonPt.at(i));
+
+			histCollection->histBmtfMatchedMuonPt_vs_MuonEta->Fill(product->muonPt.at(i), product->muonEta.at(i), product->isMuonMatchedBmtf.at(i));
+			histCollection->histBmtfMatchedMuonEta_vs_MuonPt->Fill(product->muonEta.at(i), product->muonPt.at(i), product->isMuonMatchedBmtf.at(i));
 		}
 	}
 

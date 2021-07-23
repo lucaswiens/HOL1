@@ -76,19 +76,10 @@ if __name__=="__main__":
 		#	["bmtfMb34EfficiencyEta", "usedMuonEta", "muonEta"],
 		#],
 
-		#["bmtfEfficiencyDeltaR", "bmtfMatchedMuonDeltaR", "muonDeltaR"],
 		["muonBmtfEfficiencyPt", "bmtfMatchedMuonPt", "muonPt"],
-		["usedMuonBmtfEfficiencyPt", "bmtfMatchedMuonPt", "usedMuonPt"],
-		["usedMuonBmtfEfficiencyEta", "bmtfMatchedMuonEta", "usedMuonEta"],
-		#["unusedMuonBmtfEfficiencyPt", "bmtfMatchedMuonPt", "unusedMuonPt"],
-		#["bmtfEffPt", "muonMatchedBmtfCmsPt", "bmtfCmsPt"],
-		#["bmtfEffEta", "muonMatchedBmtfCmsEta", "bmtfCmsEta"],
-		#["bmtfBmtfEfficiencyPt", "bmtfMatchedMuonPt", "bmtfCmsPt"],
-		#["testBmtfEfficiencyEta", "bmtfMatchedMuonEta", "muonEta"],
-		#["testBmtfMb34EfficiencyPt", "bmtfMb34MatchedMuonPt", "muonPt"],
-		#["bmtfEfficiencyPt", "bmtfMatchedMuonPt", "usedMuonPt"],
-		#["bmtfEfficiencyEta", "bmtfMatchedMuonEta", "usedMuonEta"],
-		#["bmtfMb34EfficiencyPt", "bmtfMb34MatchedMuonPt", "usedMuonPt"],
+		["muonBmtfEfficiencyEta", "bmtfMatchedMuonEta", "muonEta"],
+		["muonBmtfEfficiencyPt_vs_MuonEta", "bmtfMatchedMuonPt_vs_MuonEta", "muonPt_vs_MuonEta"],
+		["muonBmtfEfficiencyEta_vs_MuonPt", "bmtfMatchedMuonEta_vs_MuonPt", "muonEta_vs_MuonPt"],
 	]
 
 	#colorList = [1, 46]#, 9, 29]
@@ -111,7 +102,6 @@ if __name__=="__main__":
 
 		#efficiencyGraphs = []
 		if isinstance(eff[0], list):
-			print(eff)
 			eff = np.array(eff)
 			efficiencyArray = eff[:,0]
 			matchedMuonArray = eff[:,1]
@@ -120,18 +110,18 @@ if __name__=="__main__":
 			xLabel = findLabel(efficiencyArray[0])
 
 			for efficiency, matchedMuon, muon, color in zip(efficiencyArray, matchedMuonArray, muonArray, colorList):
+				print(efficiency, matchedMuon, muon)
 				#muonHist = histogramFile.Get(muon)
 				tmpMuonHist = ROOT.TH1D(histogramFile.Get(muon).Clone("tmpMuon"))
 				tmpMatchedMuonHist = ROOT.TH1D(histogramFile.Get(matchedMuon).Clone("tmpMatchedMuon"))
 				muonHist = None
 				matchedMuonHist = None
-				# Rebinning for Pt.. Most other variable can be shown in full range
-				if args.bins != None and "Pt" in muon:
+				if args.bins != none and "Pt" in muon:
 					minimum = tmpMuonHist.GetBinCenter(1)
 					maximum = 0.5 * int(args.bins)
 					muonHist = ROOT.TH1D(muon, muon, int(args.bins), minimum, maximum)
 					matchedMuonHist = ROOT.TH1D(matchedMuon, matchedMuon, int(args.bins), minimum, maximum)
-					for bin in range(1, int(args.bins) + 1):
+					for bin in range(0, int(args.bins) + 1):
 						muonHist.SetBinContent(bin, tmpMuonHist.GetBinContent(bin))
 						muonHist.SetBinError(bin, tmpMuonHist.GetBinError(bin))
 
@@ -165,17 +155,62 @@ if __name__=="__main__":
 
 			xLabel = findLabel(efficiency)
 
-			tmpMuonHist = ROOT.TH1D(histogramFile.Get(muon).Clone(muon + "_tmp"))
-			tmpMatchedMuonHist = ROOT.TH1D(histogramFile.Get(matchedMuon).Clone(matchedMuon + "_tmp"))
+			#tmpMuonHist = ROOT.TH1D(histogramFile.Get(muon).Clone(muon + "_tmp"))
+			#tmpMatchedMuonHist = ROOT.TH1D(histogramFile.Get(matchedMuon).Clone(matchedMuon + "_tmp"))
+			tmpMuonHist = histogramFile.Get(muon).Clone(muon + "_tmp")
+			tmpMatchedMuonHist = histogramFile.Get(matchedMuon).Clone(matchedMuon + "_tmp")
 			muonHist = None
 			matchedMuonHist = None
-			if args.bins != None and "Pt" in muon:
+
+			if args.bins != None and "_vs_" in muon:
+				histName = muon.split("_vs_")
+				xLabel = findLabel(histName[0])
+				yLabel = findLabel(histName[1])
+
+				xMinimum, xMaximum, yMinimum, yMaximum = 0, 0, 0, 0
+				nBins1, nBins2 = 0, 0
+
+				if "Pt" in histName[0]:
+					nBins1 = int(args.bins)
+					nBins2 = tmpMuonHist.GetYaxis().GetNbins()
+					xMinimum = 0
+					xMaximum = 0.5 * int(args.bins)
+					yMinimum = tmpMuonHist.GetYaxis().GetBinCenter(1) - tmpMuonHist.GetYaxis().GetBinWidth(nBins2 + 1)/2
+					yMaximum = tmpMuonHist.GetYaxis().GetBinCenter(nBins2 + 1) - tmpMuonHist.GetYaxis().GetBinWidth(nBins2 + 1)/2
+				if "Pt" in histName[1]:
+					nBins1 = tmpMuonHist.GetXaxis().GetNbins()
+					nBins2 = int(args.bins)
+					xMinimum = tmpMuonHist.GetXaxis().GetBinCenter(1) - tmpMuonHist.GetXaxis().GetBinWidth(nBins1 + 1)/2
+					xMaximum = tmpMuonHist.GetXaxis().GetBinCenter(nBins1 + 1) - tmpMuonHist.GetXaxis().GetBinWidth(nBins1 + 1)/2
+					yMinimum = 0
+					yMaximum = 0.5 * int(args.bins)
+
+				#for i in range(0, nBins1 + 1):
+				#	print(i, tmpMuonHist.GetXaxis().GetBinCenter(i) - tmpMuonHist.GetXaxis().GetBinWidth(i)/2)
+				#for i in range(0, nBins2 + 1):
+				#	print(i, tmpMuonHist.GetYaxis().GetBinCenter(i) - tmpMuonHist.GetYaxis().GetBinWidth(i)/2)
+
+				#print(nBins1, xMinimum, xMaximum)
+				#print(nBins2, yMinimum, yMaximum)
+
+
+				muonHist = ROOT.TH2D(muon, muon, nBins1, xMinimum, xMaximum, nBins2, yMinimum, yMaximum)
+				matchedMuonHist = ROOT.TH2D(matchedMuon, matchedMuon, nBins1, xMinimum, xMaximum, nBins2, yMinimum, yMaximum)
+
+				for bin1 in range(0, nBins1 + 1):
+					for bin2 in range(0, nBins2 + 1):
+						muonHist.SetBinContent(bin1, bin2, tmpMuonHist.GetBinContent(bin1, bin2))
+						muonHist.SetBinError(bin1, bin2, tmpMuonHist.GetBinError(bin1, bin2))
+
+						matchedMuonHist.SetBinContent(bin1, bin2, tmpMatchedMuonHist.GetBinContent(bin1, bin2))
+						matchedMuonHist.SetBinError(bin1, bin2, tmpMatchedMuonHist.GetBinError(bin1, bin2))
+			elif args.bins != None and "Pt" in muon:
 				minimum = tmpMuonHist.GetBinCenter(1)
 				maximum = 0.5 * int(args.bins)
 				muonHist = ROOT.TH1D(muon, muon, int(args.bins), minimum, maximum)
 				matchedMuonHist = ROOT.TH1D(matchedMuon, matchedMuon, int(args.bins), minimum, maximum)
 
-				for bin in range(1, int(args.bins) + 1):
+				for bin in range(0, int(args.bins) + 1):
 					muonHist.SetBinContent(bin, tmpMuonHist.GetBinContent(bin))
 					muonHist.SetBinError(bin, tmpMuonHist.GetBinError(bin))
 
@@ -185,20 +220,32 @@ if __name__=="__main__":
 				muonHist = tmpMuonHist.Clone(muon)
 				matchedMuonHist = tmpMatchedMuonHist.Clone(matchedMuon)
 
-			#efficiencyGraph = ROOT.TGraphAsymmErrors(matchedMuonHist, muonHist)
-			efficiencyGraph = ROOT.TGraphAsymmErrors(matchedMuonHist)
-			efficiencyGraph.Divide(matchedMuonHist, muonHist, "cl=0.683 b(1,1) mode")
-			efficiencyGraph.SetLineColor(ROOT.kBlack)
-			efficiencyGraph.SetMarkerColor(ROOT.kBlack)
-			efficiencyGraph.SetMarkerSize(0.8)
-			#efficiencyGraphs.append(efficiencyGraph)
+			if "_vs_" in muon:
+				efficiencyHist = ROOT.TH2D(matchedMuonHist)
+				efficiencyHist.Divide(muonHist)
 
-			efficiencyGraph.SetMinimum(0)
-			efficiencyGraph.SetMaximum(1.0)
+				efficiencyHist.SetMinimum(1.0)
+				efficiencyHist.SetMaximum(1.1)
 
-			efficiencyGraph.GetXaxis().SetTitle(xLabel);
-			efficiencyGraph.GetYaxis().SetTitle(yLabel);
-			efficiencyGraph.Draw("AP")
+				efficiencyHist.GetXaxis().SetTitle(xLabel);
+				efficiencyHist.GetYaxis().SetTitle(yLabel);
+				efficiencyHist.Draw("colz")
+
+			else:
+				#efficiencyGraph = ROOT.TGraphAsymmErrors(matchedMuonHist, muonHist)
+				efficiencyGraph = ROOT.TGraphAsymmErrors(matchedMuonHist)
+				efficiencyGraph.Divide(matchedMuonHist, muonHist, "cl=0.683 b(1,1) mode")
+				efficiencyGraph.SetLineColor(ROOT.kBlack)
+				efficiencyGraph.SetMarkerColor(ROOT.kBlack)
+				efficiencyGraph.SetMarkerSize(0.8)
+				#efficiencyGraphs.append(efficiencyGraph)
+
+				efficiencyGraph.SetMinimum(0)
+				efficiencyGraph.SetMaximum(1.0)
+
+				efficiencyGraph.GetXaxis().SetTitle(xLabel);
+				efficiencyGraph.GetYaxis().SetTitle(yLabel);
+				efficiencyGraph.Draw("AP")
 
 		canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
 		canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")

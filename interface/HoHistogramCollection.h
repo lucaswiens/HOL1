@@ -26,6 +26,7 @@ public:
 	TH1D *histMuonMet, *histMuonMt;
 	TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta;
 	TH1F *histMuonE, *histMuonEt, *histMuonPt, *histMuonPt20, *histMuonEta, *histMuonPhi, *histMuonIso, *histMuonHltIsoDeltaR, *histMuonDeltaR, *histMuonEtaSt1, *histMuonPhiSt1, *histMuonEtaSt2, *histMuonPhiSt2;
+	TH2D *histMuonPt_vs_MuonEta, *histMuonEta_vs_MuonPt;
 	// HO Coincidence Histogram
 	TGraphAsymmErrors *efficiencyBmtf34MatchedHoPt, *efficiencyBmtfPt;
 	TH1S *histNUnusedMuon, *histIsMediumUnusedMuon, *histUnusedMuonHltIsoMu, *histUnusedMuonHltMu, *histUnusedMuonPassesSingleMuon, *histUnusedMuonHasMb1,
@@ -45,6 +46,7 @@ public:
 		*histBmtfMatchedDttpPhi;
 
 	TH1D *histDttpMatchedHoDeltaPhi, *histMuonMatchedBmtfCmsPt, *histMuonMatchedBmtfCmsEta;
+	TH2D *histBmtfMatchedMuonPt_vs_MuonEta, *histBmtfMatchedMuonEta_vs_MuonPt;
 	// Used and Unused Histograms
 	TH1D *histUnusedMuonE, *histUnusedMuonEt, *histUnusedMuonPt, *histUnusedMuonPt20, *histUnusedMuonEta, *histUnusedMuonPhi, *histUnusedMuonIso, *histUnusedMuonHltIsoDeltaR, *histUnusedMuonDeltaR, *histUnusedMuonEtaSt1, *histUnusedMuonPhiSt1, *histUnusedMuonEtaSt2, *histUnusedMuonPhiSt2,
 		*histUsedMuonE, *histUsedMuonEt, *histUsedMuonPt, *histUsedMuonPt20, *histUsedMuonEta, *histUsedMuonPhi, *histUsedMuonIso, *histUsedMuonHltIsoDeltaR, *histUsedMuonDeltaR, *histUsedMuonEtaSt1, *histUsedMuonPhiSt1, *histUsedMuonEtaSt2, *histUsedMuonPhiSt2;

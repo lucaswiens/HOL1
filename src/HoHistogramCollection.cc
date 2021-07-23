@@ -2,9 +2,9 @@
 
 HoHistogramCollection::HoHistogramCollection(){
 	//BMTF
-	double minE   = 0,    minPt   = 0,    minPhi   = -M_PI, minEta   = -1.267, minWheel  = -3, minStation   = 1, minSection   =  0, minQualityCode   =  0, minDeltaR   =  0, minTrackType   =  0, minIPhi   =  1, minIEta   = -20;
-	double maxE   = 500,  maxPt   = 500,  maxPhi   =  M_PI, maxEta   =  1.355, maxWheel  =  4, maxStation   = 5, maxSection   = 12, maxQualityCode   = 10, maxDeltaR   =  3, maxTrackType   = 25, maxIPhi   = 73, maxIEta   =  20;
-	int    nBinsE = 1000, nBinsPt = 1000, nBinsPhi =  72,   nBinsEta =  30,    nBinsWheel = 7, nBinsStation = 4, nBinsSection = 12, nBinsQualityCode = 10, nBinsDeltaR = 30, nBinsTrackType = 25, nBinsIPhi = 72, nBinsIEta =  40;
+	double minE   = 0,    minPt   = 0,    minPhi   = -M_PI, minEta   = -1.2872, minWheel  = -3, minStation   = 1, minSection   =  0, minQualityCode   =  0, minDeltaR   =  0, minTrackType   =  0, minIPhi   =  1, minIEta   = -20;
+	double maxE   = 500,  maxPt   = 500,  maxPhi   =  M_PI, maxEta   =  1.2872, maxWheel  =  4, maxStation   = 5, maxSection   = 12, maxQualityCode   = 10, maxDeltaR   =  3, maxTrackType   = 25, maxIPhi   = 73, maxIEta   =  20;
+	int    nBinsE = 1000, nBinsPt = 1000, nBinsPhi = 72,    nBinsEta =  30,    nBinsWheel = 7, nBinsStation = 4, nBinsSection = 12, nBinsQualityCode = 10, nBinsDeltaR = 30, nBinsTrackType = 25, nBinsIPhi = 72, nBinsIEta =  40;
 
 	// Muon Histograms
 	histIsLooseMuon = new TH1I("isLooseMuon", "isLooseMuon", 2, 0, 2);
@@ -24,6 +24,9 @@ HoHistogramCollection::HoHistogramCollection(){
 	histMuonPhiSt1 = new TH1F("muonPhiSt1", "muonPhiSt1", nBinsPhi, minPhi, maxPhi);
 	histMuonEtaSt2 = new TH1F("muonEtaSt2", "muonEtaSt2", nBinsEta, minEta, maxEta);
 	histMuonPhiSt2 = new TH1F("muonPhiSt2", "muonPhiSt2", nBinsPhi, minPhi, maxPhi);
+
+	histMuonPt_vs_MuonEta  = new TH2D("muonPt_vs_MuonEta", "muonPt_vs_MuonEta", nBinsPt, minPt, maxPt, nBinsEta, minEta, maxEta);
+	histMuonEta_vs_MuonPt  = new TH2D("muonEta_vs_MuonPt", "muonEta_vs_MuonPt", nBinsEta, minEta, maxEta, nBinsPt, minPt, maxPt);
 
 	histMuonMet = new TH1D("muonMet", "muonMet", nBinsPt, minPt, maxPt);
 	histMuonMt = new TH1D("muonMt", "muonMt", nBinsPt, minPt, maxPt);
@@ -155,6 +158,9 @@ HoHistogramCollection::HoHistogramCollection(){
 	histBmtfMatchedMuonPhi = new TH1D("bmtfMatchedMuonPhi", "bmtfMatchedMuonPhi", nBinsPhi, minPhi, maxPhi);
 	histBmtfMatchedMuonTrackType = new TH1D("bmtfMatchedMuonTrackType", "bmtfMatchedMuonTrackType", nBinsTrackType, minTrackType, maxTrackType);
 	histBmtfMatchedMuonDeltaPhi = new TH1D("bmtfMatchedMuonDeltaPhi", "bmtfMatchedMuonDeltaPhi", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
+
+	histBmtfMatchedMuonPt_vs_MuonEta  = new TH2D("bmtfMatchedMuonPt_vs_MuonEta", "bmtfMatchedMuonPt_vs_MuonEta", nBinsPt, minPt, maxPt, nBinsEta, minEta, maxEta);
+	histBmtfMatchedMuonEta_vs_MuonPt  = new TH2D("bmtfMatchedMuonEta_vs_MuonPt", "bmtfMatchedMuonEta_vs_MuonPt", nBinsEta, minEta, maxEta, nBinsPt, minPt, maxPt);
 
 	histMuonMatchedBmtfCmsPt = new TH1D("muonMatchedBmtfCmsPt", "muonMatchedBmtfCmsPt", nBinsPt, minPt, maxPt);
 	histMuonMatchedBmtfCmsEta = new TH1D("muonMatchedBmtfCmsEta", "muonMatchedBmtfCmsEta", nBinsEta, minEta, maxEta);
