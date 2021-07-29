@@ -5,8 +5,11 @@
 #include <TMath.h>
 
 class HoCoincidenceProducer : public BaseProducer {
+	private:
+		int iEtaCut;
+		double etaCut, ptCut, deltaPhiCut, deltaRCut;
 	public:
-		HoCoincidenceProducer();
+		HoCoincidenceProducer(const int &iEtaCut, const double &etaCut, const double &ptCut, const double &deltaPhiCut, const double &deltaRCut);
 		~HoCoincidenceProducer();
 		void Produce(DataReader *dataReader, HoProduct *product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);

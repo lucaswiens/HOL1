@@ -7,7 +7,7 @@
 class HoHistogramProducer : public BaseProducer {
 	private:
 	public:
-		HoHistogramProducer(HoHistogramCollection* histCollection);
+		HoHistogramProducer();
 		~HoHistogramProducer();
 		void Produce(DataReader *dataReader, HoProduct *product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);

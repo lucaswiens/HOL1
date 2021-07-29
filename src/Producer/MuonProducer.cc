@@ -1,22 +1,40 @@
 #include <HOAnalysis/HOL1/interface/Producer/MuonProducer.h>
 
-MuonProducer::MuonProducer(HoHistogramCollection* histCollection) {}
+MuonProducer::MuonProducer(const double &ptCut, const double &etaCut, const char &workingPointCut):
+	ptCut(ptCut),
+	etaCut(etaCut),
+	workingPointCut(workingPointCut)
+	{ Name = "Reco Muon Producer";}
 
 void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
-	Name = "Reco Muon Producer";
 
 	product->nMuon = *dataReader->nMuon->Get();
 
-	for (unsigned short i = 0; i < product->nMuon; i++){
-		const float muonPt = dataReader->muonPt->At(i);
-		const float muonEta = dataReader->muonEta->At(i);
-		const bool isMediumMuon = dataReader->muonIsMediumMuon->At(i);
+	//std::cout << std::endl << "muonPt = ";
+	for (unsigned short i = 0; i < product->nMuon; i++) {
+		const float &muonPt = dataReader->muonPt->At(i);
+		const float &muonEta = dataReader->muonEta->At(i);
+		const bool &isLooseMuon = dataReader->muonIsLooseMuon->At(i);
+		const bool &isMediumMuon = dataReader->muonIsMediumMuon->At(i);
+		const bool &isTightMuon = dataReader->muonIsTightMuon->At(i);
 
-		if (muonPt < 0 || fabs(muonEta) > 0.83 || !isMediumMuon) { continue;}
+		bool passesWorkingPoint = false;
 
-		product->isLooseMuon.push_back(dataReader->muonIsLooseMuon->At(i));
+		if (workingPointCut == 'm') {
+			passesWorkingPoint = isMediumMuon;
+		} else if (workingPointCut == 't') {
+			passesWorkingPoint = isTightMuon;
+		} else if (workingPointCut == 'l') {
+			passesWorkingPoint = isLooseMuon;
+		} else {
+			std::cerr << "Chosen invalid working point! Exit now!" << std::endl;
+		}
+
+		if (muonPt < ptCut || fabs(muonEta) > etaCut || !passesWorkingPoint) { continue;}
+
+		product->isLooseMuon.push_back(isLooseMuon);
 		product->isMediumMuon.push_back(isMediumMuon);
-		product->isTightMuon.push_back(dataReader->muonIsTightMuon->At(i));
+		product->isTightMuon.push_back(isTightMuon);
 		product->muonHltIsoMu.push_back(dataReader->muonHlt_isomu->At(i));
 		product->muonHltMu.push_back(dataReader->muonHlt_mu->At(i));
 		product->muonPassesSingleMuon.push_back(dataReader->muonPassesSingleMuon->At(i));

@@ -4,10 +4,12 @@
 
 class MuonProducer : public BaseProducer {
 	private:
-
+		double ptCut, etaCut;
+		char workingPointCut;
 	public:
-		MuonProducer(HoHistogramCollection* histCollection);
+		MuonProducer(const double &ptCut, const double &etaCut, const char &workingPointCut);
 		~MuonProducer();
 		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);
 };
+

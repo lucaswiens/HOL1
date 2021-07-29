@@ -6,7 +6,7 @@ class BmtfInputProducer : public BaseProducer {
 	private:
 
 	public:
-		BmtfInputProducer(HoHistogramCollection* histCollection);
+		BmtfInputProducer();
 		~BmtfInputProducer();
 		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);

@@ -66,20 +66,23 @@ if __name__=="__main__":
 
 	#numberOfHists = len(histograms.keys())
 	efficiencyList = [
-		#[
-		#	["bmtfEfficiencyPt", "bmtfMatchedMuonPt20", "muonPt20"],
-		#	["bmtfMb34EfficiencyPt", "usedMuonPt20", "muonPt20"],
-		#	["bmtfUsedMuon", "bmtfMatchedMuonPt20", "muonPt20"]
-		#],
-		#[
-		#	["bmtfEfficiencyEta", "bmtfMatchedMuonEta", "muonEta"],
-		#	["bmtfMb34EfficiencyEta", "usedMuonEta", "muonEta"],
-		#],
+		[
+			["BMTF Muon Efficiency", "bmtfMatchedMuonPt", "muonPt"],
+			["BMTF+IsoMB1 Muon Efficiency", "isoMb1MatchedMuonPt", "muonPt"],
+			["BMTF+IsoMB12 Muon Efficiency", "isoMb12MatchedMuonPt", "muonPt"],
+		],
+		[
+			["BMTF Muon Efficiency", "bmtfMatchedMuonEta", "muonEta"],
+			["BMTF+IsoMB1 Muon Efficiency", "isoMb1MatchedMuonEta", "muonEta"],
+			["BMTF+IsoMB12 Muon Efficiency", "isoMb12MatchedMuonEta", "muonEta"],
+		],
 
-		["muonBmtfEfficiencyPt", "bmtfMatchedMuonPt", "muonPt"],
-		["muonBmtfEfficiencyEta", "bmtfMatchedMuonEta", "muonEta"],
-		["muonBmtfEfficiencyPt_vs_MuonEta", "bmtfMatchedMuonPt_vs_MuonEta", "muonPt_vs_MuonEta"],
-		["muonBmtfEfficiencyEta_vs_MuonPt", "bmtfMatchedMuonEta_vs_MuonPt", "muonEta_vs_MuonPt"],
+		#["muonBmtfEfficiencyPt", "bmtfMatchedMuonPt", "muonPt"],
+		#["muonBmtfEfficiencyEta", "bmtfMatchedMuonEta", "muonEta"],
+		#["usedMuonBmtfEfficiencyPt", "bmtfMatchedMuonPt", "usedMuonPt"],
+		#["usedMuonBmtfEfficiencyEta", "bmtfMatchedMuonEta", "usedMuonEta"],
+		#["muonBmtfEfficiencyPt_vs_MuonEta", "bmtfMatchedMuonPt_vs_MuonEta", "muonPt_vs_MuonEta"],
+		#["muonBmtfEfficiencyEta_vs_MuonPt", "bmtfMatchedMuonEta_vs_MuonPt", "muonEta_vs_MuonPt"],
 	]
 
 	#colorList = [1, 46]#, 9, 29]

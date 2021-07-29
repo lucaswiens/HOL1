@@ -1,9 +1,10 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoProducer.h>
 
-HoProducer::HoProducer(HoHistogramCollection* histCollection) {}
+HoProducer::HoProducer() {
+	Name = "HO Producer";
+}
 
 void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
-	Name = "HO Producer";
 
 	product->sumQ = *dataReader->sumQ->Get();
 	product->nHcalDetIds = *dataReader->nHcalDetIds->Get();

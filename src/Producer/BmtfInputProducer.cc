@@ -1,9 +1,10 @@
 #include <HOAnalysis/HOL1/interface/Producer/BmtfInputProducer.h>
 
-BmtfInputProducer::BmtfInputProducer(HoHistogramCollection* histCollection) {}
+BmtfInputProducer::BmtfInputProducer() {
+	Name = "BMTF Producer";
+}
 
 void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
-	Name = "BMTF Producer";
 	const int &dttpSize = *dataReader->bmtfPhSize->Get();
 	histCollection->histDttpSize->Fill(dttpSize);
 	product->dttpSize = dttpSize;

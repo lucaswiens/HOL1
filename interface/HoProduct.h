@@ -73,7 +73,8 @@ public:
 		muonPassesSingleMuon,
 		muonHasMb1;
 	std::vector<int> muonCharge,
-		muonIEta;
+		muonIEta,
+		muonNHo3x3Hit;
 	std::vector<float> muonE,
 		muonEt,
 		muonPt,
@@ -96,7 +97,8 @@ public:
 		usedMuonPassesSingleMuon,
 		usedMuonHasMb1;
 	std::vector<int> usedMuonCharge,
-		usedMuonIEta;
+		usedMuonIEta,
+		usedMuonNHo3x3Hit;
 	std::vector<float> usedMuonE,
 		usedMuonEt,
 		usedMuonPt,
@@ -119,7 +121,8 @@ public:
 		unusedMuonPassesSingleMuon,
 		unusedMuonHasMb1;
 	std::vector<int> unusedMuonCharge,
-		unusedMuonIEta;
+		unusedMuonIEta,
+		unusedMuonNHo3x3Hit;
 	std::vector<float> unusedMuonE,
 		unusedMuonEt,
 		unusedMuonPt,

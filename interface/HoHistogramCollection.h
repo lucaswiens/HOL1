@@ -8,10 +8,10 @@ class HoHistogramCollection {
 private:
 	bool hasRecoMuon;
 public:
-	HoHistogramCollection();
+	HoHistogramCollection(const bool &hasRecoMuon);
 	~HoHistogramCollection();
 	bool GetHasRecoMuon() {return hasRecoMuon;}
-	void SetHasRecoMuon(bool HasRecoMuon) {hasRecoMuon = HasRecoMuon;}
+	//void SetHasRecoMuon(bool HasRecoMuon) {hasRecoMuon = HasRecoMuon;}
 
 	// BMTF and DTTP Histograms
 	TH1I *histDttpSize, *histBmtfThSize, *histDttpBx, *histDttpWheel, *histDttpSection, *histDttpStation, *histDttpQualityCode, *histDttpTs2Tag, *histBmtfThBx, *histBmtfThWh, *histBmtfThSe, *histBmtfThSt, *histBmtfThTheta, *histBmtfThCode, *histDttpIPhi;
@@ -24,11 +24,10 @@ public:
 	TH1F *histSampleEnergy, *histQIESampleFc,  *histQIESamplePedestal, *histQIESampleFc_MPedestals;
 	// Reco Muon Histogram
 	TH1D *histMuonMet, *histMuonMt;
-	TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta;
+	TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta, *histMuonNHo3x3Hit;
 	TH1F *histMuonE, *histMuonEt, *histMuonPt, *histMuonPt20, *histMuonEta, *histMuonPhi, *histMuonIso, *histMuonHltIsoDeltaR, *histMuonDeltaR, *histMuonEtaSt1, *histMuonPhiSt1, *histMuonEtaSt2, *histMuonPhiSt2;
 	TH2D *histMuonPt_vs_MuonEta, *histMuonEta_vs_MuonPt;
 	// HO Coincidence Histogram
-	TGraphAsymmErrors *efficiencyBmtf34MatchedHoPt, *efficiencyBmtfPt;
 	TH1S *histNUnusedMuon, *histIsMediumUnusedMuon, *histUnusedMuonHltIsoMu, *histUnusedMuonHltMu, *histUnusedMuonPassesSingleMuon, *histUnusedMuonHasMb1,
 		*histNUsedMuon, *histIsMediumUsedMuon, *histUsedMuonHltIsoMu, *histUsedMuonHltMu, *histUsedMuonPassesSingleMuon, *histUsedMuonHasMb1,
 		*histIsBmtfMatchedMuon,
@@ -37,16 +36,21 @@ public:
 		*histIsDttpMatchedMuon,
 		*histIsBmtfMatchedDttp;
 
-	TH1I *histUnusedMuonCharge, *histUnusedMuonIEta,
-		*histUsedMuonCharge, *histUsedMuonIEta,
+	TH1I *histUnusedMuonCharge, *histUnusedMuonIEta, *histUnusedMuonNHo3x3Hit,
+		*histUsedMuonCharge, *histUsedMuonIEta, *histUsedMuonNHo3x3Hit,
 		*histBmtfMatchedMuonCharge, *histBmtfMatchedMuonIndex,
 		*histBmtfMb34MatchedHoIEta, *histBmtfMb34MatchedHoIPhi, *histBmtfMb34MatchedHoDeltaIPhi,
 		*histDttpMatchedHoDeltaIPhi, *histDttpMatchedHoIPhi, *histDttpMatchedHoIEta,
 		*histNHo3x3Hit,
 		*histBmtfMatchedDttpPhi;
 
-	TH1D *histDttpMatchedHoDeltaPhi, *histMuonMatchedBmtfCmsPt, *histMuonMatchedBmtfCmsEta;
-	TH2D *histBmtfMatchedMuonPt_vs_MuonEta, *histBmtfMatchedMuonEta_vs_MuonPt;
+	TH1D *histDttpMatchedHoDeltaPhi, *histMuonMatchedBmtfCmsPt, *histMuonMatchedBmtfCmsEta,
+		*histIsoMb1MatchedMuonPt, *histIsoMb1MatchedMuonPt20,*histIsoMb1MatchedMuonEta,
+		*histIsoMb12MatchedMuonPt, *histIsoMb12MatchedMuonPt20,*histIsoMb12MatchedMuonEta,
+		*histIsoMb2MatchedMuonPt, *histIsoMb2MatchedMuonPt20,*histIsoMb2MatchedMuonEta;
+
+	TH2D *histBmtfMatchedMuonPt_vs_MuonEta, *histBmtfMatchedMuonEta_vs_MuonPt,
+		*histIsoMb1MatchedMuonEta_vs_MuonPt, *histIsoMb2MatchedMuonEta_vs_MuonPt, *histIsoMb12MatchedMuonEta_vs_MuonPt;
 	// Used and Unused Histograms
 	TH1D *histUnusedMuonE, *histUnusedMuonEt, *histUnusedMuonPt, *histUnusedMuonPt20, *histUnusedMuonEta, *histUnusedMuonPhi, *histUnusedMuonIso, *histUnusedMuonHltIsoDeltaR, *histUnusedMuonDeltaR, *histUnusedMuonEtaSt1, *histUnusedMuonPhiSt1, *histUnusedMuonEtaSt2, *histUnusedMuonPhiSt2,
 		*histUsedMuonE, *histUsedMuonEt, *histUsedMuonPt, *histUsedMuonPt20, *histUsedMuonEta, *histUsedMuonPhi, *histUsedMuonIso, *histUsedMuonHltIsoDeltaR, *histUsedMuonDeltaR, *histUsedMuonEtaSt1, *histUsedMuonPhiSt1, *histUsedMuonEtaSt2, *histUsedMuonPhiSt2;
