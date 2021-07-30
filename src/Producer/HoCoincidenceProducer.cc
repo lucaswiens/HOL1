@@ -172,7 +172,6 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		}
 	}
 
-	// bmtf MB34 matching for pt confirmation
 	for (unsigned short iBmtf = 0; iBmtf < product->bmtfSize; iBmtf++){
 		if (product->bmtfBx.at(iBmtf) != 0) { continue;}
 
@@ -185,15 +184,17 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 				if (product->isMuonMatchedBmtf.at(iMuon)){ continue;}
 				// Muons selected during muon producer (redundant?)
 				if (!product->isMediumMuon.at(iMuon)) { continue;}
-				if (!product->muonHasMb1.at(iMuon)) { continue;}
 				if (product->muonIEta.at(iMuon) > iEtaCut) { continue;}
 
-				//TODO are these needed?
-				//double mb1MatchedMuonDeltaEta = product->muonEta .at(iMuon) - product->muonEtaSt1.at(iMuon);
-				//double mb1MatchedMuonDeltaPhi = Utility::DeltaPhi(product->muonPhi.at(iMuon), product->muonPhiSt1.at(iMuon));
+				double muonEta = product->muonEta.at(iMuon);
+				double muonPhi = product->muonPhi.at(iMuon);
+				if (product->muonHasMb1.at(iMuon)) {
+					muonEta = product->muonEtaSt1.at(iMuon);
+					muonPhi = product->muonPhiSt1.at(iMuon);
+				}
 
-				const double &bmtfMatchedMuonDeltaPhi = Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), product->muonPhi.at(iMuon));
-				const double &bmtfMatchedMuonDeltaR = Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), product->muonEta.at(iMuon), product->muonPhi.at(iMuon));
+				const double &bmtfMatchedMuonDeltaPhi = Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), muonPhi);
+				const double &bmtfMatchedMuonDeltaR = Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), muonEta, muonPhi);
 
 				if (bmtfMatchedMuonDeltaR < fabs(product->bmtfMatchedMuonDeltaR.at(iBmtf))) {
 					isBmtfMatchedMuon = bmtfMatchedMuonDeltaR < deltaRCut;

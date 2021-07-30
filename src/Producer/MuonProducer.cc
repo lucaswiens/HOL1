@@ -55,8 +55,6 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 		product->muonMt.push_back(dataReader->muonMt->At(i));
 
 		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(product->muonEta.back()));
-
-		//Eta < 5 does not make sense.. We already cut Eta < 0.83 to be in HO range
 		product->muonHasMb1.push_back((fabs(product->muonEtaSt1.back()) < 5) && (fabs(product->muonPhiSt1.back()) < M_PI));
 
 		histCollection->histMuonMet->Fill(product->muonMet.back());
