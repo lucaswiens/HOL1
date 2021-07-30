@@ -25,10 +25,9 @@ int main(int argc, char* argv[]) {
 
 	bool hasRecoMuons;
 
-	double ptCut = 0, etaCut = 999, deltaPhiCut = 0.4, deltaRCut = 0.4;
-	int iEtaCut = 999;
 	char workingPointCut;
-	//double ptCut = 0, etaCut = 0.83, deltaPhiCut = 0.4, deltaRCut = 0.4;
+	double ptCut = 0, etaCut = 0.83, deltaPhiCut = 0.4, deltaRCut = 0.4;
+	int iEtaCut = 10;
 	//Declare vector of Producers which will fill Histograms
 	std::vector<std::shared_ptr<BaseProducer>> producers;
 	if (strstr(argv[2], "SingleMuon") != NULL || strstr(argv[2], "MET") != NULL) {
@@ -36,8 +35,6 @@ int main(int argc, char* argv[]) {
 		if (strstr(argv[2], "SingleMuon") != NULL) {
 			ptCut = 25;
 		}
-		etaCut = 0.83;
-		iEtaCut = 10;
 
 		//workingPoint = 't'; // Tight
 		workingPointCut = 'm'; // Medium
