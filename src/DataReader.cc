@@ -52,9 +52,9 @@ DataReader::DataReader(const char* inputFileName) {
 		muonPhiSt2           = std::make_unique<TTreeReaderArray<float>>(*l1MuonRecoReader, "phiSt2");
 		muonMet              = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "met");
 		muonMt               = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "mt");
-	} /* else {
+	} else {
 		std::cout << "Dataset does not reco muons!" << std::endl;
-	} */
+	}
 
 	l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
 	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);

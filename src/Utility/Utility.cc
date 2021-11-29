@@ -17,7 +17,7 @@ int Utility::DeltaIPhi(int iPhi1, int iPhi2) {
 double Utility::DeltaR(const double &eta1, const double &phi1, const double &eta2, const double &phi2) {
 	double deltaEta = eta1 - eta2;
 	double deltaPhi = Utility::DeltaPhi(phi1, phi2);
-	return std::sqrt(std::pow(deltaPhi, 2) + std::pow(deltaEta, 2));
+	return std::sqrt(deltaPhi * deltaPhi + deltaEta * deltaEta);
 }
 
 //DTTP conversion functions
@@ -29,9 +29,14 @@ double Utility::DttpPhiToCmsPhi(double phi, int dttpSection) {
 
 int Utility::CmsPhiToHoIPhi(double cmsPhi) {
 	// [-pi, pi] to [1, 72]
-	cmsPhi = (cmsPhi <= 0) ? cmsPhi + 2 * M_PI : cmsPhi;
-	double iPhi  = cmsPhi * 72 / 2 / M_PI + 0.5;
-	return (int)std::round(iPhi);
+	//cmsPhi = (cmsPhi <= 0) ? cmsPhi + 2 * M_PI : cmsPhi;
+	//double iPhi  = cmsPhi * 72 / 2 / M_PI + 0.5;
+	//return (int)std::round(iPhi);
+
+	double dPhi = 2*M_PI/72;
+	cmsPhi = (cmsPhi < 0)? cmsPhi + 2 * M_PI : cmsPhi;
+	int iPhi = (int) (fabs(cmsPhi)/dPhi + 1);
+	return iPhi;
 }
 
 // BMTF Muon conversion functions
@@ -79,20 +84,48 @@ int Utility::CmsEtaToHoSubIEta(double cmsEta, int nDiv) {
 	return sign * subIEta;
 }
 double Utility::HoIEtaToCmsEta(int hoIEta) {
+	/*
 	// Eta segmentation in HO is 2*pi/72 = ~0.087
 	double dEta = 2 * M_PI / 72;
-	int sign = (hoIEta >= 0) - (hoIEta < 0);
 
 	// use (|iEta| + |iEta|-1) / 2 as mean
-	double meanEta = (hoIEta - sign / 2) * dEta;
-	return meanEta;
+	int sign = (hoIEta >= 0) - (hoIEta < 0);
+	double cmsEta = (hoIEta - sign / 2) * dEta;
+
+	//double cmsEta = hoIEta * dEta;
+	return cmsEta;
+	*/
+	// Eta segmentation in HO is 2*pi/72 = ~0.087
+	double dEta = 2*M_PI/72;
+
+	double sign = (hoIEta < 0) ? -1: 1;
+
+	// Take the mean eta
+	double eta = (fabs(hoIEta)-1 + fabs(hoIEta)) / 2 * dEta;
+	eta *= sign;
+
+	return eta;
 }
 
 double Utility::HoIPhiToCmsPhi(int hoIPhi) {
+	/*
 	/// // Phi segmentation in HO is 0.087
-	//double cmsPhi = 2 * M_PI * (hoIPhi + 0.5) / 72;
-	double cmsPhi = 2 * M_PI * (hoIPhi - 0.5) / 72;
+	double cmsPhi = (hoIPhi - 0.5) * 2 * M_PI / 72;
+	//double cmsPhi = hoIPhi * 2 * M_PI / 72;
 	return (cmsPhi > M_PI) ? cmsPhi - 2 * M_PI : cmsPhi;
+	*/
+	// Phi segmentation in HO is 0.087
+	double dPhi = 2.0*M_PI/72.0;
+
+	// Take the mean phi
+	double phi = (fabs(hoIPhi)-1 + fabs(hoIPhi)) / 2 * dPhi;
+
+	if(phi > M_PI)
+	{
+		phi -= 2*M_PI;
+	}
+
+	return phi;
 }
 
 int Utility::HoIPhiToSection(int iPhi) {

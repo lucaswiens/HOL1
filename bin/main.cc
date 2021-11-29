@@ -21,14 +21,19 @@ int main(int argc, char* argv[]) {
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
 	std::string outputFile = std::string(argv[1]);
-	std::cout << "The name of the outputfile is " << outputFile << ".root" << std::endl;
 	TFile *file = new TFile((outputFile + ".root").c_str(), "RECREATE");
 
 	bool hasRecoMuons;
 
-	char workingPointCut;
-	double ptCut = 0, etaCut = 0.83, deltaPhiCut = 0.4, deltaRCut = 0.4;
 	int iEtaCut = 10;
+	double ptCut = 0, etaCut = 0.83, bmtfPtCut = 3, bmtfEtaCut = 999, deltaPhiCut = 0.4, deltaRCut = 0.4;
+
+	// Choose the working point of tag muon
+	char workingPointCut = 't'; // Tight
+	//char workingPointCut = 'm'; // Medium
+	//char workingPointCut = 'l'; //Loose
+	//char workingPointCut = 'a'; //everything
+
 	//Declare vector of Producers which will fill Histograms
 	std::vector<std::shared_ptr<BaseProducer>> producers;
 	if (strstr(argv[2], "SingleMuon") != NULL || strstr(argv[2], "MET") != NULL) {
@@ -37,21 +42,18 @@ int main(int argc, char* argv[]) {
 			ptCut = 25;
 		}
 
-		//workingPoint = 't'; // Tight
-		workingPointCut = 'm'; // Medium
-		//workingPoint = 'l'; //Loose
-
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer()));
-		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer(ptCut, etaCut, workingPointCut)));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer()));
-		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, ptCut, deltaPhiCut, deltaRCut)));
+		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer(ptCut, etaCut, workingPointCut)));
+		//producers.push_back(std::shared_ptr<TagAndProbeProducer>(new TagAndProbeProducer(ptCut, etaCut, workingPointCut)));
+		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, bmtfEtaCut, ptCut, bmtfPtCut, deltaPhiCut, deltaRCut)));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
 
 		hasRecoMuons = true;
 	} else {
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer()));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer()));
-		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, ptCut, deltaPhiCut, deltaRCut)));
+		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, bmtfEtaCut, ptCut, bmtfPtCut, deltaPhiCut, deltaRCut)));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
 
 		hasRecoMuons = false;

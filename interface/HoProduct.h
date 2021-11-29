@@ -179,7 +179,8 @@ public:
 		isMb3HoIEtaMatched,
 		isMb4HoIEtaMatched;
 	// DTTP matching HO
-	std::vector<bool> isDttpMatchedHo;
+	std::vector<bool> isDttpMatchedHo,
+		isHoMatchedDttp;
 	std::vector<int> dttpMatchedHoDeltaIPhi,
 		dttpMatchedHoIPhi,
 		dttpMatchedHoIEta;
@@ -197,6 +198,13 @@ public:
 	// Reco Muon matching Ho
 	std::vector<int> muonMatchedDttpNHo3x3Hit,
 		muonMatchedDttpIndex;
+	// HO matched Muon
+	std::vector<bool> isMuonMatchedHo,
+		isHoMatchedMuon;
+	std::vector<double> hoMatchedMuonDeltaR,
+		muonMatchedHoDeltaR;
+	std::vector<unsigned int> muonMatchedHoIndex;
+	std::vector<unsigned short> hoMatchedMuonIndex;
 
 };
 
