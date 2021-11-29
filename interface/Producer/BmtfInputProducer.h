@@ -4,7 +4,6 @@
 
 class BmtfInputProducer : public BaseProducer {
 	private:
-
 	public:
 		BmtfInputProducer();
 		~BmtfInputProducer();

@@ -13,6 +13,7 @@
 #include <HOAnalysis/HOL1/interface/Producer/BmtfInputProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/HoCoincidenceProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/HoHistogramProducer.h>
+#include <HOAnalysis/HOL1/interface/Producer/TagAndProbeProducer.h>
 
 void ProgressBar(const int &, const int &, const std::string &);
 
@@ -59,15 +60,14 @@ int main(int argc, char* argv[]) {
 	// Histograms are stored inside a specific class to allow access to them for all producers
 	HoHistogramCollection histCollection(hasRecoMuons);
 
+	TH1I *numberOfEvents = new TH1I("numberOfEvents", "numberOfEvents", 1, 0, 1);
 	int rate = 0, elapsedTime = 0, totalProcessed = 0;
 	for (int iFile = 2; iFile < argc; iFile ++) {
 		//std::chrono::steady_clock::time_point loopStart = std::chrono::steady_clock::now();
 		int  processed = 0;
-
 		const char* inputFile = argv[iFile];
-		std::cout << "Processing(" << iFile - 1 << "/" << argc - 2 << "): "<< inputFile << std::endl;
-
 		DataReader* dataReader = new DataReader(inputFile);
+		std::cout << "Processing(" << iFile - 1 << "/" << argc - 2 << "): "<< inputFile << " with " << dataReader->GetEntries() << " events" << std::endl;
 
 		ProgressBar(0, 0, "Starting");
 		while (dataReader->Next()) {
@@ -89,6 +89,8 @@ int main(int argc, char* argv[]) {
 		ProgressBar(100, rate, "Done");
 		std::cout << std::endl;
 
+		numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
+
 		delete dataReader;
 	}
 
@@ -103,6 +105,7 @@ int main(int argc, char* argv[]) {
 	delete file;
 
 	std::cout << "Processed " << argc - 2 << " files in " << std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - start).count() << " minutes" << std::endl;
+	std::cout << "The name of the outputfile is " << outputFile << ".root" << std::endl;
 
 	return 0;
 }

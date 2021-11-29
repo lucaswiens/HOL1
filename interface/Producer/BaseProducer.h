@@ -11,6 +11,9 @@
 #include <TH2F.h>
 #include <TCanvas.h>
 
+#include <Rtypes.h>
+#include <Math/Vector4Dfwd.h>
+
 #include <HOAnalysis/HOL1/interface/DataReader.h>
 #include <HOAnalysis/HOL1/interface/HoProduct.h>
 #include <HOAnalysis/HOL1/interface/HoHistogramCollection.h>
