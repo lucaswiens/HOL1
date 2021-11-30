@@ -73,7 +73,8 @@ public:
 		muonHltIsoMu,
 		muonHltMu,
 		muonPassesSingleMuon,
-		muonHasMb1;
+		muonHasMb1,
+		muonHasMb2;
 	std::vector<int> muonCharge,
 		muonIEta,
 		muonNHo3x3Hit;

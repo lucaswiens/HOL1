@@ -200,6 +200,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 				bmtfMatchedMuonDeltaPhiVec.push_back(Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), product->muonPhiSt2.at(iMuon)));
 				bmtfMatchedMuonDeltaRVec.push_back(Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), product->muonEtaSt2.at(iMuon), product->muonPhiSt2.at(iMuon)));
 
+				const int &matchedStation = std::min_element(bmtfMatchedMuonDeltaRVec.begin(), bmtfMatchedMuonDeltaRVec.end()) - bmtfMatchedMuonDeltaRVec.begin();
+
 				const double &bmtfMatchedMuonDeltaPhi = bmtfMatchedMuonDeltaPhiVec.at(matchedStation);
 				const double &bmtfMatchedMuonDeltaR   = bmtfMatchedMuonDeltaRVec.at(matchedStation);
 

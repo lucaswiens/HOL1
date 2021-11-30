@@ -88,9 +88,6 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 		const double bmtfCmsPt = Utility::BmtfPtToCmsPt(bmtfPt);
 		const double bmtfCmsEta = Utility::BmtfEtaToCmsEta(bmtfEta);
 
-		// Not sure if I should select here or only during matching.. Probably during matching
-		//if (bmtfCmsEta < 0 || fabs(bmtfCmsEta) > 0.83) { continue;}
-
 		product->bmtfBx.push_back(dataReader->tfMuonBx->At(i));
 		product->bmtfPt.push_back(bmtfPt);
 		product->bmtfEta.push_back(bmtfEta);
@@ -105,7 +102,6 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 			dataReader->tfMuonTrAdd->At(4 * i + 3)
 		});
 		product->bmtfTrackType.push_back(Utility::GetBmtfStationMask(product->bmtfTrackerAddresses.at(i)));
-
 
 		histCollection->histBmtfHwPt->Fill(product->bmtfPt.at(i));
 		histCollection->histBmtfHwEta->Fill(product->bmtfEta.at(i));
