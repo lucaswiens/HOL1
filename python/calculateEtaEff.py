@@ -15,7 +15,7 @@ import subprocess
 
 import ROOT
 
-#import common
+import common
 
 def GetOsVariable(Var):
 	try:
@@ -44,34 +44,40 @@ if __name__=="__main__":
 
 	parser = argparse.ArgumentParser(description="Runs a NAF batch system for nanoAOD", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-i", "--input-file", required=True, help="Path to the file with the L1Ntuple + HO coincidence histograms")
-	parser.add_argument("-o", "--output-directory", help="Path to the output directory", default = "hostudy/" + date)
+	parser.add_argument("-o", "--output-directory", help="Path to the output directory", default = "")
 	parser.add_argument("-n", "--number-of-files", help="Number of files that will be processed at once", default = 100)
 	parser.add_argument("-b", "--bins", help="Number of bins", default = None)
 	parser.add_argument("--plot-config", default = cmsswBase + "/src/Plotting/Plotter/data/config/efficiency.json", help = "Path to the json file used to create plots: %(default)s")
 	parser.add_argument("--file-types", nargs = "+", default = ["png", "pdf"], help = "Set the filetypes of the output: %(default)s")
 	parser.add_argument("--test", default = False, action = "store_true", help = "Use only the first five file for each sample for a quick run")
+	parser.add_argument("--bmtf-only", default = False, action = "store_true", help = "Show only bmtf efficiency")
 
 	args = parser.parse_args()
 
-	#executable = cmsswBase + "/nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1/scripts/produceL1Ntuple"
+
+	args.output_directory = "hostudy/" + date + "/" + args.output_directory
 
 	outputDirectories = [
 		args.output_directory,
 		args.output_directory + "/efficiency/log",
 	]
+
 	for dir in outputDirectories:
 		if not os.path.exists(dir):
 			os.makedirs(dir)
-	histogramFile = ROOT.TFile(args.input_file)
 
+	histogramFile = ROOT.TFile(args.input_file)
 
 	xLabel = findLabel("Eta")
 	yLabel = "Efficiency"
 	width = 1200
-	height = int(width / 1.618030)
+	height = width
+	#height = 1500
+	#height = int(width / 1.618030)
 	effName = "muonEta"
 
 	canvas = ROOT.TCanvas(effName, effName, width, height)
+	canvas.SetGrid()
 
 
 	muonEta = histogramFile.Get("muonEta")
@@ -81,27 +87,31 @@ if __name__=="__main__":
 	isoMb2MatchedMuonEta = histogramFile.Get("isoMb2MatchedMuonEta")
 	isoMb12MatchedMuonEta = histogramFile.Get("isoMb12MatchedMuonEta")
 
+	yMin = 0
+	yMax = 1.1
+
 	effBmtfGraph = ROOT.TGraphAsymmErrors(muonEta)
 	effBmtfGraph.Divide(bmtfMatchedMuonEta, muonEta, "cl=0.683 b(1,1) mode")
 	effBmtfGraph.SetLineColor(ROOT.kBlack); effBmtfGraph.SetMarkerColor(ROOT.kBlack); effBmtfGraph.SetMarkerColor(ROOT.kBlack); effBmtfGraph.SetMarkerSize(0.8)
 	effBmtfGraph.SetTitle("BMTF Muon"); effBmtfGraph.GetXaxis().SetTitle(xLabel); effBmtfGraph.GetYaxis().SetTitle(yLabel);
-	effBmtfGraph.SetMinimum(0); effBmtfGraph.SetMaximum(1.0)
+	effBmtfGraph.SetMinimum(yMin); effBmtfGraph.SetMaximum(yMax)
 
 	effIsoMb1Graph = ROOT.TGraphAsymmErrors(muonEta)
 	effIsoMb1Graph.Divide(isoMb1MatchedMuonEta, muonEta, "cl=0.683 b(1,1) mode")
 	effIsoMb1Graph.SetLineColor(ROOT.kRed-2); effIsoMb1Graph.SetMarkerColor(ROOT.kRed-2); effIsoMb1Graph.SetMarkerColor(ROOT.kRed-2); effIsoMb1Graph.SetMarkerSize(0.8)
 	effIsoMb1Graph.SetTitle("BMTF+IsoMB1 Muon"); effIsoMb1Graph.GetXaxis().SetTitle(xLabel); effIsoMb1Graph.GetYaxis().SetTitle(yLabel);
-	effIsoMb1Graph.SetMinimum(0); effIsoMb1Graph.SetMaximum(1.0)
+	effIsoMb1Graph.SetMinimum(yMin); effIsoMb1Graph.SetMaximum(yMax)
 
 	effIsoMb12Graph = ROOT.TGraphAsymmErrors(muonEta)
 	effIsoMb12Graph.Divide(isoMb12MatchedMuonEta, muonEta, "cl=0.683 b(1,1) mode")
 	effIsoMb12Graph.SetLineColor(ROOT.kAzure-2); effIsoMb12Graph.SetMarkerColor(ROOT.kAzure-2); effIsoMb12Graph.SetMarkerColor(ROOT.kAzure-2); effIsoMb12Graph.SetMarkerSize(0.8)
 	effIsoMb12Graph.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Graph.GetXaxis().SetTitle(xLabel); effIsoMb12Graph.GetYaxis().SetTitle(yLabel);
-	effIsoMb12Graph.SetMinimum(0); effIsoMb12Graph.SetMaximum(1.0)
+	effIsoMb12Graph.SetMinimum(yMin); effIsoMb12Graph.SetMaximum(yMax)
 
 	effBmtfGraph.Draw("same ap")
-	effIsoMb1Graph.Draw("same p")
-	effIsoMb12Graph.Draw("same p")
+	if not args.bmtf_only:
+		effIsoMb1Graph.Draw("same p")
+		effIsoMb12Graph.Draw("same p")
 
 	ROOT.gPad.BuildLegend();
 
@@ -113,7 +123,104 @@ if __name__=="__main__":
 	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
 	canvas.Close()
 
-	#common.CreateIndexHtml(templateDir = cmsswBase + "/src/HOAnalysis/HOL1/data/html", outputDir = args.output_directory, fileTypes = args.file_types)
+	muonEta_vs_MuonPt = histogramFile.Get("muonEta_vs_MuonPt")
+	bmtfMatchedMuonEta_vs_MuonPt = histogramFile.Get("bmtfMatchedMuonEta_vs_MuonPt")
 
+	isoMb1MatchedMuonEta_vs_MuonPt = histogramFile.Get("isoMb1MatchedMuonEta_vs_MuonPt")
+	isoMb2MatchedMuonEta_vs_MuonPt = histogramFile.Get("isoMb2MatchedMuonEta_vs_MuonPt")
+	isoMb12MatchedMuonEta_vs_MuonPt = histogramFile.Get("isoMb12MatchedMuonEta_vs_MuonPt")
+
+	xLabel = findLabel("Eta")
+	yLabel = findLabel("Pt")
+
+	effBmtfHist = ROOT.TH2D(bmtfMatchedMuonEta_vs_MuonPt)
+	effBmtfHist.Divide(muonEta_vs_MuonPt)
+	effBmtfHist.SetLineColor(ROOT.kBlack); effBmtfHist.SetMarkerColor(ROOT.kBlack); effBmtfHist.SetMarkerColor(ROOT.kBlack); effBmtfHist.SetMarkerSize(0.8)
+	effBmtfHist.SetTitle("BMTF Muon"); effBmtfHist.GetXaxis().SetTitle(xLabel); effBmtfHist.GetYaxis().SetTitle(yLabel);
+	effBmtfHist.SetStats(False);
+
+	effIsoMb1Hist = ROOT.TH2D(isoMb1MatchedMuonEta_vs_MuonPt)
+	effIsoMb1Hist.Divide(muonEta_vs_MuonPt)
+	effIsoMb1Hist.SetLineColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerSize(0.8)
+	effIsoMb1Hist.SetTitle("BMTF+IsoMB1 Muon"); effIsoMb1Hist.GetXaxis().SetTitle(xLabel); effIsoMb1Hist.GetYaxis().SetTitle(yLabel);
+	effIsoMb1Hist.SetStats(False);
+
+	effIsoMb12Hist = ROOT.TH2D(isoMb12MatchedMuonEta_vs_MuonPt)
+	effIsoMb12Hist.Divide(muonEta_vs_MuonPt)
+	effIsoMb12Hist.SetLineColor(ROOT.kAzure-2); effIsoMb12Hist.SetMarkerColor(ROOT.kAzure-2); effIsoMb12Hist.SetMarkerColor(ROOT.kAzure-2); effIsoMb12Hist.SetMarkerSize(0.8)
+	effIsoMb12Hist.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Hist.GetXaxis().SetTitle(xLabel); effIsoMb12Hist.GetYaxis().SetTitle(yLabel);
+	effIsoMb12Hist.SetStats(False);
+
+	#ROOT.gPad.BuildLegend();
+
+	effName = "muonEta_vs_muonPt_bmtf"
+	canvas = ROOT.TCanvas(effName, effName, width, height)
+	effBmtfHist.Draw("colz")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
+	canvas.SetLogz()
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
+	canvas.Close()
+
+	effName = "muonEta_vs_muonPt_isoMB1"
+	canvas = ROOT.TCanvas(effName, effName, width, height)
+	effIsoMb1Hist.Draw("colz")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
+	canvas.SetLogz()
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
+	canvas.Close()
+
+	effName = "muonEta_vs_muonPt_isoMB12"
+	canvas = ROOT.TCanvas(effName, effName, width, height)
+	effIsoMb12Hist.Draw("colz")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
+	canvas.SetLogz()
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
+	canvas.Close()
+
+	yMin = 1
+	yMax = 1.6
+	effBmtfHist.SetMinimum(yMin); effBmtfHist.SetMaximum(yMax)
+	effIsoMb1Hist.SetMinimum(yMin); effIsoMb1Hist.SetMaximum(yMax)
+	effIsoMb12Hist.SetMinimum(yMin); effIsoMb12Hist.SetMaximum(yMax)
+
+	effRatioIsoMb1Hist = ROOT.TH2D(effIsoMb1Hist)
+	effRatioIsoMb1Hist.Divide(effBmtfHist)
+	effRatioIsoMb1Hist.SetLineColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerSize(0.8)
+	effRatioIsoMb1Hist.SetTitle("BMTF+IsoMB1 Muon"); effIsoMb1Hist.GetXaxis().SetTitle(xLabel); effIsoMb1Hist.GetYaxis().SetTitle(yLabel);
+
+	effName = "effRatio_isoMB1"
+	canvas = ROOT.TCanvas(effName, effName, width, height)
+	effRatioIsoMb1Hist.SetMinimum(1.); effIsoMb1Hist.SetMaximum(1.1)
+	effRatioIsoMb1Hist.Draw("colz")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
+	canvas.SetLogz()
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
+	canvas.Close()
+
+	effRatioIsoMb12Hist = ROOT.TH2D(effIsoMb12Hist)
+	effRatioIsoMb12Hist.SetMinimum(1.); effIsoMb12Hist.SetMaximum(1.5)
+	effRatioIsoMb12Hist.Divide(effBmtfHist)
+	effRatioIsoMb12Hist.SetLineColor(ROOT.kRed-2); effIsoMb12Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb12Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb12Hist.SetMarkerSize(0.8)
+	effRatioIsoMb12Hist.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Hist.GetXaxis().SetTitle(xLabel); effIsoMb12Hist.GetYaxis().SetTitle(yLabel);
+
+	effName = "effRatio_isoMB12"
+	canvas = ROOT.TCanvas(effName, effName, width, height)
+	effRatioIsoMb12Hist.Draw("colz")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
+	canvas.SetLogz()
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".png")
+	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
+	canvas.Close()
+
+	common.CreateIndexHtml(templateDir = cmsswBase + "/src/HOAnalysis/HOL1/data/html", outputDir = args.output_directory, fileTypes = args.file_types)
 	#plottingUrl = common.GetOSVariable("PLOTTING_URL")
 	#print(plottingUrl + "/" + args.output_directory)

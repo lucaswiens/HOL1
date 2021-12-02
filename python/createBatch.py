@@ -13,6 +13,13 @@ def GetOsVariable(Var):
 		sys.exit(1)
 	return variable
 
+def makeDirs(path):
+	try:
+		os.makedirs(path)
+	except:
+		pass
+
+
 if __name__=="__main__":
 	date = subprocess.check_output("date +\"%Y_%m_%d\"", shell=True).decode("utf-8").replace("\n", "")
 	cmsswBase = GetOsVariable("CMSSW_BASE")
@@ -21,23 +28,24 @@ if __name__=="__main__":
 
 	parser = argparse.ArgumentParser(description="Runs a NAF batch system for nanoAOD", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-i", "--input-file", required=True, help="Path to the file containing a list of samples.")
-	parser.add_argument("-o", "--output", help="Path to the output directory", default = cmsswBase + "/" "Batch/" + date)
+	parser.add_argument("-o", "--output", help="Path to the output directory", default = cmsswBase + "/" "Batch")
 	parser.add_argument("-n", "--number-of-files", help="Number of files that will be processed at once", default = 100)
 	parser.add_argument("--test", default = False, action = "store_true", help = "Use only the first five file for each sample for a quick run")
 
 	args = parser.parse_args()
 	fileName = "SingleMuon" if "SingleMuon" in args.input_file else "ZeroBias"
 	fileName = args.input_file.split("/")[1].split(".")[0]
-	args.output = args.output + "/" + fileName
+	args.output = args.output + "/" + fileName + "/" + date
 
 	#executable = cmsswBase + "/nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1/scripts/produceL1Ntuple"
 
 	#if os.path.exists(args.output):
-		#shutil.rmtree(str(args.output))
-	os.makedirs(str(args.output) + "/L1Hist")
-	os.makedirs(str(args.output) + "/error")
-	os.makedirs(str(args.output) + "/log")
-	os.makedirs(str(args.output) + "/output")
+	#shutil.rmtree(str(args.output))
+	makeDirs(cmsswBase + "/L1Hist/" + "/" + fileName + "/" + date)
+	#makeDirs(str(args.output) + "/L1Hist")
+	makeDirs(str(args.output) + "/error")
+	makeDirs(str(args.output) + "/log")
+	makeDirs(str(args.output) + "/output")
 
 	numberOfFiles = int(args.number_of_files)
 	number = 0
@@ -58,7 +66,7 @@ if __name__=="__main__":
 	execFile.write("#!/bin/sh\n")
 	execFile.write("cd " + cmsswBase + "\n")
 	execFile.write("eval `scramv1 runtime -sh` #cmsenv\n")
-	execFile.write("cd " + args.output + "/L1Hist\n")
+	execFile.write("cd " + cmsswBase + "/L1Hist/" + fileName + "/" + date + "\n")
 	execFile.write("bash " + args.output + "/${1}\n")
 	os.system("chmod 744 " + args.output + "/produceNtuple")
 	argumentFile = open(args.output + "/arguments.md", "w")
@@ -74,7 +82,7 @@ if __name__=="__main__":
 			shellFile = open(args.output + "/processNtuple_" + str(shellNumber), "w")
 			os.system("chmod 744 " + args.output + "/processNtuple_" + str(shellNumber))
 			shellFile.write("#!/bin/sh\n")
-			shellFile.write("HOStudy L1Hist_" + str(shellNumber) + " ")
+			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " ")
 			shellFile.write(sample + " ")
 			number += 1
 
