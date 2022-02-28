@@ -89,41 +89,40 @@ if __name__=="__main__":
 	colorList = [ROOT.kBlack, ROOT.kAzure-2, ROOT.kRed-2, ROOT.kTeal+3]
 
 
+	firstDraw = True
 	for eff in efficiencyList:
-
 		xLabel = ""
 		yLabel = "Efficiency"
 		width = 1200
 		height = int(width / 1.618030)
 		effName = ""
 		if isinstance(eff[0], list):
-			effName = eff[0][0]
+			effName = eff[0][2]
 		else:
-			effName = eff[0]
+			effName = eff[2]
 		canvas = ROOT.TCanvas(effName, effName, width, height)
-		canvas.cd()
-
-		#efficiencyGraphs = []
+		efficiencyGraphs = []
 		if isinstance(eff[0], list):
 			eff = np.array(eff)
 			efficiencyArray = eff[:,0]
 			matchedMuonArray = eff[:,1]
 			muonArray = eff[:,2]
 
-			xLabel = findLabel(efficiencyArray[0])
+			xLabel = findLabel(muonArray[0])
 
 			for efficiency, matchedMuon, muon, color in zip(efficiencyArray, matchedMuonArray, muonArray, colorList):
 				print(efficiency, matchedMuon, muon)
-				#muonHist = histogramFile.Get(muon)
-				tmpMuonHist = ROOT.TH1D(histogramFile.Get(muon).Clone("tmpMuon"))
-				tmpMatchedMuonHist = ROOT.TH1D(histogramFile.Get(matchedMuon).Clone("tmpMatchedMuon"))
+
+				tmpMuonHist = histogramFile.Get(muon).Clone(muon + "_tmp")
+				tmpMatchedMuonHist = histogramFile.Get(matchedMuon).Clone(matchedMuon + "_tmp")
+
 				muonHist = None
 				matchedMuonHist = None
-				if args.bins != none and "Pt" in muon:
+				if args.bins != None and "Pt" in muon:
 					minimum = tmpMuonHist.GetBinCenter(1)
 					maximum = 0.5 * int(args.bins)
-					muonHist = ROOT.TH1D(muon, muon, int(args.bins), minimum, maximum)
-					matchedMuonHist = ROOT.TH1D(matchedMuon, matchedMuon, int(args.bins), minimum, maximum)
+					muonHist = ROOT.TH1D(muon, "", int(args.bins), minimum, maximum)
+					matchedMuonHist = ROOT.TH1D(matchedMuon, "", int(args.bins), minimum, maximum)
 					for bin in range(0, int(args.bins) + 1):
 						muonHist.SetBinContent(bin, tmpMuonHist.GetBinContent(bin))
 						muonHist.SetBinError(bin, tmpMuonHist.GetBinError(bin))
@@ -138,18 +137,20 @@ if __name__=="__main__":
 				#efficiencyGraph = ROOT.TGraphAsymmErrors(matchedMuonHist, muonHist)
 				efficiencyGraph = ROOT.TGraphAsymmErrors(matchedMuonHist)
 				efficiencyGraph.Divide(matchedMuonHist, muonHist, "cl=0.683 b(1,1) mode")
-				efficiencyGraph.SetLineColor(ROOT.kBlack)
-				efficiencyGraph.SetMarkerColor(ROOT.kBlack)
-				efficiencyGraph.SetMarkerSize(0.8)
+				efficiencyGraph.SetLineColor(color)
 				efficiencyGraph.SetMarkerColor(color)
-				#efficiencyGraphs.append(efficiencyGraph)
+				efficiencyGraph.SetMarkerColor(color)
+				efficiencyGraph.SetMarkerSize(0.8)
+
+				efficiencyGraph.SetTitle(efficiency)
+				efficiencyGraph.GetXaxis().SetTitle(xLabel);
+				efficiencyGraph.GetYaxis().SetTitle(yLabel);
 
 				efficiencyGraph.SetMinimum(0)
 				efficiencyGraph.SetMaximum(1.0)
 
-				efficiencyGraph.GetXaxis().SetTitle(xLabel);
-				efficiencyGraph.GetYaxis().SetTitle(yLabel);
-				efficiencyGraph.Draw("AP")
+				efficiencyGraphs.append(efficiencyGraph)
+
 
 
 		else:
@@ -187,15 +188,6 @@ if __name__=="__main__":
 					xMaximum = tmpMuonHist.GetXaxis().GetBinCenter(nBins1 + 1) - tmpMuonHist.GetXaxis().GetBinWidth(nBins1 + 1)/2
 					yMinimum = 0
 					yMaximum = 0.5 * int(args.bins)
-
-				#for i in range(0, nBins1 + 1):
-				#	print(i, tmpMuonHist.GetXaxis().GetBinCenter(i) - tmpMuonHist.GetXaxis().GetBinWidth(i)/2)
-				#for i in range(0, nBins2 + 1):
-				#	print(i, tmpMuonHist.GetYaxis().GetBinCenter(i) - tmpMuonHist.GetYaxis().GetBinWidth(i)/2)
-
-				#print(nBins1, xMinimum, xMaximum)
-				#print(nBins2, yMinimum, yMaximum)
-
 
 				muonHist = ROOT.TH2D(muon, muon, nBins1, xMinimum, xMaximum, nBins2, yMinimum, yMaximum)
 				matchedMuonHist = ROOT.TH2D(matchedMuon, matchedMuon, nBins1, xMinimum, xMaximum, nBins2, yMinimum, yMaximum)
@@ -249,6 +241,11 @@ if __name__=="__main__":
 				efficiencyGraph.GetXaxis().SetTitle(xLabel);
 				efficiencyGraph.GetYaxis().SetTitle(yLabel);
 				efficiencyGraph.Draw("AP")
+
+		efficiencyGraphs[0].Draw("same ap")
+		for graph in efficiencyGraphs[1:]:
+			graph.Draw("same p")
+		ROOT.gPad.BuildLegend();
 
 		canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
 		canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")

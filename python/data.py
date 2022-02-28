@@ -2,12 +2,12 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: l1Ntuple -s RAW2DIGI --python_filename=data.py --no_output --era=Run2_2017 --data --conditions=112X_dataRun2_v7 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleAODRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloStage2Params_2017_v1_8_4 --no_exec
+# with command line options: l1Ntuple -s RAW2DIGI --python_filename=data.py -n 1000 --no_output --era=Run2_2018 --data --conditions=112X_dataRun2_v7 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_3 --filein=/store/data/Run2018D/ZeroBias/RAW/v1/000/322/079/00000/0CD3CD19-5EAF-E811-882E-FA163E61340F.root
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
+from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
 
-process = cms.Process('RAW2DIGI',Run2_2017)
+process = cms.Process('RAW2DIGI',Run2_2018)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -21,13 +21,13 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1),
+    input = cms.untracked.int32(1000),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:l1Ntuple_DIGI2RAW.root'),
+    fileNames = cms.untracked.vstring('/store/data/Run2018D/ZeroBias/RAW/v1/000/322/079/00000/0CD3CD19-5EAF-E811-882E-FA163E61340F.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -60,7 +60,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('l1Ntuple nevts:1'),
+    annotation = cms.untracked.string('l1Ntuple nevts:1000'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
@@ -91,25 +91,21 @@ from L1Trigger.Configuration.customiseReEmul import L1TReEmulFromRAW
 process = L1TReEmulFromRAW(process)
 
 # Automatic addition of the customisation function from L1Trigger.L1TNtuples.customiseL1Ntuple
-from L1Trigger.L1TNtuples.customiseL1Ntuple import L1NtupleAODRAWEMU 
+from L1Trigger.L1TNtuples.customiseL1Ntuple import L1NtupleRAWEMU 
 
-#call to customisation function L1NtupleAODRAWEMU imported from L1Trigger.L1TNtuples.customiseL1Ntuple
-process = L1NtupleAODRAWEMU(process)
+#call to customisation function L1NtupleRAWEMU imported from L1Trigger.L1TNtuples.customiseL1Ntuple
+process = L1NtupleRAWEMU(process)
 
 # Automatic addition of the customisation function from L1Trigger.Configuration.customiseSettings
-from L1Trigger.Configuration.customiseSettings import L1TSettingsToCaloStage2Params_2017_v1_8_4 
+from L1Trigger.Configuration.customiseSettings import L1TSettingsToCaloParams_2018_v1_3 
 
-#call to customisation function L1TSettingsToCaloStage2Params_2017_v1_8_4 imported from L1Trigger.Configuration.customiseSettings
-process = L1TSettingsToCaloStage2Params_2017_v1_8_4(process)
+#call to customisation function L1TSettingsToCaloParams_2018_v1_3 imported from L1Trigger.Configuration.customiseSettings
+process = L1TSettingsToCaloParams_2018_v1_3(process)
 
 # End of customisation functions
 
 
 # Customisation from command line
-
-#Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
-from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
-process = customiseLogErrorHarvesterUsingOutputCommands(process)
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete

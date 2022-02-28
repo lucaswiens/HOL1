@@ -140,7 +140,7 @@ if __name__=="__main__":
 		effIsoMb1Graph.Draw("same p")
 		effIsoMb12Graph.Draw("same p")
 
-	ROOT.gPad.BuildLegend();
+	ROOT.gPad.BuildLegend(0.6, 0.2, 0.9, 0.45);
 
 	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
 	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
