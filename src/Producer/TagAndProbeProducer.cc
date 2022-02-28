@@ -1,7 +1,8 @@
 #include <HOAnalysis/HOL1/interface/Producer/TagAndProbeProducer.h>
 
-TagAndProbeProducer::TagAndProbeProducer(const double &ptCut, const double &etaCut, const char &workingPointCut):
+TagAndProbeProducer::TagAndProbeProducer(const double &ptCut, const double &l1PtCut, const double &etaCut, const char &workingPointCut):
 	ptCut(ptCut),
+	l1PtCut(l1PtCut),
 	etaCut(etaCut),
 	workingPointCut(workingPointCut)
 	{
@@ -49,20 +50,28 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		}
 
 		if (passesWorkingPoint) {
+			//product->tagMuonMatchedBmtfIndex = iMuon;
+			//break;
+
 			//tagMuonIndex = iMuon;
+			const double &tagMuonPt = dataReader->muonPt->At(iMuon);
 			const double &tagMuonEta = dataReader->muonEta->At(iMuon);
+			if (tagMuonPt < ptCut || fabs(tagMuonEta) > etaCut) { continue;}
+			//if (tagMuonPt < ptCut || fabs(tagMuonEta) > etaCut) { continue;}
+			//tagMuonIndex = iMuon;
 			const double &tagMuonPhi = dataReader->muonPhi->At(iMuon);
 			const double &tagMuonEtaSt1 = dataReader->muonEtaSt1->At(iMuon);
 			const double &tagMuonPhiSt1 = dataReader->muonPhiSt1->At(iMuon);
 			const double &tagMuonEtaSt2 = dataReader->muonEtaSt2->At(iMuon);
 			const double &tagMuonPhiSt2 = dataReader->muonPhiSt2->At(iMuon);
 
-			//std::cout << std::endl << "Found a " << workingPointCut << " muon(" << tagMuonIndex+1 << "/" << product->nMuon << ")";
-			tagMuonCharge = dataReader->muonCharge->At(iMuon);
+			////std::cout << std::endl << "Found a " << workingPointCut << " muon(" << tagMuonIndex+1 << "/" << product->nMuon << ")";
+			//tagMuonCharge = dataReader->muonCharge->At(iMuon);
 
 			if (product->bmtfSize != 0) {
 				for (unsigned short iBmtf = 0; iBmtf < product->bmtfSize; iBmtf++){
-					//if (product->bmtfBx.at(iBmtf) != 0 && product->bmtfCmsPt.at(iBmtf) > 24) { continue;} //TODO think about pt cut.. probabyl not smart!
+					if (product->bmtfBx.at(iBmtf) != 0 && product->bmtfCmsPt.at(iBmtf) < 22) { continue;} //TODO think about pt cut.. probabyl not smart!
+					//if (product->bmtfBx.at(iBmtf) != 0 && product->bmtfCmsPt.at(iBmtf) < l1PtCut) { continue;} //TODO think about pt cut.. probabyl not smart!
 					if (product->bmtfBx.at(iBmtf) != 0) { continue;}
 
 					std::vector<double> bmtfMatchedMuonDeltaRVec;
@@ -75,19 +84,21 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 					//const double &bmtfMatchedMuonDeltaR = Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), tagMuonEta, tagMuonPhi);
 
+					//if (bmtfMatchedMuonDeltaR < 0.1 && bmtfMatchedMuonDeltaR < fabs(tagMuonMatchedBmtfDeltaR)) {
 					if (bmtfMatchedMuonDeltaR < 0.1 && bmtfMatchedMuonDeltaR < fabs(tagMuonMatchedBmtfDeltaR)) {
 						tagMuonIndex = iMuon;
 						product->tagMuonMatchedBmtfIndex = iBmtf;
+						//std::cout << "TagMuon found!" << std::endl;
 					}
 
 				}
 			}
-			if (product->tagMuonMatchedBmtfIndex) { break; }
 		}
+		if (product->tagMuonMatchedBmtfIndex > 0) { break; }
 	}
 
-	//if (product->tagMuonMatchedBmtfIndex > 0) {
-	if (tagMuonIndex < 999) {
+	if (product->tagMuonMatchedBmtfIndex > 0) {
+	//if (tagMuonIndex < 999) {
 
 		//TODO declare as member of this producer maybe
 		const double &muonMass = 0.10571289;
@@ -99,18 +110,19 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		const float &tagMuonPhi = dataReader->muonPhi->At(tagMuonIndex);
 		ROOT::Math::PtEtaPhiMVector tagMuonP4 = ROOT::Math::PtEtaPhiMVector(tagMuonPt, tagMuonEta, tagMuonPhi, muonMass);
 
-		bool probedMuonFound = false;
-		unsigned short probedMuonIndex = 999; // If you want to use best mass method
+		bool probeMuonFound = false;
+		unsigned short probeMuonIndex = 999; // If you want to use best mass method
 		double bestDiMuonMass = -999;
 		for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++) {
 			if (tagMuonIndex == iMuon) { continue;}
 			const int &muonCharge = dataReader->muonCharge->At(iMuon);
 			if (tagMuonCharge == muonCharge) { continue;}
-			//if (probedMuonFound) { continue;}
+			//if (probeMuonFound) { continue;}
 
 
 			const float &muonPt = dataReader->muonPt->At(iMuon);
 			const float &muonEta = dataReader->muonEta->At(iMuon);
+			if (muonPt < ptCut || fabs(muonEta) > etaCut) { continue;}
 			const float &muonPhi = dataReader->muonPhi->At(iMuon);
 
 			//const int &matchedStation = std::min_element(bmtfMatchedMuonDeltaRVec.begin(), bmtfMatchedMuonDeltaRVec.end()) - bmtfMatchedMuonDeltaRVec.begin();
@@ -119,38 +131,65 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 			ROOT::Math::PtEtaPhiMVector muonP4 = ROOT::Math::PtEtaPhiMVector(muonPt, muonEta, muonPhi, muonMass);
 			const double &diMuonMass= (tagMuonP4 + muonP4).M();
+			//std::cout << std::fixed << std::setprecision(4) << "tagMuon(" << tagMuonIndex << ")\t=\t" << tagMuonP4.M() << ",\tprobeMuon(" << iMuon << ")\t=\t" << muonP4.M() << ",\tDiMuon\t=\t" << diMuonMass << std::endl;
 
-			histCollection->histDiMuonMass->Fill(diMuonMass);
 
 			//if (muonPt < ptCut || fabs(muonEta) > etaCut || !passesWorkingPoint) { continue;}
-			if (muonPt < ptCut || fabs(muonEta) > etaCut) { continue;}
 			//if (!isInMassWindow) { continue;}
+			histCollection->histDiMuonMass->Fill(diMuonMass);
 
 			// if is closer to jpsi or not closer to jpsi and closer to zboson
 			//bool isJPsi   = fabs(diMuonMass - jPsiMass)   < fabs(bestDiMuonMass - jPsiMass)   && fabs(diMuonMass / jPsiMass   - 1) < 0.32;
 			//bool isZBoson = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass) && fabs(diMuonMass / zBosonMass - 1) < 0.32;
+			//bool isJPsi   = fabs(diMuonMass - jPsiMass)   < fabs(bestDiMuonMass - jPsiMass)   && fabs(diMuonMass / jPsiMass   - 1) < fabs(diMuonMass / zBosonMass - 1);
+			//bool isZBoson = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass) && fabs(diMuonMass / zBosonMass - 1) < fabs(diMuonMass / jPsiMass   - 1);
+			bool isJPsi   = false;
+			bool isZBoson = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass);
 
-			bool isJPsi   = fabs(diMuonMass - jPsiMass)   < fabs(bestDiMuonMass - jPsiMass)   && fabs(diMuonMass - jPsiMass) / jPsiMass < fabs(diMuonMass - zBosonMass) / zBosonMass;
-			bool isZBoson = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass) && fabs(diMuonMass - jPsiMass) / jPsiMass > fabs(diMuonMass - zBosonMass) / zBosonMass;
+			//bool isJPsi = fabs(diMuonMass - jPsiMass)/jPsiMass < .6; //FIXME THIS ONLY MAKES SENSE TO nmuon==2
+			//bool isJPsi = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass);
+			//bool isJPsi = diMuonMass < 6; //FIXME THIS ONLY MAKES SENSE TO nmuon==2
+			//bool isJPsi = fabs(diMuonMass - jPsiMass)   < fabs(bestDiMuonMass - jPsiMass);
+			//This is good probably but test other stuff for now
+			//bool isJPsi   = fabs(diMuonMass - jPsiMass)   < fabs(bestDiMuonMass - jPsiMass)   && fabs(diMuonMass - jPsiMass) / jPsiMass < fabs(diMuonMass - zBosonMass) / zBosonMass;
 
-			//std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << "\tmass(" << iMuon << ", " << tagMuonIndex << ") =\t" << diMuonMass << "\t" << (diMuonMass - jPsiMass) << "\t" << (diMuonMass - zBosonMass) << "\t" << (diMuonMass - jPsiMass) / jPsiMass << "\t" << (diMuonMass - zBosonMass) / zBosonMass;
+			//FIXME this is somewhat reasonable maybe
+			//bool isJPsi = false;
+			//bool isZBoson = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass) && fabs(diMuonMass - jPsiMass) / jPsiMass > fabs(diMuonMass - zBosonMass) / zBosonMass;
+			//bool isZBoson = fabs(diMuonMass - zBosonMass) < fabs(bestDiMuonMass - zBosonMass);
+			//std::cout << "isJpsi = " << isJPsi << "; isZBoson = " << isZBoson << std::endl;
+
+			// FIXME this is probably a good idea but stats are just too low..
+			////TEst to just cut out a window
+			//if (isJPsi) {
+			//	isJPsi   = fabs(diMuonMass - jPsiMass)   / jPsiMass   < 0.32;
+			//} else {
+			//	isZBoson = fabs(diMuonMass - zBosonMass) / zBosonMass < 0.32;
+			//}
+
+			//std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << "\tmass(" << iMuon << ", " << tagMuonIndex << ")\t=\t" << diMuonMass << "\t" << (diMuonMass - jPsiMass) << "\t" << (diMuonMass - zBosonMass) << "\t" << (diMuonMass - jPsiMass) / jPsiMass << "\t" << (diMuonMass - zBosonMass) / zBosonMass;
+			//std::cout << std::endl << std::fixed << std::setprecision(4) << std::endl << product->nMuon << "\tmass(" << iMuon << ", " << tagMuonIndex << ")\t=\t" << diMuonMass << "\t?=\t" << zBosonMass << "; " << "\t" << fabs(diMuonMass - zBosonMass) << "\t" << fabs(diMuonMass - zBosonMass) / zBosonMass;
+
 			if (isJPsi) {
-				probedMuonIndex = iMuon;
+				probeMuonIndex = iMuon;
 				bestDiMuonMass = diMuonMass;
-				probedMuonFound = true;
-				//std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << "\tjPsi mass(" << iMuon << ", " << tagMuonIndex << ") =\t" << diMuonMass << "\t" << (diMuonMass - jPsiMass) / jPsiMass << "\t" << (diMuonMass - zBosonMass) / zBosonMass;
-				//std::cout << "Is a jpsi!" << std::endl;
+				probeMuonFound = true;
+				//std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << "\tjPsi mass(" << iMuon << ", " << tagMuonIndex << ")\t=\t" << diMuonMass << "\t" << (diMuonMass - jPsiMass) / jPsiMass << "\t" << (diMuonMass - zBosonMass) / zBosonMass;
+				std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << " mass(" << iMuon << ", " << tagMuonIndex << ")\t=\t" << diMuonMass << "\t" << fabs(diMuonMass - jPsiMass) / jPsiMass << "\t" << fabs(diMuonMass - zBosonMass) / zBosonMass;
+				std::cout << "\tIs a jpsi!" << std::endl;
+			//}
 			} else if (isZBoson) {
-				probedMuonIndex = iMuon;
+				probeMuonIndex = iMuon;
 				bestDiMuonMass = diMuonMass;
-				probedMuonFound = true;
-				//std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << "\tZ    mass(" << iMuon << ", " << tagMuonIndex << ") =\t" << diMuonMass << "\t" << (diMuonMass - jPsiMass) / jPsiMass << "\t" << (diMuonMass - zBosonMass) / zBosonMass;
-				//std::cout << "Is a zboson!" << std::endl;
+				probeMuonFound = true;
+				std::cout << std::fixed << std::setprecision(4) << std::endl << product->nMuon << " mass(p=" << iMuon << ", t=" << tagMuonIndex << ") =\t" << diMuonMass << "\t" << (diMuonMass - jPsiMass) / jPsiMass << "\t" << (diMuonMass - zBosonMass) / zBosonMass;
+				std::cout << "\tIs a zboson!" << std::endl;
 			}
 		}
 
-		if (probedMuonFound) {
-			unsigned short iMuon = probedMuonIndex;
+		if (probeMuonFound) {
+			std::cout << "Probe Muon Found!" << std::endl;
+			unsigned short iMuon = probeMuonIndex;
 
 			const float &muonPt = dataReader->muonPt->At(iMuon);
 			const float &muonEta = dataReader->muonEta->At(iMuon);

@@ -14,10 +14,10 @@
 
 class TagAndProbeProducer : public BaseProducer {
 	private:
-		double ptCut, etaCut;
+		double ptCut, l1PtCut, etaCut;
 		char workingPointCut;
 	public:
-		TagAndProbeProducer(const double &ptCut, const double &etaCut, const char &workingPointCut);
+		TagAndProbeProducer(const double &ptCut, const double &l1PtCut, const double &etaCut, const char &workingPointCut);
 		~TagAndProbeProducer();
 		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);

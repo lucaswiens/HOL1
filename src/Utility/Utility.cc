@@ -143,3 +143,15 @@ int Utility::HoIEtaToWheel(int iEta) {
 	if(iEta > 10) { return 2;}
 	return -999;
 }
+
+bool Utility::BmtfMuonIndexToIsBmtf(short index) {
+	//TF_index = 36 + (int)(L1UpgradeTree.muonTfMuonIdx[iMu] / 3.);
+	//where TF_index is:
+	//EMTF+ : 36-41,
+	//OMTF+ : 42-47,
+	//BMTF : 48-59,
+	//OMTF- : 60-65,
+	//EMTF- : 66-71
+	int tfIndex = 36 + (int)(index / 3);
+	return 47 < tfIndex && tfIndex < 60;
+}

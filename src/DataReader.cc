@@ -1,13 +1,19 @@
 #include <HOAnalysis/HOL1/interface/DataReader.h>
 
 
-DataReader::DataReader(const char* inputFileName) {
+DataReader::DataReader(const char* inputFileName, const bool *useEmulated) {
 	//inputFile = TFile::Open(inputFileName.c_str(), "READ");
 	inputFile = TFile::Open(TString(inputFileName), "READ");
+
+	// Get the runNumber:
+	l1EventTree   = (TTree*)inputFile->Get("l1EventTree/L1EventTree");
+	l1EventReader = new TTreeReader(l1EventTree);
+	runNumber     = std::make_unique<TTreeReaderValue<unsigned int>>(*l1EventReader, "run");
 
 	l1HoTree        = (TTree*)inputFile->Get("l1HOTree/L1HOTree");
 	l1HoReader        = new TTreeReader(l1HoTree);
 	nEvents = l1HoTree->GetEntries();
+
 	//Set Reader for HO Variables
 	nHcalDetIds            = std::make_unique<TTreeReaderValue<unsigned int>>(*l1HoReader, "nHcalDetIds");
 	nHcalQIESamples        = std::make_unique<TTreeReaderValue<unsigned int>>(*l1HoReader, "nHcalQIESamples");
@@ -56,7 +62,10 @@ DataReader::DataReader(const char* inputFileName) {
 		std::cout << "Dataset does not reco muons!" << std::endl;
 	}
 
-	l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
+	//l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
+	std::string emulatedString = *useEmulated ? "Emu" : "";
+	std::string tfMuonName = "l1UpgradeTfMuon" + emulatedString + "Tree/L1UpgradeTfMuonTree";
+	l1BmtfInputTree = (TTree*)inputFile->Get(tfMuonName.c_str());
 	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);
 	//Set Reader for BMTF Input Variables
 	bmtfPhSize    = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "phSize");
@@ -92,11 +101,38 @@ DataReader::DataReader(const char* inputFileName) {
 	tfMuonBx              = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonBx");
 	tfMuonWh              = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonWh");
 	tfMuonTrAdd           = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonTrAdd");
+
+	//Make just new stuff while keeping old tfMuon info.. Just outcomment the actual reading in bmtfinpuitproducer
+	std::string upgradeMuonName = "l1Upgrade" + emulatedString + "Tree/L1UpgradeTree";
+	l1UpgradeTree            = (TTree*)inputFile->Get(upgradeMuonName.c_str());
+	l1UpgradeReader          = new TTreeReader(l1UpgradeTree);
+	nBmtfMuons               = std::make_unique<TTreeReaderValue<unsigned short>>(*l1UpgradeReader, "nMuons");
+	bmtfMuonEt               = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEt");
+	bmtfMuonEtUnconstrained  = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEtUnconstrained");
+	bmtfMuonEta              = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEta");
+	bmtfMuonPhi              = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonPhi");
+	bmtfMuonEtaAtVtx         = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEtaAtVtx");
+	bmtfMuonPhiAtVtx         = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonPhiAtVtx");
+	bmtfMuonIEt              = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEt");
+	bmtfMuonIEtUnconstrained = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEtUnconstrained");
+	bmtfMuonIEta             = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEta");
+	bmtfMuonIPhi             = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIPhi");
+	bmtfMuonIEtaAtVtx        = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEtaAtVtx");
+	bmtfMuonIPhiAtVtx        = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIPhiAtVtx");
+	bmtfMuonIDEta            = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIDEta");
+	bmtfMuonIDPhi            = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIDPhi");
+	bmtfMuonChg              = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonChg");
+	bmtfMuonIso              = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonIso");
+	bmtfMuonQual             = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonQual");
+	bmtfMuonDxy              = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonDxy");
+	bmtfMuonTfMuonIdx        = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonTfMuonIdx");
+	bmtfMuonBx               = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonBx");
 }
 
 DataReader::~DataReader(){
 	delete l1HoReader;
 	delete l1BmtfInputReader;
+	delete l1EventReader;
 
 	if (hasRecoMuon) {
 		delete l1MuonRecoReader;
@@ -116,9 +152,9 @@ bool DataReader::GetHasRecoMuon() {
 
 bool DataReader::Next() {
 	if (hasRecoMuon) {
-		return l1HoReader->Next() && l1MuonRecoReader->Next() && l1BmtfInputReader->Next();
+		return l1HoReader->Next() && l1MuonRecoReader->Next() && l1UpgradeReader->Next() && l1BmtfInputReader->Next() && l1EventReader->Next();
 	} else {
-		return l1HoReader->Next() && l1BmtfInputReader->Next();
+		return l1HoReader->Next() && l1UpgradeReader->Next() && l1BmtfInputReader->Next() && l1EventReader->Next();
 	}
 }
 

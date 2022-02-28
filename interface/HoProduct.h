@@ -15,7 +15,7 @@ public:
 		dttpQualityCode,
 		dttpTs2Tag,
 		dttpIPhi;
-	std::vector<float> dttpPt,
+	std::vector<float> dttpCmsPt,
 		dttpPhi,
 		dttpPhiB;
 	std::vector<double> dttpCmsPhi;
@@ -58,7 +58,7 @@ public:
 		bmtfMatchedDttpStation,
 		bmtfMatchedDttpIndex;
 	std::vector<double> bmtfMatchedDttpDeltaPhi,
-		bmtfMatchedDttpPt,
+		bmtfMatchedDttpCmsPt,
 		bmtfMatchedDttpPhi,
 		bmtfMatchedDttpCmsPhi;
 	std::vector<std::vector<double>> bmtfMatchedDttpDeltaPhiPerStation;
@@ -166,7 +166,8 @@ public:
 		bmtfMb34MatchedMuonEta,
 		bmtfMb34MatchedMuonPhi,
 		bmtfMb34MatchedMuonDeltaPhi;
-	std::vector<int> bmtfMb34MatchedHoIEta,
+	std::vector<int> bmtfMb34MatchedHoNumber,
+		bmtfMb34MatchedHoIEta,
 		bmtfMb34MatchedHoIPhi,
 		bmtfMb34MatchedHoDeltaIPhi,
 		bmtfMb3MatchedHoIPhi,
@@ -184,9 +185,11 @@ public:
 		isHoMatchedDttp;
 	std::vector<int> dttpMatchedHoDeltaIPhi,
 		dttpMatchedHoIPhi,
-		dttpMatchedHoIEta;
+		dttpMatchedHoIEta,
+		dttpNHo3x3Hit;
 	std::vector<unsigned int> dttpMatchedHoIndex;
-	std::vector<double> dttpMatchedHoCmsPhi,
+	std::vector<double> dttpMatchedHoCmsPt,
+		dttpMatchedHoCmsPhi,
 		dttpMatchedHoCmsEta,
 		dttpMatchedHoDeltaPhi;
 	// DTTP matching Muon

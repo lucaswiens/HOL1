@@ -4,8 +4,9 @@
 
 class BmtfInputProducer : public BaseProducer {
 	private:
+		double l1EtaCut, l1PtCut;
 	public:
-		BmtfInputProducer();
+		BmtfInputProducer(double l1EtaCut, double l1PtCut);
 		~BmtfInputProducer();
 		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);

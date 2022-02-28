@@ -1,20 +1,20 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoCoincidenceProducer.h>
 
 //HoCoincidenceProducer::HoCoincidenceProducer(const int &iEtaCut, const double &etaCut, const double &ptCut, const double &deltaPhiCut, const double &deltaRCut):
-HoCoincidenceProducer::HoCoincidenceProducer(const int &iEtaCut, const double &etaCut, const double &bmtfEtaCut, const double &ptCut, const double &bmtfPtCut, const double &deltaPhiCut, const double &deltaRCut):
+HoCoincidenceProducer::HoCoincidenceProducer(const int &iEtaCut, const double &etaCut, const double &l1EtaCut, const double &ptCut, const double &l1PtCut, const double &deltaPhiCut, const double &deltaRCut):
 	iEtaCut(iEtaCut),
 	etaCut(etaCut),
-	bmtfEtaCut(bmtfEtaCut),
+	l1EtaCut(l1EtaCut),
 	ptCut(ptCut),
-	bmtfPtCut(bmtfPtCut),
+	l1PtCut(l1PtCut),
 	deltaPhiCut(deltaPhiCut),
 	deltaRCut(deltaRCut) {
 		Name = "HO Coincidence Producer";
 		std::cout << "The applied cuts are:\n" <<
 			"recoPt    > " << ptCut       << std::endl <<
 			"|recoEta| < " << etaCut      << std::endl <<
-			"bmtfPt    > " << bmtfPtCut   << std::endl <<
-			"|bmtfEta| < " << bmtfEtaCut  << std::endl <<
+			"l1Pt      > " << l1PtCut   << std::endl <<
+			"|l1Eta|   < " << l1EtaCut  << std::endl <<
 			"|iEtaCut| < " << iEtaCut     << std::endl <<
 			"deltaR    < " << deltaRCut   << std::endl <<
 			"deltaPhi  < " << deltaPhiCut << std::endl;
@@ -44,7 +44,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 		// Bmtf Matched Dttp
 		product->bmtfMatchedDttpDeltaPhi = std::vector(product->bmtfSize, -999.);
-		product->bmtfMatchedDttpPt = std::vector(product->bmtfSize, -999.);
+		product->bmtfMatchedDttpCmsPt = std::vector(product->bmtfSize, -999.);
 		product->bmtfMatchedDttpPhi = std::vector(product->bmtfSize, -9999.); // dttpPhi range is [-2048, 2048]
 		product->bmtfMatchedDttpCmsPhi = std::vector(product->bmtfSize, -999.);
 
@@ -81,9 +81,11 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		product->dttpMatchedHoDeltaPhi = std::vector(product->dttpSize, -999.);
 		product->dttpMatchedHoIPhi = std::vector(product->dttpSize, -999);
 		product->dttpMatchedHoIEta = std::vector(product->dttpSize, -999);
+		product->dttpMatchedHoCmsPt = std::vector(product->dttpSize, -999.);
 		product->dttpMatchedHoCmsPhi = std::vector(product->dttpSize, -999.);
 		product->dttpMatchedHoCmsEta = std::vector(product->dttpSize, -999.);
 		product->dttpMatchedMuonNHo3x3Hit = std::vector(product->dttpSize, 999);
+		product->dttpNHo3x3Hit = std::vector(product->dttpSize, -999);
 	}
 
 	if (product->hcalIEta.size() != 0) {
@@ -138,7 +140,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		if (product->tagMuonMatchedBmtfIndex == iBmtf) { continue;}
 
 		//if (product->bmtfCmsPt.at(iBmtf) < ptCut || fabs(product->bmtfCmsEta.at(iBmtf)) > etaCut) { continue;}
-		if (product->bmtfCmsPt.at(iBmtf) < bmtfPtCut || fabs(product->bmtfCmsEta.at(iBmtf)) > bmtfEtaCut) { continue;}
+		if (product->bmtfCmsPt.at(iBmtf) < l1PtCut || fabs(product->bmtfCmsEta.at(iBmtf)) > l1EtaCut) { continue;}
 
 		int bmtfMatchedDttpIndex = -999, bmtfStation = -999;
 		for (int iBmtfStation = 1; iBmtfStation <= 4; iBmtfStation++) {
@@ -161,7 +163,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 					bmtfStation = iBmtfStation;
 					product->bmtfMatchedDttpDeltaPhiPerStation.at(iBmtf).at(iBmtfStation - 1) = bmtfMatchedDttpDeltaPhi;
 					product->bmtfMatchedDttpDeltaPhi.at(iBmtf) = bmtfMatchedDttpDeltaPhi;
-					product->bmtfMatchedDttpPt.at(iBmtf) = product->dttpPt.at(iDttp);
+					product->bmtfMatchedDttpCmsPt.at(iBmtf) = product->dttpCmsPt.at(iDttp);
 					product->bmtfMatchedDttpPhi.at(iBmtf) = product->dttpPhi.at(iDttp);
 					product->bmtfMatchedDttpCmsPhi.at(iBmtf) = product->dttpCmsPhi.at(iDttp);
 					product->isBmtfMatchedDttp.at(iBmtf) = true;
@@ -181,7 +183,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 	for (unsigned short iBmtf = 0; iBmtf < product->bmtfSize; iBmtf++){
 		if (product->bmtfBx.at(iBmtf) != 0) { continue;}
 
-		if (product->bmtfCmsPt.at(iBmtf) < bmtfPtCut || fabs(product->bmtfCmsEta.at(iBmtf)) > bmtfEtaCut) { continue;}
+		if (product->bmtfCmsPt.at(iBmtf) < l1PtCut || fabs(product->bmtfCmsEta.at(iBmtf)) > l1EtaCut) { continue;}
 
 		unsigned short bmtfMatchedMuonIndex = 999;
 		bool isBmtfMatchedMuon = false;
@@ -189,10 +191,13 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 			for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++){
 				if (product->isMuonMatchedBmtf.at(iMuon)){ continue;}
 				// Muons selected during muon producer (redundant?)
-				if (product->muonIEta.at(iMuon) > iEtaCut) { continue;}
+				//if (!product->isMediumMuon.at(iMuon)) { continue;}
+				if (product->muonIEta.at(iMuon) > iEtaCut) { continue;}// this is redundant
 
 				std::vector<double> bmtfMatchedMuonDeltaPhiVec, bmtfMatchedMuonDeltaRVec;
 
+				bmtfMatchedMuonDeltaPhiVec.push_back(Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), product->muonPhi.at(iMuon)));
+				bmtfMatchedMuonDeltaRVec.push_back(Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), product->muonEta.at(iMuon), product->muonPhi.at(iMuon)));
 
 				bmtfMatchedMuonDeltaPhiVec.push_back(Utility::DeltaPhi(product->bmtfCmsPhi.at(iBmtf), product->muonPhiSt1.at(iMuon)));
 				bmtfMatchedMuonDeltaRVec.push_back(Utility::DeltaR(product->bmtfCmsEta.at(iBmtf), product->bmtfCmsPhi.at(iBmtf), product->muonEtaSt1.at(iMuon), product->muonPhiSt1.at(iMuon)));
@@ -271,6 +276,9 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 			if (!product->isBmtfMb34HoMatched.at(iBmtf) && abs(product->bmtfMb34MatchedHoIEta.at(iBmtf)) > iEtaCut) { continue;}
 
 			for (int iDttp = 0; iDttp < product->dttpSize; iDttp ++) { // No HoMb34 coincidence unless hits are in MB3 or MB4
+
+				if (product->dttpCmsPt.at(iDttp) < l1PtCut) { continue;} // TODO: In the DN this was only applied for rate.. Think about it and make it sensible
+
 				if (product->dttpStation.at(iDttp) != 3 && product->dttpStation.at(iDttp) != 4) { continue;}
 				// If its outside the 5 wheels, there are no HO hits
 				if (abs(product->dttpWheel.at(iDttp)) > 2) { continue;}
@@ -318,8 +326,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 			product->dttpStation.at(iDttp) > 2 ||
 			abs(product->dttpWheel.at(iDttp)) == 2 ||
 			!product->dttpIsHq.at(iDttp) ||
-			product->isDttpMatchedBmtf.at(iDttp) // || // this is equivalent to (!isIsoMb1)
-			//product->dttpPt.at(iDttp) < ptCut
+			product->isDttpMatchedBmtf.at(iDttp) || // this is equivalent to (!isIsoMb1)
+			product->dttpCmsPt.at(iDttp) < l1PtCut //FIXME
 		) { continue;}
 
 		unsigned int dttpMatchedHoIndex = 99999;
@@ -336,6 +344,17 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 					product->dttpSection.at(iDttp) == product->hcalSection.at(tmpHo) &&
 					product->dttpWheel.at(iDttp) == product->hcalWheel.at(tmpHo)
 				) {
+					int nHo3x3Hit = 0;
+					for (unsigned int iHo2 = 0; iHo2 < product->nHcalDetIds; iHo2++) {
+						if (iHo2 == tmpHo) { continue;}
+						int deltaIPhi2 = Utility::DeltaIPhi(product->dttpMatchedHoIPhi.at(iDttp), product->hcalIPhi.at(iHo2));
+						if ((product->dttpStation.at(iDttp) == 1 && abs(deltaIPhi2) <= 1) &&
+							product->dttpSection.at(iDttp) == product->hcalSection.at(iHo2) &&
+							product->dttpWheel.at(iDttp) == product->hcalWheel.at(iHo2)
+						) { nHo3x3Hit++; }
+					}
+					product->dttpNHo3x3Hit.at(iDttp) = nHo3x3Hit;
+
 					product->dttpMatchedHoDeltaIPhi.at(iDttp) = deltaIPhi;
 					product->dttpMatchedHoDeltaPhi.at(iDttp) = deltaPhi;
 					product->isDttpMatchedHo.at(iDttp) = true;
@@ -350,6 +369,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 		if (product->isDttpMatchedHo.at(iDttp)) {
 			product->dttpMatchedHoIndex.at(iDttp) = dttpMatchedHoIndex;
+			product->dttpMatchedHoCmsPt.at(iDttp) = product->dttpCmsPt.at(iDttp);
 			product->dttpMatchedHoIndex.at(dttpMatchedHoIndex) = iDttp;
 		}
 

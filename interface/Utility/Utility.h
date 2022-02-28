@@ -17,6 +17,7 @@ namespace Utility {
 	double BmtfGlobalPhiToCmsPhi(int globalPhi);
 	double BmtfEtaToCmsEta(int bmtfEta);
 	int GetBmtfStationMask(std::vector<int> trackerAddresses);
+	bool BmtfMuonIndexToIsBmtf(short index);
 	// RecoMuon
 	int CmsEtaToHoIEta(double cmsEta);
 	int CmsEtaToHoSubIEta(double cmsEta, int nDiv);

@@ -17,11 +17,14 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogram
 	//unsigned int size = dataReader->hcalDetIdIEta->GetSize();
 	for (unsigned i = 0; i < dataReader->hcalDetIdIEta->GetSize(); i++) {
 		const int &qieSample = dataReader->hcalQIESample->At(i);
+		const int &qieSampleAdc = dataReader->hcalQIESampleAdc->At(i);
+		histCollection->histHcalQIESamples_vs_HcalQIESampleAdc->Fill(qieSample, qieSampleAdc);
+
 		if (qieSample != 4) { continue;}
 		product->hcalIEta.push_back(dataReader->hcalDetIdIEta->At(i));
 		product->hcalIPhi.push_back(dataReader->hcalDetIdIPhi->At(i));
 		product->hcalQIESample.push_back(qieSample);
-		product->hcalQIESampleAdc.push_back(dataReader->hcalQIESampleAdc->At(i));
+		product->hcalQIESampleAdc.push_back(qieSampleAdc);
 		product->hcalQIESampleDv.push_back(dataReader->hcalQIESampleDv->At(i));
 		product->hcalQIESampleEr.push_back(dataReader->hcalQIESampleEr->At(i));
 
