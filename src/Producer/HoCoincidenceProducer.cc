@@ -183,9 +183,9 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		for (int iBmtfStation = 1; iBmtfStation <= 4; iBmtfStation++) {
 			// For Mb1, TrackAddress it should not be 3, but for MB2, MB3 and MB4 it should not be 15
 			if (iBmtfStation == 1) {
-				if (product->bmtfTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(iBmtfStation - 1) == 3) { continue;}
+				if (product->tfMuonTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(iBmtfStation - 1) == 3) { continue;}
 			} else {
-				if (product->bmtfTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(iBmtfStation - 1) == 15) { continue;}
+				if (product->tfMuonTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(iBmtfStation - 1) == 15) { continue;}
 			}
 			for (int iDttp = 0; iDttp < product->dttpSize; iDttp ++) {
 				if (product->dttpBx.at(iDttp) != 0) { continue;}
@@ -222,10 +222,10 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		if (product->tfMuonCmsPt.at(Utility::Bmtf).at(iBmtf) < l1PtCut || fabs(product->tfMuonCmsEta.at(Utility::Bmtf).at(iBmtf)) > l1EtaCut) { continue;}
 
 		// BMTF Tracks with Hits only in MB3 and MB4
-		if (product->bmtfTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(0) == 3 ||
-			product->bmtfTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(1) == 15 ||
-			product->bmtfTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(2) != 15 ||
-			product->bmtfTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(3) != 15
+		if (product->tfMuonTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(0) == 3 ||
+			product->tfMuonTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(1) == 15 ||
+			product->tfMuonTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(2) != 15 ||
+			product->tfMuonTrackerAddresses.at(Utility::Bmtf).at(iBmtf).at(3) != 15
 		) {
 			unsigned int bmtfMb34MatchedHoIndex = 999;
 			for (unsigned int iHo = 0; iHo < product->nHcalDetIds; iHo++) {
