@@ -37,6 +37,8 @@ if __name__=="__main__":
 	parser.add_argument("-e", "--use-emulated", default = False, action = "store_true", help = "Use the emulated branch to read BMTF information")
 
 	args = parser.parse_args()
+	print(args.input_file)
+	print(args.input_file.split("/"))
 	fileName = "SingleMuon" if "SingleMuon" in args.input_file else "ZeroBias"
 	fileName = args.input_file.split("/")[1].split(".")[0]
 	args.output = args.output + "/" + fileName + "/" + date
@@ -48,8 +50,11 @@ if __name__=="__main__":
 	with open(args.input_file, "r") as sampleFile:
 		for sample in sampleFile:
 			sample = sample.replace("\n", "")
-			runNumberArray = uproot.open(sample)["l1EventTree/L1EventTree/Event"]["run"].array()
-			run = runNumberArray[0]
+			if fileName == "ZeroBias": #this needs to be fixed probably.. WOuld be too slow
+				runNumberArray = uproot.open(sample)["l1EventTree/L1EventTree/Event"]["run"].array()
+				run = runNumberArray[0]
+			else:
+				run = 1
 			sampleDict[run].append(sample)
 			#if len(set(runNumberArray)) > 1:
 				#print "Oha", set(runNumberArray)

@@ -27,7 +27,7 @@ public:
 	TH1D *histMuonMet, *histMuonMt, *histDiMuonMass, *histSelectedDiMuonMass;
 	TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta, *histMuonNHo3x3Hit, *histDttpNHo3x3Hit;
 	TH1F *histMuonE, *histMuonEt, *histMuonPt, *histMuonPt20, *histMuonEta, *histMuonPhi, *histMuonIso, *histMuonHltIsoDeltaR, *histMuonDeltaR, *histMuonEtaSt1, *histMuonPhiSt1, *histMuonEtaSt2, *histMuonPhiSt2;
-	TH2D *histMuonPt_vs_MuonEta, *histMuonEta_vs_MuonPt;
+	TH2D *histMuonPt_vs_MuonEta, *histMuonEta_vs_MuonPt, *histNTagMuon_vs_nProbeMuon;
 	// HO Coincidence Histogram
 	TH1S *histIsBmtfMatchedMuon,
 		*histIsMb3HoIEtaMatched, *histIsMb4HoIEtaMatched,

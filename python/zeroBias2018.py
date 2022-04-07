@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: l1Ntuple -s RAW2DIGI --python_filename=zeroBias2018.py -n -1 --no_output --era=Run2_2018 --data --conditions=112X_dataRun2_v7 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_4 --no_exec
+# with command line options: l1Ntuple -s RAW2DIGI --python_filename=zeroBias2018.py -n 100 --no_output --era=Run2_2018 --data --conditions=112X_dataRun2_v7 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_4 --filein=root://xrootd-cms.infn.it//store/data/Run2018D/ZeroBias/RAW/v1/000/325/240/00000/4E953DE3-A07E-6F45-94F4-E530035D3757.root
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
@@ -21,13 +21,13 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1),
+    input = cms.untracked.int32(100),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:l1Ntuple_DIGI2RAW.root'),
+    fileNames = cms.untracked.vstring('root://xrootd-cms.infn.it//store/data/Run2018D/ZeroBias/RAW/v1/000/325/240/00000/4E953DE3-A07E-6F45-94F4-E530035D3757.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -60,7 +60,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('l1Ntuple nevts:-1'),
+    annotation = cms.untracked.string('l1Ntuple nevts:100'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )

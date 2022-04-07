@@ -6,6 +6,8 @@
 #include <TTreeReaderValue.h>
 #include <TTreeReaderArray.h>
 
+#include <HOAnalysis/HOL1/interface/Utility/Utility.h>
+
 class DataReader {
 	private:
 		TFile *inputFile;
@@ -33,15 +35,14 @@ class DataReader {
 		std::unique_ptr<TTreeReaderValue<int>> bmtfPhSize, bmtfThSize;
 		std::unique_ptr<TTreeReaderArray<int>> bmtfPhBx, bmtfPhWh, bmtfPhSe, bmtfPhSt, bmtfPhCode, bmtfPhTs2Tag, bmtfThBx, bmtfThWh, bmtfThSe, bmtfThSt, bmtfThTheta, bmtfThCode;
 		std::unique_ptr<TTreeReaderArray<float>> bmtfPhAng, bmtfPhBandAng;
-		//BMTF Variables (from L1UpgradeTree)
-		std::unique_ptr<TTreeReaderValue<unsigned short>> nBmtfMuons;
-		std::unique_ptr<TTreeReaderArray<short>> bmtfMuonIEt, bmtfMuonIEtUnconstrained, bmtfMuonIEta, bmtfMuonIPhi, bmtfMuonIEtaAtVtx, bmtfMuonIPhiAtVtx, bmtfMuonIDEta, bmtfMuonIDPhi, bmtfMuonChg, bmtfMuonBx;
-		std::unique_ptr<TTreeReaderArray<unsigned short>> bmtfMuonIso, bmtfMuonQual, bmtfMuonDxy, bmtfMuonTfMuonIdx;
-		std::unique_ptr<TTreeReaderArray<float>> bmtfMuonEt, bmtfMuonEtUnconstrained, bmtfMuonEta, bmtfMuonPhi, bmtfMuonEtaAtVtx, bmtfMuonPhiAtVtx;
-
-		//BMTF Variables
-		std::unique_ptr<TTreeReaderValue<unsigned short>> nTfMuon;
-		std::unique_ptr<TTreeReaderArray<short>> tfMuonHwPt, tfMuonHwEta, tfMuonHwPhi, tfMuonGlobalPhi, tfMuonHwSign, tfMuonHwSignValid, tfMuonHwQual, tfMuonLink, tfMuonProcessor, tfMuonTrackFinderType, tfMuonHwHF, tfMuonBx, tfMuonWh, tfMuonTrAdd;
+		//TF Variables (BMTF, OMTF, EMTF)
+		std::unique_ptr<TTreeReaderValue<unsigned short>> nUGMTMuons;
+		std::unique_ptr<TTreeReaderArray<short>> uGMTIEt, uGMTIEtUnconstrained, uGMTIEta, uGMTIPhi, uGMTIEtaAtVtx, uGMTIPhiAtVtx, uGMTIDEta, uGMTIDPhi, uGMTChg, uGMTBx;
+		std::unique_ptr<TTreeReaderArray<unsigned short>> uGMTIso, uGMTQual, uGMTDxy, uGMTTfMuonIdx;
+		std::unique_ptr<TTreeReaderArray<float>> uGMTEt, uGMTEtUnconstrained, uGMTEta, uGMTPhi, uGMTEtaAtVtx, uGMTPhiAtVtx;
+		//uGMT Variables (from L1UpgradeTree)
+		std::map<int, std::unique_ptr<TTreeReaderValue<unsigned short>>> nTfMuons;
+		std::map<int, std::unique_ptr<TTreeReaderArray<short>>> tfMuonHwPt, tfMuonHwEta, tfMuonHwPhi, tfMuonGlobalPhi, tfMuonHwSign, tfMuonHwSignValid, tfMuonHwQual, tfMuonLink, tfMuonProcessor, tfMuonTrackFinderType, tfMuonHwHF, tfMuonBx, tfMuonWh, tfMuonTrAdd;
 
 		//DataReader(std::string);
 		DataReader(const char*, const bool*);

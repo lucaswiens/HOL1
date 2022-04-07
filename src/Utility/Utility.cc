@@ -52,7 +52,7 @@ double Utility::BmtfEtaToCmsEta(int bmtfEta) {
 }
 
 double Utility::BmtfPtToCmsPt(int bmtfPt) {
-	return bmtfPt * 0.5;
+	return (bmtfPt - 1) * 0.5;
 }
 
 int Utility::GetBmtfStationMask(std::vector<int> trackerAddresses) {
@@ -154,4 +154,24 @@ bool Utility::BmtfMuonIndexToIsBmtf(short index) {
 	//EMTF- : 66-71
 	int tfIndex = 36 + (int)(index / 3);
 	return 47 < tfIndex && tfIndex < 60;
+}
+
+int Utility::TfMuonIndexToTfType(short index) {
+	//TF_index = 36 + (int)(L1UpgradeTree.muonTfMuonIdx[iMu] / 3.);
+	//where TF_index is:
+	//EMTF+ : 36-41,
+	//OMTF+ : 42-47,
+	//BMTF : 48-59,
+	//OMTF- : 60-65,
+	//EMTF- : 66-71
+	int tfIndex = 36 + (int)(index / 3);
+	int tfType = -999;
+	if (47 <= tfIndex && tfIndex <= 59) {
+		tfType = Utility::Bmtf;
+	} else if ((41 <= tfIndex && tfIndex <= 48) || (60 <= tfIndex && tfIndex <= 65)) {
+		tfType = Utility::Omtf;
+	} else if ((36 <= tfIndex && tfIndex <= 41) || (66 <= tfIndex && tfIndex <= 71)) {
+		tfType = Utility::Emtf;
+	}
+	return tfType;
 }

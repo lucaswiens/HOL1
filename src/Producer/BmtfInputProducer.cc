@@ -11,11 +11,9 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 	int dttpSize = *dataReader->bmtfPhSize->Get();
 
 	// The bmtfPh variables are input variables for the bmtf algorithm and are assigned the DTTP prefix, because they are trigger primitves constructed with the drift tube information
-	for (int i = 0; i < dttpSize; i++) {
-		//const double &dttpPhi = product->dttpPhi.at(i)
-		const int &dttpStation = dataReader->bmtfPhSt->At(i);
-		const float &dttpPhiB = dataReader->bmtfPhBandAng->At(i);
-		//const double &dttpCmsPt =
+	for (int iDttp = 0; iDttp < dttpSize; iDttp++) {
+		const int &dttpStation = dataReader->bmtfPhSt->At(iDttp);
+		const float &dttpPhiB = dataReader->bmtfPhBandAng->At(iDttp);
 
 		double dttpCmsPt = -999;
 		if (dttpStation == 1) {
@@ -24,22 +22,20 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 			dttpCmsPt = Utility::PhiBMb2ToPt.at(dttpPhiB) * 0.5;
 		}
 
-		if (fabs(dttpCmsPt) < l1PtCut) { continue;}
+		//if (fabs(dttpCmsPt) < l1PtCut) { continue;}
 		product->dttpCmsPt.push_back(dttpCmsPt);
 
-		product->dttpBx.push_back(dataReader->bmtfPhBx->At(i));
-		product->dttpWheel.push_back(dataReader->bmtfPhWh->At(i));
-		product->dttpSection.push_back(dataReader->bmtfPhSe->At(i));
+		product->dttpBx.push_back(dataReader->bmtfPhBx->At(iDttp));
+		product->dttpWheel.push_back(dataReader->bmtfPhWh->At(iDttp));
+		product->dttpSection.push_back(dataReader->bmtfPhSe->At(iDttp));
 		product->dttpStation.push_back(dttpStation);
-		product->dttpQualityCode.push_back(dataReader->bmtfPhCode->At(i));
-		product->dttpTs2Tag.push_back(dataReader->bmtfPhTs2Tag->At(i));
-		product->dttpPhi.push_back(dataReader->bmtfPhAng->At(i));
+		product->dttpQualityCode.push_back(dataReader->bmtfPhCode->At(iDttp));
+		product->dttpTs2Tag.push_back(dataReader->bmtfPhTs2Tag->At(iDttp));
+		product->dttpPhi.push_back(dataReader->bmtfPhAng->At(iDttp));
 		product->dttpPhiB.push_back(dttpPhiB);
 
 		product->dttpCmsPhi.push_back(Utility::DttpPhiToCmsPhi(product->dttpPhi.back(), product->dttpSection.back()));
 		product->dttpIPhi.push_back(Utility::CmsPhiToHoIPhi(product->dttpCmsPhi.back()));
-
-		//product->dttpCmsEta.push_back(Utility::DttpEtaToCmsEta(product->dttpEta.back(), product->dttpSection.back()));
 
 		histCollection->histDttpBx->Fill(product->dttpBx.back());
 		histCollection->histDttpWheel->Fill(product->dttpWheel.back());
@@ -53,167 +49,111 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 		histCollection->histDttpCmsPhi->Fill(product->dttpCmsPhi.back());
 		histCollection->histDttpIPhi->Fill(product->dttpIPhi.back());
 
-		/*
-		histCollection->histDttpCmsPhiSection1->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 0);
-		histCollection->histDttpCmsPhiSection2->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 1);
-		histCollection->histDttpCmsPhiSection3->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 2);
-		histCollection->histDttpCmsPhiSection4->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 3);
-		histCollection->histDttpCmsPhiSection5->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 4);
-		histCollection->histDttpCmsPhiSection6->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 5);
-		histCollection->histDttpCmsPhiSection7->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 6);
-		histCollection->histDttpCmsPhiSection8->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 7);
-		histCollection->histDttpCmsPhiSection9->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 8);
-		histCollection->histDttpCmsPhiSection10->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 9);
-		histCollection->histDttpCmsPhiSection11->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 10);
-		histCollection->histDttpCmsPhiSection12->Fill(product->dttpCmsPhi.back(), product->dttpSection.back() == 11);
-		*/
-
-
 		product->dttpIsLq.push_back((0 < product->dttpQualityCode.back()) && (product->dttpQualityCode.back() < 4));
 		product->dttpIsHq.push_back((3 < product->dttpQualityCode.back()) && (product->dttpQualityCode.back() < 7));
 	}
 	product->dttpSize = product->dttpCmsPt.size();
 	histCollection->histDttpSize->Fill(product->dttpSize);
 
-	// Currently not used by the HOL1 algorithm but so just make histograms
-	const int &thSize = *dataReader->bmtfThSize->Get();
-	histCollection->histBmtfThSize->Fill(thSize);
-	for (int i = 0; i < thSize; i++) {
-		histCollection->histBmtfThBx->Fill(dataReader->bmtfThBx->At(i));
-		histCollection->histBmtfThWh->Fill(dataReader->bmtfThWh->At(i));
-		histCollection->histBmtfThSe->Fill(dataReader->bmtfThSe->At(i));
-		histCollection->histBmtfThSt->Fill(dataReader->bmtfThSt->At(i));
-		histCollection->histBmtfThTheta->Fill(dataReader->bmtfThTheta->At(i));
-		histCollection->histBmtfThCode->Fill(dataReader->bmtfThCode->At(i));
+	product->nUGMTMuons = *dataReader->nUGMTMuons->Get();
+	for (unsigned short iUGMT = 0; iUGMT < product->nUGMTMuons; iUGMT++) {
+		const short &uGMTTfMuonIndex = dataReader->uGMTTfMuonIdx->At(iUGMT);
+		const int &tfType = Utility::TfMuonIndexToTfType(uGMTTfMuonIndex);
+
+		const double &uGMTCmsPt  = dataReader->uGMTEt->At(iUGMT);
+		const short &uGMTEta     = dataReader->uGMTIEta->At(iUGMT);
+		const double &uGMTCmsEta = dataReader->uGMTEta->At(iUGMT);
+
+		//if (uGMTMuonCmsPt < l1PtCut) { continue;} // TODO for efficiency estimate this is fine
+		histCollection->histBmtfNumber->Fill(tfType);
+
+		product->uGMTMuonBx.push_back(dataReader->uGMTBx->At(iUGMT));
+		product->uGMTMuonPt.push_back(dataReader->uGMTIEt->At(iUGMT));
+		product->uGMTMuonEta.push_back(uGMTEta);
+		product->uGMTMuonGlobalPhi.push_back(dataReader->uGMTIPhi->At(iUGMT));
+		product->uGMTMuonCmsPt.push_back(uGMTCmsPt);
+		product->uGMTMuonCmsEta.push_back(uGMTCmsEta);
+		product->uGMTMuonCmsPhi.push_back(dataReader->uGMTPhi->At(iUGMT));
+		product->uGMTMuonQuality.push_back(dataReader->uGMTQual->At(iUGMT));
 	}
 
 	//The track finder Muon is what we call a bmtf muon which is given the bmtf prefix
-	bool useTfMuon = true; // For now this is hardcoded switch.. Maybe define in bin/main.cc or take as argument or something to switch between this, that or emu
-	if (useTfMuon) {
-		product->bmtfSize = *dataReader->nTfMuon->Get();//dataReader->tfMuonHwPt->GetSize();
-		for (unsigned short i = 0; i < product->bmtfSize; i++) {
-			const short bmtfPt      = dataReader->tfMuonHwPt->At(i);
-			const double bmtfCmsPt  = Utility::BmtfPtToCmsPt(bmtfPt);
-			const short bmtfEta     = dataReader->tfMuonHwEta->At(i);
-			const double bmtfCmsEta = Utility::BmtfEtaToCmsEta(bmtfEta);
+	product->tfMuonSize.at(Utility::Bmtf) = *dataReader->nTfMuons.at(Utility::Bmtf)->Get();
+	product->tfMuonSize.at(Utility::Omtf) = *dataReader->nTfMuons.at(Utility::Omtf)->Get();
+	product->tfMuonSize.at(Utility::Emtf) = *dataReader->nTfMuons.at(Utility::Emtf)->Get();
+	for (int tfType : {Utility::Bmtf, Utility::Omtf, Utility::Emtf}) {
+		for (unsigned short iTf = 0; iTf < product->tfMuonSize.at(tfType); iTf++) {
+			const short tfMuonPt      = dataReader->tfMuonHwPt.at(tfType)->At(iTf);
+			const double tfMuonCmsPt  = Utility::BmtfPtToCmsPt(tfMuonPt);
+			const short tfMuonEta     = dataReader->tfMuonHwEta.at(tfType)->At(iTf);
+			const double tfMuonCmsEta = Utility::BmtfEtaToCmsEta(tfMuonEta);
 
-			if (bmtfCmsPt < l1PtCut) { continue;}
-			histCollection->histBmtfNumber->Fill(0);
+			//if (bmtfCmsPt < l1PtCut) { continue;} // TODO for efficiency estimates this is fine
+			const int &tfMuonBx = dataReader->tfMuonBx.at(tfType)->At(iTf);
+			if (tfMuonBx != 0) { continue;}
 
-			product->bmtfBx.push_back(dataReader->tfMuonBx->At(i));
-			product->bmtfPt.push_back(bmtfPt);
-			product->bmtfEta.push_back(bmtfEta);
-			product->bmtfGlobalPhi.push_back(dataReader->tfMuonGlobalPhi->At(i));
-			product->bmtfCmsPt.push_back(bmtfCmsPt);
-			product->bmtfCmsEta.push_back(bmtfCmsEta);
-			product->bmtfCmsPhi.push_back(Utility::BmtfGlobalPhiToCmsPhi(product->bmtfGlobalPhi.back()));
-			product->bmtfTrackerAddresses.push_back({
-				dataReader->tfMuonTrAdd->At(4 * i + 0),
-				dataReader->tfMuonTrAdd->At(4 * i + 1),
-				dataReader->tfMuonTrAdd->At(4 * i + 2),
-				dataReader->tfMuonTrAdd->At(4 * i + 3)
-			});
-			product->bmtfTrackType.push_back(Utility::GetBmtfStationMask(product->bmtfTrackerAddresses.back()));
+			bool uGMTMatch = false;
+			for (unsigned short iUGMT = 0; iUGMT < product->nUGMTMuons; iUGMT++) {
+				if (tfMuonBx == product->uGMTMuonBx.at(iUGMT) &&
+					tfMuonEta == product->uGMTMuonEta.at(iUGMT) &&
+					tfMuonPt == product->uGMTMuonPt.at(iUGMT)
+				) { uGMTMatch = true;}
+			}
+			if (!uGMTMatch) { continue; }
 
-			histCollection->histBmtfHwPt->Fill(product->bmtfPt.back());
-			histCollection->histBmtfHwEta->Fill(product->bmtfEta.back());
-			histCollection->histBmtfHwPhi->Fill(dataReader->tfMuonHwPhi->At(i));
-			histCollection->histBmtfGlobalPhi->Fill(product->bmtfGlobalPhi.back());
-			histCollection->histBmtfHwSign->Fill(dataReader->tfMuonHwSign->At(i));
-			histCollection->histBmtfHwSignValid->Fill(dataReader->tfMuonHwSignValid->At(i));
-			histCollection->histBmtfHwQual->Fill(dataReader->tfMuonHwQual->At(i));
-			histCollection->histBmtfLink->Fill(dataReader->tfMuonLink->At(i));
-			histCollection->histBmtfProcessor->Fill(dataReader->tfMuonProcessor->At(i));
-			histCollection->histBmtfTrackFinderType->Fill(dataReader->tfMuonTrackFinderType->At(i));
-			histCollection->histBmtfHwHF->Fill(dataReader->tfMuonHwHF->At(i));
-			histCollection->histBmtfBx->Fill(product->bmtfBx.back());
-			histCollection->histBmtfWh->Fill(dataReader->tfMuonWh->At(i));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(0));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(1));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(2));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(3));
-			histCollection->histBmtfTrAddSt1->Fill(product->bmtfTrackerAddresses.back().at(0));
-			histCollection->histBmtfTrAddSt2->Fill(product->bmtfTrackerAddresses.back().at(1));
-			histCollection->histBmtfTrAddSt3->Fill(product->bmtfTrackerAddresses.back().at(2));
-			histCollection->histBmtfTrAddSt4->Fill(product->bmtfTrackerAddresses.back().at(3));
-			histCollection->histBmtfTrackType->Fill(product->bmtfTrackType.back());
-			histCollection->histBmtfCmsPt->Fill(product->bmtfCmsPt.back());
-			histCollection->histBmtfCmsPt20->Fill(product->bmtfCmsPt.back());
-			histCollection->histBmtfCmsEta->Fill(product->bmtfCmsEta.back());
-			histCollection->histBmtfCmsPhi->Fill(product->bmtfCmsPhi.back());
+			product->tfMuonBx.at(tfType).push_back(tfMuonBx);
+			product->tfMuonPt.at(tfType).push_back(tfMuonPt);
+			product->tfMuonEta.at(tfType).push_back(tfMuonEta);
+			product->tfMuonGlobalPhi.at(tfType).push_back(dataReader->tfMuonGlobalPhi.at(tfType)->At(iTf));
+			product->tfMuonCmsPt.at(tfType).push_back(tfMuonCmsPt);
+			product->tfMuonCmsEta.at(tfType).push_back(tfMuonCmsEta);
+			product->tfMuonCmsPhi.at(tfType).push_back(Utility::BmtfGlobalPhiToCmsPhi(product->tfMuonGlobalPhi.at(tfType).back()));
+
+			if (tfType == Utility::Bmtf) {
+				histCollection->histBmtfNumber->Fill(0);
+				//Somehow this is only filled properly for the bmtf.. But it is also only needed for it, so that should be ok for now.. Maybe look into it later
+				product->tfMuonTrackerAddresses.at(tfType).push_back({
+					dataReader->tfMuonTrAdd.at(tfType)->At(4 * iTf + 0),
+					dataReader->tfMuonTrAdd.at(tfType)->At(4 * iTf + 1),
+					dataReader->tfMuonTrAdd.at(tfType)->At(4 * iTf + 2),
+					dataReader->tfMuonTrAdd.at(tfType)->At(4 * iTf + 3)
+				});
+				product->tfMuonTrackType.at(tfType).push_back(Utility::GetBmtfStationMask(product->tfMuonTrackerAddresses.at(tfType).back()));
+
+				histCollection->histBmtfHwPt->Fill(product->tfMuonPt.at(tfType).back());
+				histCollection->histBmtfHwEta->Fill(product->tfMuonEta.at(tfType).back());
+				histCollection->histBmtfHwPhi->Fill(dataReader->tfMuonHwPhi.at(tfType)->At(iTf));
+				histCollection->histBmtfGlobalPhi->Fill(product->tfMuonGlobalPhi.at(tfType).back());
+				histCollection->histBmtfHwSign->Fill(dataReader->tfMuonHwSign.at(tfType)->At(iTf));
+				histCollection->histBmtfHwSignValid->Fill(dataReader->tfMuonHwSignValid.at(tfType)->At(iTf));
+				histCollection->histBmtfHwQual->Fill(dataReader->tfMuonHwQual.at(tfType)->At(iTf));
+				histCollection->histBmtfLink->Fill(dataReader->tfMuonLink.at(tfType)->At(iTf));
+				histCollection->histBmtfProcessor->Fill(dataReader->tfMuonProcessor.at(tfType)->At(iTf));
+				histCollection->histBmtfTrackFinderType->Fill(dataReader->tfMuonTrackFinderType.at(tfType)->At(iTf));
+				histCollection->histBmtfHwHF->Fill(dataReader->tfMuonHwHF.at(tfType)->At(iTf));
+				histCollection->histBmtfBx->Fill(product->tfMuonBx.at(tfType).back());
+				histCollection->histBmtfWh->Fill(dataReader->tfMuonWh.at(tfType)->At(iTf));
+				histCollection->histBmtfTrAdd->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(0));
+				histCollection->histBmtfTrAdd->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(1));
+				histCollection->histBmtfTrAdd->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(2));
+				histCollection->histBmtfTrAdd->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(3));
+				histCollection->histBmtfTrAddSt1->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(0));
+				histCollection->histBmtfTrAddSt2->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(1));
+				histCollection->histBmtfTrAddSt3->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(2));
+				histCollection->histBmtfTrAddSt4->Fill(product->tfMuonTrackerAddresses.at(tfType).back().at(3));
+				histCollection->histBmtfTrackType->Fill(product->tfMuonTrackType.at(tfType).back());
+				histCollection->histBmtfCmsPt->Fill(product->tfMuonCmsPt.at(tfType).back());
+				histCollection->histBmtfCmsPt20->Fill(product->tfMuonCmsPt.at(tfType).back());
+				histCollection->histBmtfCmsEta->Fill(product->tfMuonCmsEta.at(tfType).back());
+				histCollection->histBmtfCmsPhi->Fill(product->tfMuonCmsPhi.at(tfType).back());
+			}
 		}
-		product->bmtfSize = product->bmtfPt.size();
-		histCollection->histNBmtf->Fill(product->bmtfSize);
-	} else {
-		product->bmtfSize = *dataReader->nBmtfMuons->Get();//dataReader->tfMuonHwPt->GetSize();
-		for (unsigned short i = 0; i < product->bmtfSize; i++) {
-			//TF_index = 36 + (int)(L1UpgradeTree.muonTfMuonIdx[iMu] / 3.);
-			//where TF_index is:  #EMTF+ : 36-41, OMTF+ : 42-47, BMTF : 48-59, OMTF- : 60-65, EMTF- : 66-71
-			const short tfMuonIndex = dataReader->bmtfMuonTfMuonIdx->At(i);
-			const bool isBmtf = Utility::BmtfMuonIndexToIsBmtf(tfMuonIndex);
-
-			//std::cout << "tfMuonIndex = " << 36 + (int)(tfMuonIndex / 3) << " is a bmtf:" << isBmtf << std::endl;
-			if (!isBmtf) { continue;}
-
-			//const short bmtfPt      = dataReader->bmtfMuonEt->At(i);
-			const double bmtfCmsPt  = dataReader->bmtfMuonEt->At(i);
-			const short bmtfEta     = dataReader->bmtfMuonIEta->At(i);
-			const double bmtfCmsEta = dataReader->bmtfMuonEta->At(i);
-
-			if (bmtfCmsPt < l1PtCut) { continue;}
-			histCollection->histBmtfNumber->Fill(0);
-
-			product->bmtfBx.push_back(dataReader->bmtfMuonBx->At(i));
-			//product->bmtfPt.push_back(bmtfPt);
-			product->bmtfEta.push_back(bmtfEta);
-			product->bmtfGlobalPhi.push_back(dataReader->bmtfMuonIPhi->At(i));
-			product->bmtfCmsPt.push_back(bmtfCmsPt);
-			product->bmtfCmsEta.push_back(bmtfCmsEta);
-			product->bmtfCmsPhi.push_back(dataReader->bmtfMuonPhi->At(i));
-			/* Adress doesn't exist.. THink about this later
-
-			product->bmtfTrackerAddresses.push_back({
-				dataReader->tfMuonTrAdd->At(4 * i + 0),
-				dataReader->tfMuonTrAdd->At(4 * i + 1),
-				dataReader->tfMuonTrAdd->At(4 * i + 2),
-				dataReader->tfMuonTrAdd->At(4 * i + 3)
-			});
-			product->bmtfTrackType.push_back(Utility::GetBmtfStationMask(product->bmtfTrackerAddresses.back()));
-
-			Fill with 0 for now */
-			product->bmtfTrackerAddresses.push_back({0, 0, 0, 0 });
-			product->bmtfTrackType.push_back(0);
-
-			//histCollection->histBmtfHwPt->Fill(product->bmtfPt.back());
-			histCollection->histBmtfHwEta->Fill(product->bmtfEta.back());
-			//histCollection->histBmtfHwPhi->Fill(dataReader->tfMuonHwPhi->At(i));
-			histCollection->histBmtfGlobalPhi->Fill(product->bmtfGlobalPhi.back());
-			histCollection->histBmtfHwSign->Fill(dataReader->bmtfMuonChg->At(i));
-			//histCollection->histBmtfHwSignValid->Fill(dataReader->tfMuonHwSignValid->At(i));
-			histCollection->histBmtfHwQual->Fill(dataReader->bmtfMuonQual->At(i));
-			//histCollection->histBmtfLink->Fill(dataReader->tfMuonLink->At(i));
-			//histCollection->histBmtfProcessor->Fill(dataReader->tfMuonProcessor->At(i));
-			//histCollection->histBmtfTrackFinderType->Fill(dataReader->tfMuonTrackFinderType->At(i));
-			//histCollection->histBmtfHwHF->Fill(dataReader->tfMuonHwHF->At(i));
-			histCollection->histBmtfBx->Fill(product->bmtfBx.back());
-			//histCollection->histBmtfWh->Fill(dataReader->tfMuonWh->At(i));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(0));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(1));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(2));
-			histCollection->histBmtfTrAdd->Fill(product->bmtfTrackerAddresses.back().at(3));
-			histCollection->histBmtfTrAddSt1->Fill(product->bmtfTrackerAddresses.back().at(0));
-			histCollection->histBmtfTrAddSt2->Fill(product->bmtfTrackerAddresses.back().at(1));
-			histCollection->histBmtfTrAddSt3->Fill(product->bmtfTrackerAddresses.back().at(2));
-			histCollection->histBmtfTrAddSt4->Fill(product->bmtfTrackerAddresses.back().at(3));
-			histCollection->histBmtfTrackType->Fill(product->bmtfTrackType.back());
-			histCollection->histBmtfCmsPt->Fill(product->bmtfCmsPt.back());
-			histCollection->histBmtfCmsPt20->Fill(product->bmtfCmsPt.back());
-			histCollection->histBmtfCmsEta->Fill(product->bmtfCmsEta.back());
-			histCollection->histBmtfCmsPhi->Fill(product->bmtfCmsPhi.back());
-		}
-		product->bmtfSize = product->bmtfEta.size();
-		histCollection->histNBmtf->Fill(product->bmtfSize);
 	}
+
+	product->tfMuonSize.at(Utility::Bmtf) = product->tfMuonPt.at(Utility::Bmtf).size();
+	product->tfMuonSize.at(Utility::Omtf) = product->tfMuonPt.at(Utility::Omtf).size();
+	product->tfMuonSize.at(Utility::Emtf) = product->tfMuonPt.at(Utility::Emtf).size();
+	histCollection->histNBmtf->Fill(product->tfMuonSize.at(Utility::Bmtf));
 
 }
 

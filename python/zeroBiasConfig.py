@@ -1,13 +1,13 @@
 # Auto generated configuration file
-# using:
-# Revision: 1.19
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
-# with command line options: l1Ntuple -s RAW2DIGI --python_filename=data.py --no_output --era=Run2_2017 --data --conditions=112X_dataRun2_v7 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleAODRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloStage2Params_2017_v1_8_4 --no_exec
+# using: 
+# Revision: 1.19 
+# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
+# with command line options: l1Ntuple -s RAW2DIGI --python_filename=zeroBiasConfig.py -n 100 --no_output --era=Run2_2018 --data --conditions=112X_dataRun2_v7 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleRAWEMU --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_4 --filein=root://xrootd-cms.infn.it//store/data/Run2018D/ZeroBias/RAW/v1/000/325/240/00000/4E953DE3-A07E-6F45-94F4-E530035D3757.root
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
+from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
 
-process = cms.Process('RAW2DIGI',Run2_2017)
+process = cms.Process('RAW2DIGI',Run2_2018)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -15,19 +15,19 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-process.load('Configuration.StandardSequences.MagneticField_cff')
+process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1),
+    input = cms.untracked.int32(100),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:l1Ntuple_DIGI2RAW.root'),
+    fileNames = cms.untracked.vstring('root://xrootd-cms.infn.it//store/data/Run2018D/ZeroBias/RAW/v1/000/325/240/00000/4E953DE3-A07E-6F45-94F4-E530035D3757.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -35,13 +35,13 @@ process.options = cms.untracked.PSet(
     FailPath = cms.untracked.vstring(),
     IgnoreCompletely = cms.untracked.vstring(),
     Rethrow = cms.untracked.vstring(),
-    SkipEvent = cms.untracked.vstring('ProductNotFound'),
+    SkipEvent = cms.untracked.vstring(),
     allowUnscheduled = cms.obsolete.untracked.bool,
     canDeleteEarly = cms.untracked.vstring(),
     emptyRunLumiMode = cms.obsolete.untracked.string,
     eventSetup = cms.untracked.PSet(
         forceNumberOfConcurrentIOVs = cms.untracked.PSet(
-            allowAnyLabel_=cms.required.untracked.uint32
+
         ),
         numberOfConcurrentIOVs = cms.untracked.uint32(1)
     ),
@@ -60,7 +60,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('l1Ntuple nevts:1'),
+    annotation = cms.untracked.string('l1Ntuple nevts:100'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
@@ -85,31 +85,26 @@ associatePatAlgosToolsTask(process)
 # customisation of the process.
 
 # Automatic addition of the customisation function from L1Trigger.Configuration.customiseReEmul
-from L1Trigger.Configuration.customiseReEmul import L1TReEmulFromRAW
+from L1Trigger.Configuration.customiseReEmul import L1TReEmulFromRAW 
 
 #call to customisation function L1TReEmulFromRAW imported from L1Trigger.Configuration.customiseReEmul
 process = L1TReEmulFromRAW(process)
 
 # Automatic addition of the customisation function from L1Trigger.L1TNtuples.customiseL1Ntuple
-from L1Trigger.L1TNtuples.customiseL1Ntuple import L1NtupleAODRAWEMU
+from L1Trigger.L1TNtuples.customiseL1Ntuple import L1NtupleRAWEMU 
 
-#call to customisation function L1NtupleAODRAWEMU imported from L1Trigger.L1TNtuples.customiseL1Ntuple
-process = L1NtupleAODRAWEMU(process)
+#call to customisation function L1NtupleRAWEMU imported from L1Trigger.L1TNtuples.customiseL1Ntuple
+process = L1NtupleRAWEMU(process)
 
 # Automatic addition of the customisation function from L1Trigger.Configuration.customiseSettings
-from L1Trigger.Configuration.customiseSettings import L1TSettingsToCaloStage2Params_2017_v1_8_4
+from L1Trigger.Configuration.customiseSettings import L1TSettingsToCaloParams_2018_v1_4 
 
-#call to customisation function L1TSettingsToCaloStage2Params_2017_v1_8_4 imported from L1Trigger.Configuration.customiseSettings
-process = L1TSettingsToCaloStage2Params_2017_v1_8_4(process)
+#call to customisation function L1TSettingsToCaloParams_2018_v1_4 imported from L1Trigger.Configuration.customiseSettings
+process = L1TSettingsToCaloParams_2018_v1_4(process)
 
 # End of customisation functions
 
-
 # Customisation from command line
-
-#Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
-from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
-process = customiseLogErrorHarvesterUsingOutputCommands(process)
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete

@@ -67,66 +67,61 @@ DataReader::DataReader(const char* inputFileName, const bool *useEmulated) {
 	std::string tfMuonName = "l1UpgradeTfMuon" + emulatedString + "Tree/L1UpgradeTfMuonTree";
 	l1BmtfInputTree = (TTree*)inputFile->Get(tfMuonName.c_str());
 	l1BmtfInputReader = new TTreeReader(l1BmtfInputTree);
-	//Set Reader for BMTF Input Variables
+	//Set Reader for BMTF Input Variables (DTTP)
 	bmtfPhSize    = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "phSize");
-	bmtfThSize    = std::make_unique<TTreeReaderValue<int>>(*l1BmtfInputReader, "thSize");
 	bmtfPhBx      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phBx");
 	bmtfPhWh      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phWh");
 	bmtfPhSe      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phSe");
 	bmtfPhSt      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phSt");
 	bmtfPhCode    = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phCode");
 	bmtfPhTs2Tag  = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "phTs2Tag");
-	bmtfThBx      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thBx");
-	bmtfThWh      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thWh");
-	bmtfThSe      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thSe");
-	bmtfThSt      = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thSt");
-	bmtfThTheta   = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thTheta");
-	bmtfThCode    = std::make_unique<TTreeReaderArray<int>>(*l1BmtfInputReader, "thCode");
 	bmtfPhAng     = std::make_unique<TTreeReaderArray<float>>(*l1BmtfInputReader, "phAng");
 	bmtfPhBandAng = std::make_unique<TTreeReaderArray<float>>(*l1BmtfInputReader, "phBandAng");
 	//Set Reader for BMTF Muon Variables
-	nTfMuon               = std::make_unique<TTreeReaderValue<unsigned short>>(*l1BmtfInputReader, "nTfMuons");
-	tfMuonHwPt            = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwPt");
-	//tfMuonHwPt            = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwPtUnconstrained");
-	tfMuonHwEta           = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwEta");
-	tfMuonHwPhi           = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwPhi");
-	tfMuonGlobalPhi       = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonGlobalPhi");
-	tfMuonHwSign          = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwSign");
-	tfMuonHwSignValid     = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwSignValid");
-	tfMuonHwQual          = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwQual");
-	tfMuonLink            = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonLink");
-	tfMuonProcessor       = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonProcessor");
-	tfMuonTrackFinderType = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonTrackFinderType");
-	tfMuonHwHF            = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonHwHF");
-	tfMuonBx              = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonBx");
-	tfMuonWh              = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonWh");
-	tfMuonTrAdd           = std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, "tfMuonTrAdd");
+	std::map<int, std::string> tfPrefix = {{Utility::Bmtf, "Bmtf"}, {Utility::Omtf, "Omtf"}, {Utility::Emtf, "Emtf"}};
+	for (int tfType : {Utility::Bmtf, Utility::Omtf, Utility::Emtf}) {
+		nTfMuons.insert({tfType,     std::make_unique<TTreeReaderValue<unsigned short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.nTfMuons").c_str())});
+		tfMuonHwPt.insert({tfType,            std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwPt").c_str())});
+		tfMuonHwEta.insert({tfType,           std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwEta").c_str())});
+		tfMuonHwPhi.insert({tfType,           std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwPhi").c_str())});
+		tfMuonGlobalPhi.insert({tfType,       std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonGlobalPhi").c_str())});
+		tfMuonHwSign.insert({tfType,          std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwSign").c_str())});
+		tfMuonHwSignValid.insert({tfType,     std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwSignValid").c_str())});
+		tfMuonHwQual.insert({tfType,          std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwQual").c_str())});
+		tfMuonLink.insert({tfType,            std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonLink").c_str())});
+		tfMuonProcessor.insert({tfType,       std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonProcessor").c_str())});
+		tfMuonTrackFinderType.insert({tfType, std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonTrackFinderType").c_str())});
+		tfMuonHwHF.insert({tfType,            std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwHF").c_str())});
+		tfMuonBx.insert({tfType,              std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonBx").c_str())});
+		tfMuonWh.insert({tfType,              std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonWh").c_str())});
+		tfMuonTrAdd.insert({tfType,           std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonTrAdd").c_str())});
+	}
 
 	//Make just new stuff while keeping old tfMuon info.. Just outcomment the actual reading in bmtfinpuitproducer
 	std::string upgradeMuonName = "l1Upgrade" + emulatedString + "Tree/L1UpgradeTree";
 	l1UpgradeTree            = (TTree*)inputFile->Get(upgradeMuonName.c_str());
 	l1UpgradeReader          = new TTreeReader(l1UpgradeTree);
-	nBmtfMuons               = std::make_unique<TTreeReaderValue<unsigned short>>(*l1UpgradeReader, "nMuons");
-	bmtfMuonEt               = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEt");
-	bmtfMuonEtUnconstrained  = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEtUnconstrained");
-	bmtfMuonEta              = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEta");
-	bmtfMuonPhi              = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonPhi");
-	bmtfMuonEtaAtVtx         = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEtaAtVtx");
-	bmtfMuonPhiAtVtx         = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonPhiAtVtx");
-	bmtfMuonIEt              = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEt");
-	bmtfMuonIEtUnconstrained = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEtUnconstrained");
-	bmtfMuonIEta             = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEta");
-	bmtfMuonIPhi             = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIPhi");
-	bmtfMuonIEtaAtVtx        = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEtaAtVtx");
-	bmtfMuonIPhiAtVtx        = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIPhiAtVtx");
-	bmtfMuonIDEta            = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIDEta");
-	bmtfMuonIDPhi            = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIDPhi");
-	bmtfMuonChg              = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonChg");
-	bmtfMuonIso              = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonIso");
-	bmtfMuonQual             = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonQual");
-	bmtfMuonDxy              = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonDxy");
-	bmtfMuonTfMuonIdx        = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonTfMuonIdx");
-	bmtfMuonBx               = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonBx");
+	nUGMTMuons             = std::make_unique<TTreeReaderValue<unsigned short>>(*l1UpgradeReader, "nMuons");
+	uGMTEt               = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEt");
+	uGMTEtUnconstrained  = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEtUnconstrained");
+	uGMTEta              = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEta");
+	uGMTPhi              = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonPhi");
+	uGMTEtaAtVtx         = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonEtaAtVtx");
+	uGMTPhiAtVtx         = std::make_unique<TTreeReaderArray<float>>(*l1UpgradeReader, "muonPhiAtVtx");
+	uGMTIEt              = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEt");
+	uGMTIEtUnconstrained = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEtUnconstrained");
+	uGMTIEta             = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEta");
+	uGMTIPhi             = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIPhi");
+	uGMTIEtaAtVtx        = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIEtaAtVtx");
+	uGMTIPhiAtVtx        = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIPhiAtVtx");
+	uGMTIDEta            = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIDEta");
+	uGMTIDPhi            = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonIDPhi");
+	uGMTChg              = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonChg");
+	uGMTIso              = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonIso");
+	uGMTQual             = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonQual");
+	uGMTDxy              = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonDxy");
+	uGMTTfMuonIdx        = std::make_unique<TTreeReaderArray<unsigned short>>(*l1UpgradeReader, "muonTfMuonIdx");
+	uGMTBx               = std::make_unique<TTreeReaderArray<short>>(*l1UpgradeReader, "muonBx");
 }
 
 DataReader::~DataReader(){

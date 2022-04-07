@@ -8,7 +8,7 @@ config.General.workArea = 'crab_projects'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'zeroBias2018.py'
+config.JobType.psetName = 'zeroBiasConfig.py'
 config.JobType.maxMemoryMB = 3000
 #config.JobType.maxJobRuntimeMin = 400
 config.section_("Data")
@@ -21,7 +21,7 @@ config.Data.unitsPerJob = 1
 config.Data.outLFNDirBase = '/store/user/lwiens/Run2018D_ZeroBias_v1_RAW'
 #config.Data.publication = True
 config.Data.publication = False
-config.Data.outputDatasetTag = 'Run2018D_ZeroBias_v1_RAW'
+config.Data.outputDatasetTag = 'Run2018D_ZeroBias'
 
 config.section_("Site")
 

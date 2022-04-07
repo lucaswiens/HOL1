@@ -40,14 +40,11 @@ int main(int argc, char* argv[]) {
 	std::vector<std::shared_ptr<BaseProducer>> producers;
 	if (strstr(argv[3], "SingleMuon") != NULL || strstr(argv[3], "MET") != NULL || strstr(argv[3], "MET") != NULL) {
 		// For the study of recoving the gap in iEta3
-		if (strstr(argv[2], "SingleMuon") != NULL) {
-			ptCut = 22;
-		}
 
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer()));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(l1EtaCut, l1PtCut)));
 		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer(ptCut, etaCut, workingPointCut)));
-		//producers.push_back(std::shared_ptr<TagAndProbeProducer>(new TagAndProbeProducer(ptCut, l1PtCut, etaCut, workingPointCut)));
+		producers.push_back(std::shared_ptr<TagAndProbeProducer>(new TagAndProbeProducer(ptCut, l1PtCut, etaCut, workingPointCut)));
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, l1EtaCut, ptCut, l1PtCut, deltaPhiCut, deltaRCut)));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
 

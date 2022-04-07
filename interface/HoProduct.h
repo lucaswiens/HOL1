@@ -22,16 +22,31 @@ public:
 	std::vector<bool> dttpIsHq,
 		dttpIsLq;
 	// Track Finder Muons
-	unsigned short bmtfSize;
-	std::vector<int> bmtfTrackType;
-	std::vector<short> bmtfBx,
-		bmtfGlobalPhi,
-		bmtfPt,
-		bmtfEta;
-	std::vector<double> bmtfCmsPt,
-		bmtfCmsEta,
-		bmtfCmsPhi;
-	std::vector<std::vector<int>> bmtfTrackerAddresses;
+	std::map<int, unsigned short> tfMuonSize = {{0, 0}, {1, 0}, {2, 0}};
+	std::map<int, std::vector<int>> tfMuonTrackType = {{0, {}}, {1, {}}, {2, {}}},
+		tfMuonQuality = {{0, {}}, {1, {}}, {2, {}}};
+	std::map<int, std::vector<short>> tfMuonBx = {{0, {}}, {1, {}}, {2, {}}},
+		tfMuonGlobalPhi = {{0, {}}, {1, {}}, {2, {}}},
+		tfMuonPt = {{0, {}}, {1, {}}, {2, {}}},
+		tfMuonEta = {{0, {}}, {1, {}}, {2, {}}};
+	std::map<int, std::vector<double>> tfMuonCmsPt = {{0, {}}, {1, {}}, {2, {}}},
+		tfMuonCmsEta = {{0, {}}, {1, {}}, {2, {}}},
+		tfMuonCmsPhi = {{0, {}}, {1, {}}, {2, {}}};
+	std::map<int, std::vector<std::vector<int>>> tfMuonTrackerAddresses = {{0, {}}, {1, {}}, {2, {}}};
+
+	// Track Finder Muons (uGMT)
+	unsigned short nUGMTMuons;
+	std::vector<int> uGMTMuonTrackType,
+		uGMTMuonQuality;
+	std::vector<short> uGMTMuonBx,
+		uGMTMuonGlobalPhi,
+		uGMTMuonPt,
+		uGMTMuonEta;
+	std::vector<double> uGMTMuonCmsPt,
+		uGMTMuonCmsEta,
+		uGMTMuonCmsPhi;
+	//std::map<int, std::vector<std::vector<int>>> tfMuonTrackerAddresses;
+
 	// HO Variables
 	double sumQ;
 	unsigned int nHcalDetIds, nHcalQIESamples;
@@ -92,6 +107,61 @@ public:
 		muonPhiSt2;
 	std::vector<double> muonMet,
 		muonMt;
+	// Tag Muons
+	unsigned short nTagMuon;
+	std::vector<bool> isLooseTagMuon,
+		isMediumTagMuon,
+		isTightTagMuon,
+		tagMuonHltIsoMu,
+		tagMuonHltMu,
+		tagMuonPassesSingleMuon,
+		tagMuonHasMb1,
+		tagMuonHasMb2;
+	std::vector<int> tagMuonCharge,
+		tagMuonIEta,
+		tagMuonNHo3x3Hit;
+	std::vector<float> tagMuonE,
+		tagMuonEt,
+		tagMuonPt,
+		tagMuonEta,
+		tagMuonPhi,
+		tagMuonIso,
+		tagMuonHltIsoDeltaR,
+		tagMuonDeltaR,
+		tagMuonEtaSt1,
+		tagMuonPhiSt1,
+		tagMuonEtaSt2,
+		tagMuonPhiSt2;
+	std::vector<double> tagMuonMet,
+		tagMuonMt;
+	// Probe Muons
+	unsigned short nProbeMuon;
+	std::vector<bool> isLooseProbeMuon,
+		isMediumProbeMuon,
+		isTightProbeMuon,
+		probeMuonHltIsoMu,
+		probeMuonHltMu,
+		probeMuonPassesSingleMuon,
+		probeMuonHasMb1,
+		probeMuonHasMb2;
+	std::vector<int> probeMuonCharge,
+		probeMuonIEta,
+		probeMuonNHo3x3Hit;
+	std::vector<float> probeMuonE,
+		probeMuonEt,
+		probeMuonPt,
+		probeMuonEta,
+		probeMuonPhi,
+		probeMuonIso,
+		probeMuonHltIsoDeltaR,
+		probeMuonDeltaR,
+		probeMuonEtaSt1,
+		probeMuonPhiSt1,
+		probeMuonEtaSt2,
+		probeMuonPhiSt2;
+	std::vector<double> probeMuonMet,
+		probeMuonMt;
+
 	// Used Muons
 	unsigned short nUsedMuon;
 	std::vector<bool> isMediumUsedMuon,

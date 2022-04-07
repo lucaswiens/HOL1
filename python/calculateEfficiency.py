@@ -17,6 +17,16 @@ import ROOT
 
 import common
 
+ROOT.gStyle.SetOptTitle(0)
+ROOT.gStyle.SetOptStat(0)
+
+ROOT.gStyle.SetPadTopMargin(0.125)
+ROOT.gStyle.SetPadLeftMargin(0.2)
+ROOT.gStyle.SetPadRightMargin(0.03)
+ROOT.gStyle.SetPadBottomMargin(0.175)
+ROOT.gStyle.SetLegendBorderSize(0)
+ROOT.gStyle.SetErrorX(0)
+
 def GetOsVariable(Var):
 	try:
 		variable = os.environ[Var]
@@ -101,6 +111,7 @@ if __name__=="__main__":
 		else:
 			effName = eff[2]
 		canvas = ROOT.TCanvas(effName, effName, width, height)
+		canvas.SetTicks()
 		efficiencyGraphs = []
 		if isinstance(eff[0], list):
 			eff = np.array(eff)

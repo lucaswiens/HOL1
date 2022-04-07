@@ -2,15 +2,9 @@
 
 #include <HOAnalysis/HOL1/interface/Producer/BaseProducer.h>
 
-//#include <Math/GenVector/LorentzVector.h>
-//#include <Vector4D.h>
-//#include <TMath.h>
-//#include <Math/GenVector/PtEtaPhiM4D.h>
-
 #include <Math/Vector4Dfwd.h>
 #include <Math/GenVector/LorentzVector.h>
 #include <Math/GenVector/PtEtaPhiM4D.h>
-
 
 class TagAndProbeProducer : public BaseProducer {
 	private:

@@ -13,9 +13,17 @@ import os
 #import re
 import subprocess
 
-import ROOT
-
 import common
+
+import ROOT
+ROOT.gStyle.SetOptTitle(0)
+ROOT.gStyle.SetOptStat(0)
+ROOT.gStyle.SetPadTopMargin(0.05)
+ROOT.gStyle.SetPadLeftMargin(0.1)
+ROOT.gStyle.SetPadRightMargin(0.03)
+#ROOT.gStyle.SetPadBottomMargin(0.175)
+ROOT.gStyle.SetLegendBorderSize(0)
+ROOT.gStyle.SetErrorX(0)
 
 def GetOsVariable(Var):
 	try:
@@ -72,6 +80,7 @@ if __name__=="__main__":
 	height = width
 	#height= 1500
 	#height = int(width / 1.618030)
+	height = int(width * 3/4.)
 	effName = "muonPt"
 
 	canvas = ROOT.TCanvas(effName, effName, width, height)
@@ -80,43 +89,49 @@ if __name__=="__main__":
 
 
 
-	tmpMuonPt = histogramFile.Get("muonPt")
-	tmpBmtfMatchedMuonPt = histogramFile.Get("bmtfMatchedMuonPt")
+	muonPt = histogramFile.Get("muonPt")
+	bmtfMatchedMuonPt = histogramFile.Get("bmtfMatchedMuonPt")
 
-	tmpIsoMb1MatchedMuonPt = histogramFile.Get("isoMb1MatchedMuonPt")
-	tmpIsoMb2MatchedMuonPt = histogramFile.Get("isoMb2MatchedMuonPt")
-	tmpIsoMb12MatchedMuonPt = histogramFile.Get("isoMb12MatchedMuonPt")
+	isoMb1MatchedMuonPt = histogramFile.Get("isoMb1MatchedMuonPt")
+	isoMb2MatchedMuonPt = histogramFile.Get("isoMb2MatchedMuonPt")
+	isoMb12MatchedMuonPt = histogramFile.Get("isoMb12MatchedMuonPt")
 
 	minimum = 0
 	maximum = int(args.x_max)
 	#nBins = 2 * int(args.x_max)
 	nBins = int(args.x_max)
 
-	muonPt = ROOT.TH1D("muonPt", "", nBins, minimum, maximum)
-	bmtfMatchedMuonPt = ROOT.TH1D("bmtfMatchedMuonPt", "", nBins, minimum, maximum)
 
-	isoMb1MatchedMuonPt = ROOT.TH1D("isoMb1MatchedMuonPt", "", nBins, minimum, maximum)
-	isoMb2MatchedMuonPt = ROOT.TH1D("isoMb2MatchedMuonPt", "", nBins, minimum, maximum)
-	isoMb12MatchedMuonPt = ROOT.TH1D("isoMb12MatchedMuonPt", "", nBins, minimum, maximum)
 
-	for bin in range(0, nBins + 1):
-		muonPt.SetBinContent(bin, tmpMuonPt.GetBinContent(bin))
-		muonPt.SetBinError(bin, tmpMuonPt.GetBinError(bin))
+	#tmpIsoMb1MatchedMuonPt = histogramFile.Get("isoMb1MatchedMuonPt")
+	#tmpIsoMb2MatchedMuonPt = histogramFile.Get("isoMb2MatchedMuonPt")
+	#tmpIsoMb12MatchedMuonPt = histogramFile.Get("isoMb12MatchedMuonPt")
 
-		bmtfMatchedMuonPt.SetBinContent(bin, tmpBmtfMatchedMuonPt.GetBinContent(bin))
-		bmtfMatchedMuonPt.SetBinError(bin, tmpBmtfMatchedMuonPt.GetBinError(bin))
+	#muonPt = ROOT.TH1D("muonPt", "", nBins, minimum, maximum)
+	#bmtfMatchedMuonPt = ROOT.TH1D("bmtfMatchedMuonPt", "", nBins, minimum, maximum)
 
-		isoMb1MatchedMuonPt.SetBinContent(bin, tmpIsoMb1MatchedMuonPt.GetBinContent(bin))
-		isoMb1MatchedMuonPt.SetBinError(bin, tmpIsoMb1MatchedMuonPt.GetBinError(bin))
+	#isoMb1MatchedMuonPt = ROOT.TH1D("isoMb1MatchedMuonPt", "", nBins, minimum, maximum)
+	#isoMb2MatchedMuonPt = ROOT.TH1D("isoMb2MatchedMuonPt", "", nBins, minimum, maximum)
+	#isoMb12MatchedMuonPt = ROOT.TH1D("isoMb12MatchedMuonPt", "", nBins, minimum, maximum)
 
-		isoMb2MatchedMuonPt.SetBinContent(bin, tmpIsoMb2MatchedMuonPt.GetBinContent(bin))
-		isoMb2MatchedMuonPt.SetBinError(bin, tmpIsoMb2MatchedMuonPt.GetBinError(bin))
+	#for bin in range(0, nBins + 1):
+	#	muonPt.SetBinContent(bin, tmpMuonPt.GetBinContent(bin))
+	#	muonPt.SetBinError(bin, tmpMuonPt.GetBinError(bin))
 
-		isoMb12MatchedMuonPt.SetBinContent(bin, tmpIsoMb12MatchedMuonPt.GetBinContent(bin))
-		isoMb12MatchedMuonPt.SetBinError(bin, tmpIsoMb12MatchedMuonPt.GetBinError(bin))
+	#	bmtfMatchedMuonPt.SetBinContent(bin, tmpBmtfMatchedMuonPt.GetBinContent(bin))
+	#	bmtfMatchedMuonPt.SetBinError(bin, tmpBmtfMatchedMuonPt.GetBinError(bin))
+
+	#	isoMb1MatchedMuonPt.SetBinContent(bin, tmpIsoMb1MatchedMuonPt.GetBinContent(bin))
+	#	isoMb1MatchedMuonPt.SetBinError(bin, tmpIsoMb1MatchedMuonPt.GetBinError(bin))
+
+	#	isoMb2MatchedMuonPt.SetBinContent(bin, tmpIsoMb2MatchedMuonPt.GetBinContent(bin))
+	#	isoMb2MatchedMuonPt.SetBinError(bin, tmpIsoMb2MatchedMuonPt.GetBinError(bin))
+
+	#	isoMb12MatchedMuonPt.SetBinContent(bin, tmpIsoMb12MatchedMuonPt.GetBinContent(bin))
+	#	isoMb12MatchedMuonPt.SetBinError(bin, tmpIsoMb12MatchedMuonPt.GetBinError(bin))
 
 	yMin = 0
-	yMax = 1.1
+	yMax = 1.02
 	effBmtfGraph = ROOT.TGraphAsymmErrors(muonPt)
 	effBmtfGraph.Divide(bmtfMatchedMuonPt, muonPt, "cl=0.683 b(1,1) mode")
 	effBmtfGraph.SetLineColor(ROOT.kBlack); effBmtfGraph.SetMarkerColor(ROOT.kBlack); effBmtfGraph.SetMarkerColor(ROOT.kBlack); effBmtfGraph.SetMarkerSize(0.8)
@@ -135,6 +150,7 @@ if __name__=="__main__":
 	effIsoMb12Graph.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Graph.GetXaxis().SetTitle(xLabel); effIsoMb12Graph.GetYaxis().SetTitle(yLabel);
 	effIsoMb12Graph.SetMinimum(yMin); effIsoMb12Graph.SetMaximum(yMax)
 
+	effBmtfGraph.GetXaxis().SetRangeUser(0, 60);
 	effBmtfGraph.Draw("same ap")
 	if not args.bmtf_only:
 		effIsoMb1Graph.Draw("same p")

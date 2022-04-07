@@ -13,9 +13,17 @@ import os
 #import re
 import subprocess
 
-import ROOT
-
 import common
+
+import ROOT
+ROOT.gStyle.SetOptTitle(0)
+ROOT.gStyle.SetOptStat(0)
+ROOT.gStyle.SetPadTopMargin(0.05)
+ROOT.gStyle.SetPadLeftMargin(0.1)
+ROOT.gStyle.SetPadRightMargin(0.03)
+##ROOT.gStyle.SetPadBottomMargin(0.175)
+ROOT.gStyle.SetLegendBorderSize(0)
+ROOT.gStyle.SetErrorX(0)
 
 def GetOsVariable(Var):
 	try:
@@ -71,9 +79,10 @@ if __name__=="__main__":
 	xLabel = findLabel("Eta")
 	yLabel = "Efficiency"
 	width = 1200
-	height = width
+	#height = width
 	#height = 1500
 	#height = int(width / 1.618030)
+	height = int(width * 3/4.)
 	effName = "muonEta"
 
 	canvas = ROOT.TCanvas(effName, effName, width, height)
@@ -86,6 +95,12 @@ if __name__=="__main__":
 	isoMb1MatchedMuonEta = histogramFile.Get("isoMb1MatchedMuonEta")
 	isoMb2MatchedMuonEta = histogramFile.Get("isoMb2MatchedMuonEta")
 	isoMb12MatchedMuonEta = histogramFile.Get("isoMb12MatchedMuonEta")
+
+	bmtfMatchedMuonEta.SetTitle("")
+
+	isoMb1MatchedMuonEta.SetTitle("")
+	isoMb2MatchedMuonEta.SetTitle("")
+	isoMb12MatchedMuonEta.SetTitle("")
 
 	yMin = 0
 	yMax = 1.1
@@ -113,7 +128,7 @@ if __name__=="__main__":
 		effIsoMb1Graph.Draw("same p")
 		effIsoMb12Graph.Draw("same p")
 
-	ROOT.gPad.BuildLegend();
+	ROOT.gPad.BuildLegend(0.6, 0.2, 0.9, 0.45);
 
 	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
 	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".pdf")
@@ -184,7 +199,8 @@ if __name__=="__main__":
 	canvas.Close()
 
 	yMin = 1
-	yMax = 1.6
+	yMax = 1.4
+	ROOT.gStyle.SetPadRightMargin(0.125)
 	effBmtfHist.SetMinimum(yMin); effBmtfHist.SetMaximum(yMax)
 	effIsoMb1Hist.SetMinimum(yMin); effIsoMb1Hist.SetMaximum(yMax)
 	effIsoMb12Hist.SetMinimum(yMin); effIsoMb12Hist.SetMaximum(yMax)
