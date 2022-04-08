@@ -7,7 +7,7 @@ import string
 import awkward1 as ak
 import boost_histogram as bh
 
-from getXSection import GetXSection
+#from getXSection import GetXSection
 
 def GetFromDict(tree, dictionairy, key):
 	keyString = re.sub("_[0-9]", "", key)
@@ -195,6 +195,6 @@ def CreateIndexHtml(templateDir, outputDir, **kwargs):
 	for OutputObject in outputDirContent:
 		fullOutputObject = os.path.join(fullOutputDir, OutputObject)
 		if os.path.isfile(fullOutputObject):
-			print("Copying " + OutputObject + " into " + outputDir + "...")
+			#print("Copying " + OutputObject + " into " + outputDir + "...")
 			copyCommand = os.path.expandvars("$WEB_PLOTTING_COPY_COMMAND").format(source=fullOutputObject, subdir=outputDir)
 			os.system(copyCommand)
