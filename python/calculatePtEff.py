@@ -118,7 +118,7 @@ if __name__=="__main__":
 	effIsoMb12Graph.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Graph.GetXaxis().SetTitle(xLabel); effIsoMb12Graph.GetYaxis().SetTitle(yLabel);
 	effIsoMb12Graph.SetMinimum(yMin); effIsoMb12Graph.SetMaximum(yMax)
 
-	effBmtfGraph.GetXaxis().SetRangeUser(0, args.x_max);
+	effBmtfGraph.GetXaxis().SetRangeUser(0, float(args.x_max));
 	effBmtfGraph.Draw("same ap")
 	if not args.bmtf_only:
 		effIsoMb1Graph.Draw("same p")
