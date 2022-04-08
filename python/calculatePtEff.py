@@ -54,7 +54,7 @@ if __name__=="__main__":
 	parser.add_argument("-i", "--input-file", required=True, help="Path to the file with the L1Ntuple + HO coincidence histograms")
 	parser.add_argument("-o", "--output-directory", help="Path to the output directory", default = "")
 	parser.add_argument("-n", "--number-of-files", help="Number of files that will be processed at once", default = 100)
-	parser.add_argument("--x-max", help="Number of bins", default = 20)
+	parser.add_argument("--x-max", help="Number of bins", default = 60)
 	parser.add_argument("--plot-config", default = cmsswBase + "/src/Plotting/Plotter/data/config/efficiency.json", help = "Path to the json file used to create plots: %(default)s")
 	parser.add_argument("--file-types", nargs = "+", default = ["png", "pdf"], help = "Set the filetypes of the output: %(default)s")
 	parser.add_argument("--test", default = False, action = "store_true", help = "Use only the first five file for each sample for a quick run")
@@ -71,15 +71,12 @@ if __name__=="__main__":
 	for dir in outputDirectories:
 		if not os.path.exists(dir):
 			os.makedirs(dir)
-	histogramFile = ROOT.TFile(args.input_file)
-
 
 	xLabel = findLabel("Pt")
 	yLabel = "Efficiency"
 	width = 1200
 	height = width
 	#height= 1500
-	#height = int(width / 1.618030)
 	height = int(width * 3/4.)
 	effName = "muonPt"
 
@@ -87,48 +84,19 @@ if __name__=="__main__":
 
 	canvas.SetGrid()
 
+	histogramFile = ROOT.TFile(args.input_file)
+	#histogramFile.Print()
+	histogramFile.cd("1")
 
+	muonPt = histogramFile.Get("1/muonPt")
+	print(muonPt)
+	bmtfMatchedMuonPt = histogramFile.Get("1/bmtfMatchedMuonPt")
 
-	muonPt = histogramFile.Get("muonPt")
-	bmtfMatchedMuonPt = histogramFile.Get("bmtfMatchedMuonPt")
-
-	isoMb1MatchedMuonPt = histogramFile.Get("isoMb1MatchedMuonPt")
-	isoMb2MatchedMuonPt = histogramFile.Get("isoMb2MatchedMuonPt")
-	isoMb12MatchedMuonPt = histogramFile.Get("isoMb12MatchedMuonPt")
+	isoMb1MatchedMuonPt = histogramFile.Get("1/isoMb1MatchedMuonPt")
+	isoMb2MatchedMuonPt = histogramFile.Get("1/isoMb2MatchedMuonPt")
+	isoMb12MatchedMuonPt = histogramFile.Get("1/isoMb12MatchedMuonPt")
 
 	minimum = 0
-	maximum = int(args.x_max)
-	#nBins = 2 * int(args.x_max)
-	nBins = int(args.x_max)
-
-
-
-	#tmpIsoMb1MatchedMuonPt = histogramFile.Get("isoMb1MatchedMuonPt")
-	#tmpIsoMb2MatchedMuonPt = histogramFile.Get("isoMb2MatchedMuonPt")
-	#tmpIsoMb12MatchedMuonPt = histogramFile.Get("isoMb12MatchedMuonPt")
-
-	#muonPt = ROOT.TH1D("muonPt", "", nBins, minimum, maximum)
-	#bmtfMatchedMuonPt = ROOT.TH1D("bmtfMatchedMuonPt", "", nBins, minimum, maximum)
-
-	#isoMb1MatchedMuonPt = ROOT.TH1D("isoMb1MatchedMuonPt", "", nBins, minimum, maximum)
-	#isoMb2MatchedMuonPt = ROOT.TH1D("isoMb2MatchedMuonPt", "", nBins, minimum, maximum)
-	#isoMb12MatchedMuonPt = ROOT.TH1D("isoMb12MatchedMuonPt", "", nBins, minimum, maximum)
-
-	#for bin in range(0, nBins + 1):
-	#	muonPt.SetBinContent(bin, tmpMuonPt.GetBinContent(bin))
-	#	muonPt.SetBinError(bin, tmpMuonPt.GetBinError(bin))
-
-	#	bmtfMatchedMuonPt.SetBinContent(bin, tmpBmtfMatchedMuonPt.GetBinContent(bin))
-	#	bmtfMatchedMuonPt.SetBinError(bin, tmpBmtfMatchedMuonPt.GetBinError(bin))
-
-	#	isoMb1MatchedMuonPt.SetBinContent(bin, tmpIsoMb1MatchedMuonPt.GetBinContent(bin))
-	#	isoMb1MatchedMuonPt.SetBinError(bin, tmpIsoMb1MatchedMuonPt.GetBinError(bin))
-
-	#	isoMb2MatchedMuonPt.SetBinContent(bin, tmpIsoMb2MatchedMuonPt.GetBinContent(bin))
-	#	isoMb2MatchedMuonPt.SetBinError(bin, tmpIsoMb2MatchedMuonPt.GetBinError(bin))
-
-	#	isoMb12MatchedMuonPt.SetBinContent(bin, tmpIsoMb12MatchedMuonPt.GetBinContent(bin))
-	#	isoMb12MatchedMuonPt.SetBinError(bin, tmpIsoMb12MatchedMuonPt.GetBinError(bin))
 
 	yMin = 0
 	yMax = 1.02
@@ -150,7 +118,7 @@ if __name__=="__main__":
 	effIsoMb12Graph.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Graph.GetXaxis().SetTitle(xLabel); effIsoMb12Graph.GetYaxis().SetTitle(yLabel);
 	effIsoMb12Graph.SetMinimum(yMin); effIsoMb12Graph.SetMaximum(yMax)
 
-	effBmtfGraph.GetXaxis().SetRangeUser(0, 60);
+	effBmtfGraph.GetXaxis().SetRangeUser(0, args.x_max);
 	effBmtfGraph.Draw("same ap")
 	if not args.bmtf_only:
 		effIsoMb1Graph.Draw("same p")

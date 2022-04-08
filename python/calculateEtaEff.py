@@ -89,12 +89,12 @@ if __name__=="__main__":
 	canvas.SetGrid()
 
 
-	muonEta = histogramFile.Get("muonEta")
-	bmtfMatchedMuonEta = histogramFile.Get("bmtfMatchedMuonEta")
+	muonEta = histogramFile.Get("1/muonEta")
+	bmtfMatchedMuonEta = histogramFile.Get("1/bmtfMatchedMuonEta")
 
-	isoMb1MatchedMuonEta = histogramFile.Get("isoMb1MatchedMuonEta")
-	isoMb2MatchedMuonEta = histogramFile.Get("isoMb2MatchedMuonEta")
-	isoMb12MatchedMuonEta = histogramFile.Get("isoMb12MatchedMuonEta")
+	isoMb1MatchedMuonEta = histogramFile.Get("1/isoMb1MatchedMuonEta")
+	isoMb2MatchedMuonEta = histogramFile.Get("1/isoMb2MatchedMuonEta")
+	isoMb12MatchedMuonEta = histogramFile.Get("1/isoMb12MatchedMuonEta")
 
 	bmtfMatchedMuonEta.SetTitle("")
 
@@ -138,12 +138,12 @@ if __name__=="__main__":
 	canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + ".pdf")
 	canvas.Close()
 
-	muonEta_vs_MuonPt = histogramFile.Get("muonEta_vs_MuonPt")
-	bmtfMatchedMuonEta_vs_MuonPt = histogramFile.Get("bmtfMatchedMuonEta_vs_MuonPt")
+	muonEta_vs_MuonPt = histogramFile.Get("1/muonEta_vs_MuonPt")
+	bmtfMatchedMuonEta_vs_MuonPt = histogramFile.Get("1/bmtfMatchedMuonEta_vs_MuonPt")
 
-	isoMb1MatchedMuonEta_vs_MuonPt = histogramFile.Get("isoMb1MatchedMuonEta_vs_MuonPt")
-	isoMb2MatchedMuonEta_vs_MuonPt = histogramFile.Get("isoMb2MatchedMuonEta_vs_MuonPt")
-	isoMb12MatchedMuonEta_vs_MuonPt = histogramFile.Get("isoMb12MatchedMuonEta_vs_MuonPt")
+	isoMb1MatchedMuonEta_vs_MuonPt = histogramFile.Get("1/isoMb1MatchedMuonEta_vs_MuonPt")
+	isoMb2MatchedMuonEta_vs_MuonPt = histogramFile.Get("1/isoMb2MatchedMuonEta_vs_MuonPt")
+	isoMb12MatchedMuonEta_vs_MuonPt = histogramFile.Get("1/isoMb12MatchedMuonEta_vs_MuonPt")
 
 	xLabel = findLabel("Eta")
 	yLabel = findLabel("Pt")
