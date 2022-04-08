@@ -31,7 +31,7 @@ if __name__=="__main__":
 
 	parser = argparse.ArgumentParser(description="Runs a NAF batch system for nanoAOD", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-i", "--input-file", required=True, help="Path to the file containing a list of samples.")
-	parser.add_argument("-o", "--output", help="Path to the output directory", default = cmsswBase + "/" "Batch")
+	parser.add_argument("-o", "--output", help="Path to the output directory", default = cmsswBase + "/" "L1Hist")
 	parser.add_argument("-n", "--number-of-files", help="Number of files that will be processed at once", default = 50)
 	parser.add_argument("--test", default = False, action = "store_true", help = "Use only the first five file for each sample for a quick run")
 	parser.add_argument("-e", "--use-emulated", default = False, action = "store_true", help = "Use the emulated branch to read BMTF information")
@@ -43,28 +43,7 @@ if __name__=="__main__":
 	fileName = args.input_file.split("/")[1].split(".")[0]
 	args.output = args.output + "/" + fileName + "/" + date
 
-	#executable = cmsswBase + "/nfs/dust/cms/user/wiens/CMSSW/HO/CMSSW_11_0_2/src/HOAnalysis/HOL1/scripts/produceL1Ntuple"
-
-	# Order by run number.. should be parts of args or so because it is much slower and only needed for rate
-	sampleDict = defaultdict(list)
-	with open(args.input_file, "r") as sampleFile:
-		for sample in sampleFile:
-			sample = sample.replace("\n", "")
-			if fileName == "ZeroBias": #this needs to be fixed probably.. WOuld be too slow
-				runNumberArray = uproot.open(sample)["l1EventTree/L1EventTree/Event"]["run"].array()
-				run = runNumberArray[0]
-			else:
-				run = 1
-			sampleDict[run].append(sample)
-			#if len(set(runNumberArray)) > 1:
-				#print "Oha", set(runNumberArray)
-
-	#if os.path.exists(args.output):
-	#shutil.rmtree(str(args.output))
-	#makeDirs(cmsswBase + "/L1Hist/" + "/" + fileName + "/" + date)
-	for runNumber in sampleDict.keys():
-		makeDirs(cmsswBase + "/L1Hist/" + "/" + fileName + "/" + date + "/" + str(runNumber))
-	#makeDirs(str(args.output) + "/L1Hist")
+	makeDirs(str(args.output) + "/root")
 	makeDirs(str(args.output) + "/error")
 	makeDirs(str(args.output) + "/log")
 	makeDirs(str(args.output) + "/output")
@@ -73,8 +52,8 @@ if __name__=="__main__":
 	number = 0
 
 	condorFile = open(args.output + "/condor.submit", "w")
-	condorFile.write("executable = " + args.output + "/produceNtuple\n")
-	condorFile.write("arguments = L1Hist_$(Process) " + str(runNumber) + "$(arguments)\n")
+	condorFile.write("executable = " + args.output + "/produceHOL1\n")
+	condorFile.write("arguments = L1Hist_$(Process) $(arguments)\n")
 	condorFile.write("getenv = True\n")
 	condorFile.write("universe = vanilla\n")
 	condorFile.write("request_memory = 400MB\n")
@@ -84,53 +63,47 @@ if __name__=="__main__":
 	condorFile.write("queue arguments from arguments.md\n")
 	condorFile.close()
 
-	execFile = open(args.output + "/produceNtuple", "w")
+	execFile = open(args.output + "/produceHOL1", "w")
 	execFile.write("#!/bin/sh\n")
-	execFile.write("RUNNUMBER=${1}\n")
-	execFile.write("EXECFILE=${2}\n")
+	execFile.write("EXECFILE=${1}\n")
 	execFile.write("cd " + cmsswBase + "\n")
 	execFile.write("eval `scramv1 runtime -sh` #cmsenv\n")
-	execFile.write("cd " + cmsswBase + "/L1Hist/" + fileName + "/" + date + "/${RUNNUMBER}\n")
+	execFile.write("cd " + str(args.output) + "/root\n")
 	execFile.write("bash " + args.output + "/${EXECFILE}\n")
-	os.system("chmod 744 " + args.output + "/produceNtuple")
+
+	os.system("chmod 744 " + args.output + "/produceHOL1")
 	argumentFile = open(args.output + "/arguments.md", "w")
 
 	if args.test:
 		numberOfFiles = 5
 
 	shellNumber = 0
-	#sampleFile = open(args.input_file, "r")
+	sampleList = []
+	with open(args.input_file, "r") as sampleFile:
+		sampleList = sampleFile.readlines()
 
-	#sampleList = [sample.replace("\n", "") for sample in sampleFile]
+	for sample in sampleList:
+		sample = sample.replace("\n", "")
+		if number == 0:
+			shellFile = open(args.output + "/processNtuple_" + str(shellNumber), "w")
+			os.system("chmod 744 " + args.output + "/processNtuple_" + str(shellNumber))
+			shellFile.write("#!/bin/sh\n")
+			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " ")
+			shellFile.write(sample + " ")
+			number += 1
 
-	print "List of run numbers:", sampleDict.keys()
-	print(args.use_emulated)
-	for runNumber in sampleDict.keys():
-		print "run = %i" % (runNumber), "with %i files" % (len(sampleDict[runNumber]))
-		lastSample = sampleDict[runNumber][-1]
-		for sample in sampleDict[runNumber]:
-			#sample = sample.replace("\n", "")
-			if number == 0:
-				shellFile = open(args.output + "/processNtuple_" + str(shellNumber), "w")
-				os.system("chmod 744 " + args.output + "/processNtuple_" + str(shellNumber))
-				shellFile.write("#!/bin/sh\n")
-				shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " ")
-				shellFile.write(sample + " ")
-				number += 1
+			argumentFile.write("processNtuple_" + str(shellNumber) + "\n")
+		else:
+			shellFile.write(sample + " ")
+			number += 1
+		if number == numberOfFiles - 1:
+			shellFile.write(sample + "\n")
+			shellFile.close()
+			number = 0
+			shellNumber += 1
+			if args.test:
+				break
 
-				#argumentFile.write(args.output + "/L1Hist/L1Hist_" + str(shellNumber) + " ")
-				argumentFile.write(str(runNumber) + " processNtuple_" + str(shellNumber) + "\n")
-			else:
-				shellFile.write(sample + " ")
-				number += 1
-				#argumentFile.write(sample + " ")
-			if number == numberOfFiles - 1 or sample == lastSample:
-				shellFile.write(sample + "\n")
-				shellFile.close()
-				number = 0
-				shellNumber += 1
-				if args.test:
-					break
 	argumentFile.close()
 
 	print("To execute, go to {}".format(args.output))

@@ -60,7 +60,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 
 	// DTTP Histograms
 	histDttpSize = new TH1I("dttpSize", "", 15, 0, 15);
-	histDttpBx = new TH1I("dttpBx", "", 5, -2, 2);
+	histDttpBx = new TH1I("dttpBx", "", 20, -10, 10);
 	histDttpWheel = new TH1I("dttpWheel", "", nBinsWheel, minWheel, maxWheel);
 	histDttpSection = new TH1I("dttpSection", "", nBinsSection, minSection, maxSection);
 	histDttpStation = new TH1I("dttpStation", "", nBinsStation, minStation, maxStation);
@@ -109,7 +109,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 	histBmtfTrackFinderType = new TH1S("bmtfTrackFinderType", "", 25, 0, 25);
 	histBmtfTrackType = new TH1S("bmtfTrackType", "", 25, 0, 25);
 	histBmtfHwHF = new TH1S("bmtfHwHF", "", 25, 0, 25);
-	histBmtfBx = new TH1S("bmtfBx", "", 25, 0, 25);
+	histBmtfBx = new TH1S("bmtfBx", "", 20, -10, 10);
 	histBmtfWh = new TH1S("bmtfWh", "", 25, 0, 25);
 	histBmtfTrAdd = new TH1S("bmtfTrAdd", "", 25, 0, 25);
 	histBmtfTrAddSt1 = new TH1S("bmtfTrAddSt1", "", 25, 0, 25);
@@ -126,15 +126,6 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 	//histUnusedDttpStation_vs_DttpWheel = new TH2D("unusedMB_station_vs_wheel", "", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
 	//histUnusedDttpStation_vs_DttpWheel_Hq = new TH2D("unusedMB_station_vs_wheel_Hq", "", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
 	//histUnusedDttpStation_vs_DttpWheel_Lq = new TH2D("unusedMB_station_vs_wheel_Lq", "", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
-
-	// BMTFTheta Histograms, just for completenes
-	histBmtfThSize = new TH1I("bmtfThSize", "", 25, 0, 25);
-	histBmtfThBx = new TH1I("bmtfThBx", "", 6, -3, 3);
-	histBmtfThWh = new TH1I("bmtfThWh", "", 6, -3, 3);
-	histBmtfThSe = new TH1I("bmtfThSe", "", 15, 0, 15);
-	histBmtfThSt = new TH1I("bmtfThSt", "", 5, 0, 5);
-	histBmtfThTheta = new TH1I("bmtfThTheta", "", 100, 8e7, 1e8);
-	histBmtfThCode = new TH1I("bmtfThCode", "", 10, 8e7, 2e8);
 
 	// HOTP Histogram
 	histNHcalDetIds = new TH1I("hcalDetIds", "", 50, 500, 1000);

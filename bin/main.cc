@@ -58,55 +58,58 @@ int main(int argc, char* argv[]) {
 		hasRecoMuons = false;
 	}
 
+	//HoHistogramCollection histCollection(hasRecoMuons);
 	// Histograms are stored inside a specific class to allow access to them for all producers
-	HoHistogramCollection histCollection(hasRecoMuons);
+	std::map<int, HoHistogramCollection> histCollections;
 
 	int rate = 0, elapsedTime = 0, totalProcessed = 0, runNumber = 0;
-	//int lastRunNumber = -1;
 	int runMin = 320000, runMax = 330000;
 	TH1I *histRunNumber = new TH1I("runNumber", "", runMax - runMin, runMin, runMax);
-	//for (int iFile = 3; iFile < argc; iFile ++) {
 	for (int iFile = 3; iFile < argc; iFile ++) {
-		//std::chrono::steady_clock::time_point loopStart = std::chrono::steady_clock::now();
 		int  processed = 0;
 		const char* inputFile = argv[iFile];
 		DataReader* dataReader = new DataReader(inputFile, &useEmulated);
 		std::cout << "Processing(" << iFile - 2 << "/" << argc - 3 << "): "<< inputFile << " with " << dataReader->GetEntries() << " events" << std::endl;
 
 		ProgressBar(0, 0, "Starting");
-		//std::cout << "\nrunNumber = " << runNumber << std::endl;
 		while (dataReader->Next()) {
-			// Progress Bar
+			// Timing Information
 			elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count();
 			rate = totalProcessed / elapsedTime;
 
-			runNumber = *dataReader->runNumber->Get();
-			//file->mkdir((char*)runNUmber);
-
-			//if (runNumber != lastRunNumber) {
-			//	std::cout << std::endl << "lastRunNumber  = " << lastRunNumber << ", runNumber = " << runNumber << std::endl;
-			//	lastRunNumber = runNumber;
-			//	file->mkdir(std::to_string(runNumber).c_str());
-			//}
+			// Prepare the histcollection
+			HoHistogramCollection *histCollection;
+			runNumber = hasRecoMuons ? 1 : *dataReader->runNumber->Get();
 			histRunNumber->Fill(runNumber);
+			if (histCollections.find(runNumber) == histCollections.end() ) { // runNumber not found
+				file->mkdir(std::to_string(runNumber).c_str());
+				file->cd(std::to_string(runNumber).c_str());
+				histCollections.insert({runNumber, HoHistogramCollection(hasRecoMuons)});
+				histCollection = &histCollections.at(runNumber);
+			} else { // runNumber found
+				file->cd(std::to_string(runNumber).c_str());
+				histCollection = &histCollections.at(runNumber);
+			}
 
 			// Production of Ho Coincidence
 			HoProduct product;
 			for (std::shared_ptr<BaseProducer> producer: producers) {
-				ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate, producer->Name);
-				producer->Produce(dataReader, &product, &histCollection);
+				if (processed % 100 == 0) { ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate, producer->Name); }
+				producer->Produce(dataReader, &product, histCollection);
 			}
 			totalProcessed++;
 			processed++;
 		}
 		ProgressBar(100, rate, "Done");
-		histCollection.numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
+		histCollections.at(runNumber).numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
 		delete dataReader;
 	}
 
 	for (std::shared_ptr<BaseProducer> producer: producers) {
-		file->cd();
-		producer->EndJob(&histCollection);
+		for (std::map<int, HoHistogramCollection>::iterator histIterator = histCollections.begin(); histIterator != histCollections.end(); histIterator++) {
+			file->cd(std::to_string(histIterator->first).c_str());
+			producer->EndJob(&histIterator->second);
+		}
 	}
 
 

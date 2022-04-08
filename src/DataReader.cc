@@ -59,10 +59,11 @@ DataReader::DataReader(const char* inputFileName, const bool *useEmulated) {
 		muonMet              = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "met");
 		muonMt               = std::make_unique<TTreeReaderArray<double>>(*l1MuonRecoReader, "mt");
 	} else {
-		std::cout << "Dataset does not reco muons!" << std::endl;
+		std::cout << "Dataset does not have reco muons!" << std::endl;
 	}
 
 	//l1BmtfInputTree = (TTree*)inputFile->Get("l1UpgradeTfMuonTree/L1UpgradeTfMuonTree");
+	// TODO Add useEmulated as argument and pass it to the constructor, then this could be switched on the fly
 	std::string emulatedString = *useEmulated ? "Emu" : "";
 	std::string tfMuonName = "l1UpgradeTfMuon" + emulatedString + "Tree/L1UpgradeTfMuonTree";
 	l1BmtfInputTree = (TTree*)inputFile->Get(tfMuonName.c_str());
