@@ -92,7 +92,7 @@ public:
 		muonHasMb2;
 	std::vector<int> muonCharge,
 		muonIEta,
-		muonNHo3x3Hit;
+		muonHoN3x3Hit;
 	std::vector<float> muonE,
 		muonEt,
 		muonPt,
@@ -119,7 +119,7 @@ public:
 		tagMuonHasMb2;
 	std::vector<int> tagMuonCharge,
 		tagMuonIEta,
-		tagMuonNHo3x3Hit;
+		tagMuonHoN3x3Hit;
 	std::vector<float> tagMuonE,
 		tagMuonEt,
 		tagMuonPt,
@@ -146,7 +146,7 @@ public:
 		probeMuonHasMb2;
 	std::vector<int> probeMuonCharge,
 		probeMuonIEta,
-		probeMuonNHo3x3Hit;
+		probeMuonHoN3x3Hit;
 	std::vector<float> probeMuonE,
 		probeMuonEt,
 		probeMuonPt,
@@ -171,7 +171,7 @@ public:
 		usedMuonHasMb1;
 	std::vector<int> usedMuonCharge,
 		usedMuonIEta,
-		usedMuonNHo3x3Hit;
+		usedMuonHoN3x3Hit;
 	std::vector<float> usedMuonE,
 		usedMuonEt,
 		usedMuonPt,
@@ -195,7 +195,7 @@ public:
 		unusedMuonHasMb1;
 	std::vector<int> unusedMuonCharge,
 		unusedMuonIEta,
-		unusedMuonNHo3x3Hit;
+		unusedMuonHoN3x3Hit;
 	std::vector<float> unusedMuonE,
 		unusedMuonEt,
 		unusedMuonPt,
@@ -256,7 +256,7 @@ public:
 	std::vector<int> dttpMatchedHoDeltaIPhi,
 		dttpMatchedHoIPhi,
 		dttpMatchedHoIEta,
-		dttpNHo3x3Hit;
+		dttpHoN3x3Hit;
 	std::vector<unsigned int> dttpMatchedHoIndex;
 	std::vector<double> dttpMatchedHoCmsPt,
 		dttpMatchedHoCmsPhi,
@@ -268,9 +268,9 @@ public:
 	std::vector<unsigned short> dttpMatchedMuonIndex,
 		dttpMatchedBmtfIndex;
 	std::vector<double> dttpMatchedMuonDeltaR;
-	std::vector<int> dttpMatchedMuonNHo3x3Hit;
+	std::vector<int> dttpMatchedMuonHoN3x3Hit;
 	// Reco Muon matching Ho
-	std::vector<int> muonMatchedDttpNHo3x3Hit,
+	std::vector<int> muonMatchedDttpHoN3x3Hit,
 		muonMatchedDttpIndex;
 	// HO matched Muon
 	std::vector<bool> isMuonMatchedHo,

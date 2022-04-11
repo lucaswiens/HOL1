@@ -31,7 +31,7 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 			histCollection->histUnusedMuonCharge->Fill(product->unusedMuonCharge.at(i), product->isMediumUnusedMuon.at(i));
 			histCollection->histUnusedMuonIEta->Fill(product->unusedMuonIEta.at(i), product->isMediumUnusedMuon.at(i));
-			histCollection->histUnusedMuonNHo3x3Hit->Fill(product->unusedMuonNHo3x3Hit.at(i), product->isMediumUnusedMuon.at(i));
+			histCollection->histUnusedMuonHoN3x3Hit->Fill(product->unusedMuonHoN3x3Hit.at(i), product->isMediumUnusedMuon.at(i));
 
 			histCollection->histUnusedMuonE->Fill(product->unusedMuonE.at(i), product->isMediumUnusedMuon.at(i));
 			histCollection->histUnusedMuonEt->Fill(product->unusedMuonEt.at(i), product->isMediumUnusedMuon.at(i));
@@ -62,7 +62,7 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 			histCollection->histUsedMuonCharge->Fill(product->usedMuonCharge.at(i), product->isMediumUsedMuon.at(i));
 			histCollection->histUsedMuonIEta->Fill(product->usedMuonIEta.at(i), product->isMediumUsedMuon.at(i));
-			histCollection->histUsedMuonNHo3x3Hit->Fill(product->usedMuonNHo3x3Hit.at(i), product->isMediumUsedMuon.at(i));
+			histCollection->histUsedMuonHoN3x3Hit->Fill(product->usedMuonHoN3x3Hit.at(i), product->isMediumUsedMuon.at(i));
 
 			histCollection->histUsedMuonE->Fill(product->usedMuonE.at(i), product->isMediumUsedMuon.at(i));
 			histCollection->histUsedMuonEt->Fill(product->usedMuonEt.at(i), product->isMediumUsedMuon.at(i));
@@ -117,7 +117,7 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		//std::cout << histCounter <<std::endl;
 
 		for (int i = 0; i < product->nProbeMuon; i++) {
-			histCollection->histMuonNHo3x3Hit->Fill(product->muonNHo3x3Hit.at(i));
+			histCollection->histMuonHoN3x3Hit->Fill(product->muonHoN3x3Hit.at(i));
 
 			// Only use the IsoMb1/2 if the BMTF does not reconstruct a muon
 			if (!product->isMuonMatchedBmtf.at(i) && product->isMuonMatchedDttp.at(i)) {
@@ -136,7 +136,7 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 				histCollection->histIsoMb12MatchedMuonEta->Fill(product->probeMuonEta.at(i), (product->dttpStation.at(product->muonMatchedDttpIndex.at(i)) <= 2));
 				histCollection->histIsoMb12MatchedMuonEta_vs_MuonPt->Fill(product->probeMuonEta.at(i), product->probeMuonPt.at(i), (product->dttpStation.at(product->muonMatchedDttpIndex.at(i)) <= 2));
 
-				const bool &n3x3Cut = product->dttpMatchedMuonNHo3x3Hit.at(product->muonMatchedDttpIndex.at(i)) <= 1;
+				const bool &n3x3Cut = product->dttpMatchedMuonHoN3x3Hit.at(product->muonMatchedDttpIndex.at(i)) <= 1;
 				if (n3x3Cut) {
 					histCollection->histIsoMb1MatchedMuonN3x3Pt->Fill(product->probeMuonPt.at(i), (product->dttpStation.at(product->muonMatchedDttpIndex.at(i)) == 1));
 					histCollection->histIsoMb1MatchedMuonN3x3Pt20->Fill(product->probeMuonPt.at(i), (product->dttpStation.at(product->muonMatchedDttpIndex.at(i)) == 1));
@@ -201,15 +201,17 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 
 	for (int iDttp = 0; iDttp < product->dttpSize; iDttp++) {
-		//const bool &n3x3Cut = product->muonMatchedDttpNHo3x3Hit.at(iDttp) <= 1;
+		//const bool &n3x3Cut = product->muonMatchedDttpHoN3x3Hit.at(iDttp) <= 1;
 		bool n3x3Cut = false;
+		histCollection->histDttpMatchedHoN3x3->Fill(product->dttpHoN3x3Hit.at(iDttp));
 		if (dataReader->GetHasRecoMuon() && product->nProbeMuon != 0) {
-			n3x3Cut = product->dttpMatchedMuonNHo3x3Hit.at(iDttp) <= 1;
+			n3x3Cut = product->dttpMatchedMuonHoN3x3Hit.at(iDttp) <= 1;
+			//histCollection->histDttpMatchedHoN3x3->Fill(product->dttpMatchedMuonHoN3x3Hit.at(iDttp));
 		} else {
-			n3x3Cut = product->dttpNHo3x3Hit.at(iDttp) <= 1;
+			n3x3Cut = product->dttpHoN3x3Hit.at(iDttp) <= 1;
 		}
 
-		histCollection->histDttpNHo3x3Hit->Fill(product->dttpNHo3x3Hit.at(iDttp), product->dttpStation.at(iDttp) == 1);
+		histCollection->histDttpHoN3x3Hit->Fill(product->dttpHoN3x3Hit.at(iDttp), product->dttpStation.at(iDttp) == 1);
 		histCollection->histIsDttpMatchedHo->Fill(product->isDttpMatchedHo.at(iDttp));
 		if (n3x3Cut) {
 			histCollection->histIsDttpMatchedHoN3x3->Fill(product->isDttpMatchedHo.at(iDttp));
@@ -239,7 +241,7 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 			histCollection->histIsDttpMatchedMuon->Fill(product->isDttpMatchedMuon.at(iDttp) * n3x3Cut);
 			histCollection->histDttpMatchedMuonDeltaR->Fill(product->dttpMatchedMuonDeltaR.at(iDttp) * n3x3Cut);
 			if (product->dttpMatchedMuonIndex.at(iDttp) < 999) {
-				histCollection->histMuonNHo3x3Hit->Fill(product->muonMatchedDttpNHo3x3Hit.at(product->dttpMatchedMuonIndex.at(iDttp)));
+				histCollection->histMuonHoN3x3Hit->Fill(product->muonMatchedDttpHoN3x3Hit.at(product->dttpMatchedMuonIndex.at(iDttp)));
 			}
 		}
 	}

@@ -84,8 +84,8 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		product->dttpMatchedHoCmsPt = std::vector(product->dttpSize, -999.);
 		product->dttpMatchedHoCmsPhi = std::vector(product->dttpSize, -999.);
 		product->dttpMatchedHoCmsEta = std::vector(product->dttpSize, -999.);
-		product->dttpMatchedMuonNHo3x3Hit = std::vector(product->dttpSize, 999);
-		product->dttpNHo3x3Hit = std::vector(product->dttpSize, -999);
+		product->dttpMatchedMuonHoN3x3Hit = std::vector(product->dttpSize, 999);
+		product->dttpHoN3x3Hit = std::vector(product->dttpSize, -999);
 	}
 
 	if (product->hcalIEta.size() != 0) {
@@ -99,7 +99,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 	if (dataReader->GetHasRecoMuon() && product->nProbeMuon != 0) {
 		// Muon Variable
-		product->muonNHo3x3Hit = std::vector(product->nProbeMuon, -999);
+		product->muonHoN3x3Hit = std::vector(product->nProbeMuon, -999);
 		// Match BMTF with DTTP
 		product->isBmtfMatchedMuon = std::vector(product->tfMuonSize.at(Utility::Bmtf), false);
 		product->isDttpMatchedMuon = std::vector(product->dttpSize, false);
@@ -132,10 +132,10 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 		// Dttp Matched Muon
 		product->dttpMatchedMuonDeltaR = std::vector(product->dttpSize, -999.);
-		product->muonMatchedDttpNHo3x3Hit = std::vector(product->nProbeMuon, -999);
+		product->muonMatchedDttpHoN3x3Hit = std::vector(product->nProbeMuon, -999);
 	}
 
-	if (product->tagMuonPt.size() == 0) { product->nProbeMuon = 0; return;}
+	if (dataReader->GetHasRecoMuon() && product->tagMuonPt.size() == 0) { product->nProbeMuon = 0; return;}
 
 	if (dataReader->GetHasRecoMuon() && product->nProbeMuon != 0) {
 		for (unsigned short iMuon = 0; iMuon < product->nProbeMuon; iMuon++) {
@@ -318,37 +318,36 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 
 		unsigned int dttpMatchedHoIndex = 99999;
 		for (unsigned int iHo = 0; iHo < product->nHcalDetIds; iHo++) {
-			unsigned int tmpHo = iHo;
 			//tmpHo = product->nHcalDetIds - iHo - 1;
 
 			if (product->isDttpMatchedHo.at(iDttp)) { continue;}
 
-			const int deltaIPhi = Utility::DeltaIPhi(product->dttpIPhi.at(iDttp), product->hcalIPhi.at(tmpHo));
-			const double deltaPhi = Utility::DeltaPhi(product->dttpCmsPhi.at(iDttp), product->hcalCmsPhi.at(tmpHo));
+			const int deltaIPhi = Utility::DeltaIPhi(product->dttpIPhi.at(iDttp), product->hcalIPhi.at(iHo));
+			const double deltaPhi = Utility::DeltaPhi(product->dttpCmsPhi.at(iDttp), product->hcalCmsPhi.at(iHo));
 			if (abs(deltaIPhi) < abs(product->dttpMatchedHoDeltaIPhi.at(iDttp))) {
 				if (((product->dttpStation.at(iDttp) == 1 && abs(deltaIPhi) <= 1) || (product->dttpStation.at(iDttp) == 2 && abs(deltaIPhi) <= 2)) &&
-					product->dttpSection.at(iDttp) == product->hcalSection.at(tmpHo) &&
-					product->dttpWheel.at(iDttp) == product->hcalWheel.at(tmpHo)
+					product->dttpSection.at(iDttp) == product->hcalSection.at(iHo) &&
+					product->dttpWheel.at(iDttp) == product->hcalWheel.at(iHo)
 				) {
 					int nHo3x3Hit = 0;
 					for (unsigned int iHo2 = 0; iHo2 < product->nHcalDetIds; iHo2++) {
-						if (iHo2 == tmpHo) { continue;}
+						if (iHo2 == iHo) { continue;}
 						int deltaIPhi2 = Utility::DeltaIPhi(product->dttpMatchedHoIPhi.at(iDttp), product->hcalIPhi.at(iHo2));
 						if ((product->dttpStation.at(iDttp) == 1 && abs(deltaIPhi2) <= 1) &&
 							product->dttpSection.at(iDttp) == product->hcalSection.at(iHo2) &&
 							product->dttpWheel.at(iDttp) == product->hcalWheel.at(iHo2)
 						) { nHo3x3Hit++; }
 					}
-					product->dttpNHo3x3Hit.at(iDttp) = nHo3x3Hit;
+					product->dttpHoN3x3Hit.at(iDttp) = nHo3x3Hit;
 
 					product->dttpMatchedHoDeltaIPhi.at(iDttp) = deltaIPhi;
 					product->dttpMatchedHoDeltaPhi.at(iDttp) = deltaPhi;
 					product->isDttpMatchedHo.at(iDttp) = true;
-					product->dttpMatchedHoCmsPhi.at(iDttp) = product->hcalCmsPhi.at(tmpHo);
-					product->dttpMatchedHoCmsEta.at(iDttp) = product->hcalCmsEta.at(tmpHo);
-					product->dttpMatchedHoIPhi.at(iDttp) = product->hcalIPhi.at(tmpHo);
-					product->dttpMatchedHoIEta.at(iDttp) = product->hcalIEta.at(tmpHo);
-					dttpMatchedHoIndex = tmpHo;
+					product->dttpMatchedHoCmsPhi.at(iDttp) = product->hcalCmsPhi.at(iHo);
+					product->dttpMatchedHoCmsEta.at(iDttp) = product->hcalCmsEta.at(iHo);
+					product->dttpMatchedHoIPhi.at(iDttp) = product->hcalIPhi.at(iHo);
+					product->dttpMatchedHoIEta.at(iDttp) = product->hcalIEta.at(iHo);
+					dttpMatchedHoIndex = iHo;
 				}
 			}
 		}
@@ -392,14 +391,14 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 				// Remove double counting for the same hit (deltaIPhi == 0 && deltaIEta == 0)
 				nHo3x3Hit--;
 
-				product->muonNHo3x3Hit.at(iMuon) = nHo3x3Hit;
+				product->muonHoN3x3Hit.at(iMuon) = nHo3x3Hit;
 
 				if (product->isDttpMatchedMuon.at(iDttp)) { continue;}
 
 				if (deltaR < fabs(product->dttpMatchedMuonDeltaR.at(iDttp))) {
 					product->isDttpMatchedMuon.at(iDttp) = deltaR < deltaRCut;
 					product->dttpMatchedMuonIndex.at(iDttp) = iMuon;
-					product->dttpMatchedMuonNHo3x3Hit.at(iDttp) = nHo3x3Hit;
+					product->dttpMatchedMuonHoN3x3Hit.at(iDttp) = nHo3x3Hit;
 					product->dttpMatchedMuonDeltaR.at(iDttp) = deltaR;
 					product->dttpMatchedMuonIndex.at(iDttp) = iMuon;
 				}
@@ -439,7 +438,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 				product->usedMuonPhiSt2.push_back(product->probeMuonPhiSt2.at(iMuon));
 				product->usedMuonMet.push_back(product->probeMuonMet.at(iMuon));
 				product->usedMuonMt.push_back(product->probeMuonMt.at(iMuon));
-				product->usedMuonNHo3x3Hit.push_back(product->probeMuonNHo3x3Hit.at(iMuon));
+				product->usedMuonHoN3x3Hit.push_back(product->probeMuonHoN3x3Hit.at(iMuon));
 			} else {
 				product->isMediumUnusedMuon.push_back(product->isMediumMuon.at(iMuon));
 				product->unusedMuonHltIsoMu.push_back(product->probeMuonHltIsoMu.at(iMuon));
@@ -462,7 +461,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 				product->unusedMuonPhiSt2.push_back(product->probeMuonPhiSt2.at(iMuon));
 				product->unusedMuonMet.push_back(product->probeMuonMet.at(iMuon));
 				product->unusedMuonMt.push_back(product->probeMuonMt.at(iMuon));
-				product->unusedMuonNHo3x3Hit.push_back(product->probeMuonNHo3x3Hit.at(iMuon));
+				product->unusedMuonHoN3x3Hit.push_back(product->probeMuonHoN3x3Hit.at(iMuon));
 			}
 			product->nUnusedMuon = product->isMediumUnusedMuon.size();
 			product->nUsedMuon = product->isMediumUsedMuon.size();

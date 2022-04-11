@@ -55,7 +55,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 		histMuonPassesSingleMuon = new TH1I("muonPassesSingleMuon", "", 2, 0, 2);
 		histMuonCharge = new TH1I("muonCharge", "", 3, -1, 1);
 		histMuonIEta = new TH1I("muonIEta", "", nBinsIEta, minIEta, maxIEta);
-		histMuonNHo3x3Hit = new TH1I("muonNHo3x3Hit", "", 10, 0, 10);
+		histMuonHoN3x3Hit = new TH1I("muonHoN3x3Hit", "", 10, 0, 10);
 	}
 
 	// DTTP Histograms
@@ -71,7 +71,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 	histDttpPhiB = new TH1F("dttpPhiB", "", 500, -250, 250);
 	histDttpCmsPt = new TH1D("dttpCmsPt", "", 300, 0, 300);
 	histDttpCmsPhi = new TH1D("dttpCmsPhi", "", nBinsPhi, minPhi, maxPhi);
-	histDttpNHo3x3Hit = new TH1I("dttpNHo3x3Hit", "", 10, 0, 10);
+	histDttpHoN3x3Hit = new TH1I("dttpHoN3x3Hit", "", 10, 0, 10);
 
 	/*
 	histDttpCmsPhiSection1 = new TH1D("dttpCmsPhiSection1", "", nBinsPhi, minPhi, maxPhi);
@@ -213,6 +213,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 	histDttpMatchedHoCmsEta = new TH1D("dttpMatchedHoCmsEta", "", nBinsEta, minEta, maxEta);
 
 	histIsDttpMatchedHoN3x3 = new TH1S("isDttpMatchedHoN3x3", "", 2, 0, 2);
+	histDttpMatchedHoN3x3 = new TH1I("dttpMatchedHoN3x3", "", 10, 0, 10);
 	histDttpMatchedHoN3x3DeltaIPhi = new TH1I("dttpMatchedHoN3x3DeltaIPhi", "", 2*nBinsIPhi, -maxIPhi, maxIPhi);
 	histDttpMatchedHoN3x3DeltaPhi = new TH1D("dttpMatchedHoN3x3DeltaPhi", "", 2*nBinsPhi, -maxPhi, maxPhi);
 	histDttpMatchedHoN3x3IPhi = new TH1I("dttpMatchedHoN3x3IPhi", "", nBinsIPhi, minIPhi, maxIPhi);
@@ -262,7 +263,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 		histIsDttpMatchedMuon = new TH1S("isDttpMatchedMuon", "", 2, 0, 2);
 		histDttpMatchedMuonDeltaR = new TH1D("dttpMatchedMuonDeltaR", "", nBinsDeltaR, minDeltaR, maxDeltaR);
 	}
-	histNHo3x3Hit = new TH1I("nMuonMatchedDttpNHo3x3Hit", "", 10, 0, 10);
+	histHoN3x3Hit = new TH1I("nMuonMatchedDttpHoN3x3Hit", "", 10, 0, 10);
 
 	if (hasRecoMuon) {
 		histNUnusedMuon = new TH1S("nUnusedMuon", "", 10, 0, 10);
@@ -274,7 +275,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 
 		histUnusedMuonCharge = new TH1I("unusedMuonCharge", "", 3, -1, 2);
 		histUnusedMuonIEta = new TH1I("unusedMuonIEta", "", nBinsIEta, minIEta, maxIEta);
-		histUnusedMuonNHo3x3Hit = new TH1I("unusedNHo3x3Hit", "", 10, 0, 10);
+		histUnusedMuonHoN3x3Hit = new TH1I("unusedHoN3x3Hit", "", 10, 0, 10);
 
 		histUnusedMuonE = new TH1D("unusedMuonE", "", nBinsE, minE, maxE);
 		histUnusedMuonEt = new TH1D("unusedMuonEt", "", nBinsE, minE, maxE);
@@ -303,7 +304,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 
 		histUsedMuonCharge = new TH1I("usedMuonCharge", "", 3, -1, 2);
 		histUsedMuonIEta = new TH1I("usedMuonIEta", "", nBinsIEta, minIEta, maxIEta);
-		histUsedMuonNHo3x3Hit = new TH1I("usedMuonNHo3x3Hit", "", 10, 0, 10);
+		histUsedMuonHoN3x3Hit = new TH1I("usedMuonHoHoN3Hit", "", 10, 0, 10);
 
 		histUsedMuonE = new TH1D("usedMuonE", "", nBinsE, minE, maxE);
 		histUsedMuonEt = new TH1D("usedMuonEt", "", nBinsE, minE, maxE);

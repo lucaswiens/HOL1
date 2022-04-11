@@ -25,7 +25,7 @@ public:
 	TH1F *histSampleEnergy, *histQIESampleFc,  *histQIESamplePedestal, *histQIESampleFc_MPedestals;
 	// Reco Muon Histogram
 	TH1D *histMuonMet, *histMuonMt, *histDiMuonMass, *histSelectedDiMuonMass;
-	TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta, *histMuonNHo3x3Hit, *histDttpNHo3x3Hit;
+	TH1I *histIsLooseMuon, *histIsMediumMuon, *histIsTightMuon, *histMuonHltIsoMu, *histMuonHltMu, *histMuonPassesSingleMuon, *histMuonCharge, *histMuonIEta, *histMuonHoN3x3Hit, *histDttpHoN3x3Hit;
 	TH1F *histMuonE, *histMuonEt, *histMuonPt, *histMuonPt20, *histMuonEta, *histMuonPhi, *histMuonIso, *histMuonHltIsoDeltaR, *histMuonDeltaR, *histMuonEtaSt1, *histMuonPhiSt1, *histMuonEtaSt2, *histMuonPhiSt2;
 	TH2D *histMuonPt_vs_MuonEta, *histMuonEta_vs_MuonPt, *histNTagMuon_vs_nProbeMuon;
 	// HO Coincidence Histogram
@@ -39,8 +39,8 @@ public:
 	TH1I *histBmtfMatchedMuonCharge, *histBmtfMatchedMuonIndex,
 		*histBmtfMb34MatchedHoIEta, *histBmtfMb34MatchedHoIPhi, *histBmtfMb34MatchedHoDeltaIPhi,
 		*histDttpMatchedHoDeltaIPhi, *histDttpMatchedHoIPhi, *histDttpMatchedHoIEta,
-		*histDttpMatchedHoN3x3DeltaIPhi, *histDttpMatchedHoN3x3IPhi, *histDttpMatchedHoN3x3IEta,
-		*histNHo3x3Hit,
+		*histDttpMatchedHoN3x3, *histDttpMatchedHoN3x3DeltaIPhi, *histDttpMatchedHoN3x3IPhi, *histDttpMatchedHoN3x3IEta,
+		*histHoN3x3Hit,
 		*histBmtfMatchedDttpPhi;
 
 	TH1D *histDttpMatchedHoDeltaPhi, *histMuonMatchedBmtfCmsPt, *histMuonMatchedBmtfCmsEta, *histDttpMatchedHoNumber,
@@ -69,8 +69,8 @@ public:
 	TH1S *histNUnusedMuon, *histIsMediumUnusedMuon, *histUnusedMuonHltIsoMu, *histUnusedMuonHltMu, *histUnusedMuonPassesSingleMuon, *histUnusedMuonHasMb1,
 		*histNUsedMuon, *histIsMediumUsedMuon, *histUsedMuonHltIsoMu, *histUsedMuonHltMu, *histUsedMuonPassesSingleMuon, *histUsedMuonHasMb1;
 
-	TH1I *histUnusedMuonCharge, *histUnusedMuonIEta, *histUnusedMuonNHo3x3Hit,
-		*histUsedMuonCharge, *histUsedMuonIEta, *histUsedMuonNHo3x3Hit;
+	TH1I *histUnusedMuonCharge, *histUnusedMuonIEta, *histUnusedMuonHoN3x3Hit,
+		*histUsedMuonCharge, *histUsedMuonIEta, *histUsedMuonHoN3x3Hit;
 
 	TH1D *histUnusedMuonE, *histUnusedMuonEt, *histUnusedMuonPt, *histUnusedMuonPt20, *histUnusedMuonEta, *histUnusedMuonPhi, *histUnusedMuonIso, *histUnusedMuonHltIsoDeltaR, *histUnusedMuonDeltaR, *histUnusedMuonEtaSt1, *histUnusedMuonPhiSt1, *histUnusedMuonEtaSt2, *histUnusedMuonPhiSt2,
 		*histUsedMuonE, *histUsedMuonEt, *histUsedMuonPt, *histUsedMuonPt20, *histUsedMuonEta, *histUsedMuonPhi, *histUsedMuonIso, *histUsedMuonHltIsoDeltaR, *histUsedMuonDeltaR, *histUsedMuonEtaSt1, *histUsedMuonPhiSt1, *histUsedMuonEtaSt2, *histUsedMuonPhiSt2;

@@ -64,7 +64,7 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 		const short &uGMTEta     = dataReader->uGMTIEta->At(iUGMT);
 		const double &uGMTCmsEta = dataReader->uGMTEta->At(iUGMT);
 
-		//if (uGMTMuonCmsPt < l1PtCut) { continue;} // TODO for efficiency estimate this is fine
+		//if (uGMTMuonCmsPt < l1PtCut) { continue;}
 		histCollection->histBmtfNumber->Fill(tfType);
 
 		product->uGMTMuonBx.push_back(dataReader->uGMTBx->At(iUGMT));
