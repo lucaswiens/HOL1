@@ -96,14 +96,24 @@ if __name__=="__main__":
 	isoMb2MatchedMuonEta = histogramFile.Get("1/isoMb2MatchedMuonEta")
 	isoMb12MatchedMuonEta = histogramFile.Get("1/isoMb12MatchedMuonEta")
 
+	isoMb1MatchedMuonN3x3Eta = histogramFile.Get("1/isoMb1MatchedMuonN3x3Eta")
+	isoMb2MatchedMuonN3x3Eta = histogramFile.Get("1/isoMb2MatchedMuonN3x3Eta")
+	isoMb12MatchedMuonN3x3Eta = histogramFile.Get("1/isoMb12MatchedMuonN3x3Eta")
+
 	bmtfMatchedMuonEta.SetTitle("")
 
 	isoMb1MatchedMuonEta.SetTitle("")
 	isoMb2MatchedMuonEta.SetTitle("")
 	isoMb12MatchedMuonEta.SetTitle("")
 
-	yMin = 0
-	yMax = 1.1
+	isoMb1MatchedMuonN3x3Eta.SetTitle("")
+	isoMb2MatchedMuonN3x3Eta.SetTitle("")
+	isoMb12MatchedMuonN3x3Eta.SetTitle("")
+
+	#yMin = 0
+	#yMax = 1.1
+	yMin = 0.6
+	yMax = 1.01
 
 	effBmtfGraph = ROOT.TGraphAsymmErrors(muonEta)
 	effBmtfGraph.Divide(bmtfMatchedMuonEta, muonEta, "cl=0.683 b(1,1) mode")
@@ -123,11 +133,32 @@ if __name__=="__main__":
 	effIsoMb12Graph.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Graph.GetXaxis().SetTitle(xLabel); effIsoMb12Graph.GetYaxis().SetTitle(yLabel);
 	effIsoMb12Graph.SetMinimum(yMin); effIsoMb12Graph.SetMaximum(yMax)
 
+	effIsoMb1N3x3Graph = ROOT.TGraphAsymmErrors(muonEta)
+	effIsoMb1N3x3Graph.Divide(isoMb1MatchedMuonN3x3Eta, muonEta, "cl=0.683 b(1,1) mode")
+	effIsoMb1N3x3Graph.SetLineColor(ROOT.kRed-8); effIsoMb1N3x3Graph.SetMarkerColor(ROOT.kRed-8); effIsoMb1N3x3Graph.SetMarkerColor(ROOT.kRed-8); effIsoMb1N3x3Graph.SetMarkerSize(0.8)
+	effIsoMb1N3x3Graph.SetTitle("BMTF+IsoMB1 Muon (N_{3x3} #leq 1)"); effIsoMb1N3x3Graph.GetXaxis().SetTitle(xLabel); effIsoMb1N3x3Graph.GetYaxis().SetTitle(yLabel);
+	effIsoMb1N3x3Graph.SetMinimum(yMin); effIsoMb1N3x3Graph.SetMaximum(yMax)
+
+	effIsoMb12N3x3Graph = ROOT.TGraphAsymmErrors(muonEta)
+	effIsoMb12N3x3Graph.Divide(isoMb12MatchedMuonN3x3Eta, muonEta, "cl=0.683 b(1,1) mode")
+	effIsoMb12N3x3Graph.SetLineColor(ROOT.kAzure-8); effIsoMb12N3x3Graph.SetMarkerColor(ROOT.kAzure-8); effIsoMb12N3x3Graph.SetMarkerColor(ROOT.kAzure-8); effIsoMb12N3x3Graph.SetMarkerSize(0.8)
+	effIsoMb12N3x3Graph.SetTitle("BMTF+IsoMB12 Muon (N_{3x3} #leq 1)"); effIsoMb12N3x3Graph.GetXaxis().SetTitle(xLabel); effIsoMb12N3x3Graph.GetYaxis().SetTitle(yLabel);
+	effIsoMb12N3x3Graph.SetMinimum(yMin); effIsoMb12N3x3Graph.SetMaximum(yMax)
+
+	effIsoMb1N3x3Graph.SetLineStyle(ROOT.kDotted)
+	effIsoMb12N3x3Graph.SetLineStyle(ROOT.kDotted)
+
+
+
 	effBmtfGraph.Draw("same ap")
 	if not args.bmtf_only:
 		effIsoMb1Graph.Draw("same p")
-		effIsoMb12Graph.Draw("same p")
+		effIsoMb1N3x3Graph.Draw("same p")
 
+		effIsoMb12Graph.Draw("same p")
+		effIsoMb12N3x3Graph.Draw("same p")
+
+	#ROOT.gPad.BuildLegend();
 	ROOT.gPad.BuildLegend(0.6, 0.2, 0.9, 0.45);
 
 	canvas.SaveAs(args.output_directory + "/efficiency/" + effName + ".png")
@@ -156,13 +187,13 @@ if __name__=="__main__":
 
 	effIsoMb1Hist = ROOT.TH2D(isoMb1MatchedMuonEta_vs_MuonPt)
 	effIsoMb1Hist.Divide(muonEta_vs_MuonPt)
-	effIsoMb1Hist.SetLineColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerSize(0.8)
+	effIsoMb1Hist.SetLineColor(ROOT.kRed); effIsoMb1Hist.SetMarkerColor(ROOT.kRed); effIsoMb1Hist.SetMarkerColor(ROOT.kRed); effIsoMb1Hist.SetMarkerSize(0.8)
 	effIsoMb1Hist.SetTitle("BMTF+IsoMB1 Muon"); effIsoMb1Hist.GetXaxis().SetTitle(xLabel); effIsoMb1Hist.GetYaxis().SetTitle(yLabel);
 	effIsoMb1Hist.SetStats(False);
 
 	effIsoMb12Hist = ROOT.TH2D(isoMb12MatchedMuonEta_vs_MuonPt)
 	effIsoMb12Hist.Divide(muonEta_vs_MuonPt)
-	effIsoMb12Hist.SetLineColor(ROOT.kAzure-2); effIsoMb12Hist.SetMarkerColor(ROOT.kAzure-2); effIsoMb12Hist.SetMarkerColor(ROOT.kAzure-2); effIsoMb12Hist.SetMarkerSize(0.8)
+	effIsoMb12Hist.SetLineColor(ROOT.kAzure); effIsoMb12Hist.SetMarkerColor(ROOT.kAzure); effIsoMb12Hist.SetMarkerColor(ROOT.kAzure); effIsoMb12Hist.SetMarkerSize(0.8)
 	effIsoMb12Hist.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Hist.GetXaxis().SetTitle(xLabel); effIsoMb12Hist.GetYaxis().SetTitle(yLabel);
 	effIsoMb12Hist.SetStats(False);
 
@@ -207,7 +238,7 @@ if __name__=="__main__":
 
 	effRatioIsoMb1Hist = ROOT.TH2D(effIsoMb1Hist)
 	effRatioIsoMb1Hist.Divide(effBmtfHist)
-	effRatioIsoMb1Hist.SetLineColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb1Hist.SetMarkerSize(0.8)
+	effRatioIsoMb1Hist.SetLineColor(ROOT.kRed); effIsoMb1Hist.SetMarkerColor(ROOT.kRed); effIsoMb1Hist.SetMarkerColor(ROOT.kRed); effIsoMb1Hist.SetMarkerSize(0.8)
 	effRatioIsoMb1Hist.SetTitle("BMTF+IsoMB1 Muon"); effIsoMb1Hist.GetXaxis().SetTitle(xLabel); effIsoMb1Hist.GetYaxis().SetTitle(yLabel);
 
 	effName = "effRatio_isoMB1"
@@ -224,7 +255,7 @@ if __name__=="__main__":
 	effRatioIsoMb12Hist = ROOT.TH2D(effIsoMb12Hist)
 	effRatioIsoMb12Hist.SetMinimum(1.); effIsoMb12Hist.SetMaximum(1.5)
 	effRatioIsoMb12Hist.Divide(effBmtfHist)
-	effRatioIsoMb12Hist.SetLineColor(ROOT.kRed-2); effIsoMb12Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb12Hist.SetMarkerColor(ROOT.kRed-2); effIsoMb12Hist.SetMarkerSize(0.8)
+	effRatioIsoMb12Hist.SetLineColor(ROOT.kRed); effIsoMb12Hist.SetMarkerColor(ROOT.kRed); effIsoMb12Hist.SetMarkerColor(ROOT.kRed); effIsoMb12Hist.SetMarkerSize(0.8)
 	effRatioIsoMb12Hist.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Hist.GetXaxis().SetTitle(xLabel); effIsoMb12Hist.GetYaxis().SetTitle(yLabel);
 
 	effName = "effRatio_isoMB12"

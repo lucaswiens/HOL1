@@ -126,16 +126,17 @@ int main(int argc, char* argv[]) {
 
 void ProgressBar(const int &progress, const int &rate, const std::string &producerName) {
 	std::string progressBar = "[";
+	int barLength = 100;
 
 	for (int i = 0; i < progress - 1; i++) {
 		progressBar += "·";
 	}
 
-	if (progress == 100) { progressBar += "·";}
+	if (progress == barLength) { progressBar += "·";}
 	else if (progress % 2 == 0) { progressBar += "c";}
 	else { progressBar += "C";}
 
-	for (int i = 0; i < 100 - progress; i++) {
+	for (int i = 0; i < barLength - progress; i++) {
 		progressBar += "•";
 	}
 

@@ -113,6 +113,22 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 			histCollection->histIsoMb2MatchedMuonEta_vs_MuonPt->Fill(product->bmtfMatchedMuonEta.at(i), product->bmtfMatchedMuonPt.at(i));
 			histCollection->histIsoMb12MatchedMuonEta_vs_MuonPt->Fill(product->bmtfMatchedMuonEta.at(i), product->bmtfMatchedMuonPt.at(i));
 
+			histCollection->histIsoMb1MatchedMuonN3x3Pt->Fill(product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb1MatchedMuonN3x3Pt20->Fill(product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb1MatchedMuonN3x3Eta->Fill(product->bmtfMatchedMuonEta.at(i));
+
+			histCollection->histIsoMb2MatchedMuonN3x3Pt->Fill(product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb2MatchedMuonN3x3Pt20->Fill(product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb2MatchedMuonN3x3Eta->Fill(product->bmtfMatchedMuonEta.at(i));
+
+			histCollection->histIsoMb12MatchedMuonN3x3Pt->Fill(product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb12MatchedMuonN3x3Pt20->Fill(product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb12MatchedMuonN3x3Eta->Fill(product->bmtfMatchedMuonEta.at(i));
+
+			histCollection->histIsoMb1MatchedMuonN3x3Eta_vs_MuonPt->Fill(product->bmtfMatchedMuonEta.at(i), product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb2MatchedMuonN3x3Eta_vs_MuonPt->Fill(product->bmtfMatchedMuonEta.at(i), product->bmtfMatchedMuonPt.at(i));
+			histCollection->histIsoMb12MatchedMuonN3x3Eta_vs_MuonPt->Fill(product->bmtfMatchedMuonEta.at(i), product->bmtfMatchedMuonPt.at(i));
+
 		}
 		//std::cout << histCounter <<std::endl;
 

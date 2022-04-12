@@ -96,8 +96,13 @@ if __name__=="__main__":
 	isoMb2MatchedMuonPt = histogramFile.Get("1/isoMb2MatchedMuonPt")
 	isoMb12MatchedMuonPt = histogramFile.Get("1/isoMb12MatchedMuonPt")
 
+	isoMb1MatchedMuonN3x3Pt = histogramFile.Get("1/isoMb1MatchedMuonN3x3Pt")
+	isoMb2MatchedMuonN3x3Pt = histogramFile.Get("1/isoMb2MatchedMuonN3x3Pt")
+	isoMb12MatchedMuonN3x3Pt = histogramFile.Get("1/isoMb12MatchedMuonN3x3Pt")
+
 	minimum = 0
 
+	#yMin = 0
 	yMin = 0
 	yMax = 1.02
 	effBmtfGraph = ROOT.TGraphAsymmErrors(muonPt)
@@ -118,11 +123,30 @@ if __name__=="__main__":
 	effIsoMb12Graph.SetTitle("BMTF+IsoMB12 Muon"); effIsoMb12Graph.GetXaxis().SetTitle(xLabel); effIsoMb12Graph.GetYaxis().SetTitle(yLabel);
 	effIsoMb12Graph.SetMinimum(yMin); effIsoMb12Graph.SetMaximum(yMax)
 
+	effIsoMb1N3x3Graph = ROOT.TGraphAsymmErrors(muonPt)
+	effIsoMb1N3x3Graph.Divide(isoMb1MatchedMuonN3x3Pt, muonPt, "cl=0.683 b(1,1) mode")
+	effIsoMb1N3x3Graph.SetLineColor(ROOT.kRed-8); effIsoMb1N3x3Graph.SetMarkerColor(ROOT.kRed-8); effIsoMb1N3x3Graph.SetMarkerColor(ROOT.kRed-8); effIsoMb1N3x3Graph.SetMarkerSize(0.8)
+	effIsoMb1N3x3Graph.SetTitle("BMTF+IsoMB1 Muon (N_{3x3} #leq 1)"); effIsoMb1N3x3Graph.GetXaxis().SetTitle(xLabel); effIsoMb1N3x3Graph.GetYaxis().SetTitle(yLabel);
+	effIsoMb1N3x3Graph.SetMinimum(yMin); effIsoMb1N3x3Graph.SetMaximum(yMax)
+
+	effIsoMb12N3x3Graph = ROOT.TGraphAsymmErrors(muonPt)
+	effIsoMb12N3x3Graph.Divide(isoMb12MatchedMuonN3x3Pt, muonPt, "cl=0.683 b(1,1) mode")
+	effIsoMb12N3x3Graph.SetLineColor(ROOT.kAzure-8); effIsoMb12N3x3Graph.SetMarkerColor(ROOT.kAzure-8); effIsoMb12N3x3Graph.SetMarkerColor(ROOT.kAzure-8); effIsoMb12N3x3Graph.SetMarkerSize(0.8)
+	effIsoMb12N3x3Graph.SetTitle("BMTF+IsoMB12 Muon (N_{3x3} #leq 1)"); effIsoMb12N3x3Graph.GetXaxis().SetTitle(xLabel); effIsoMb12N3x3Graph.GetYaxis().SetTitle(yLabel);
+	effIsoMb12N3x3Graph.SetMinimum(yMin); effIsoMb12N3x3Graph.SetMaximum(yMax)
+
+	effIsoMb1N3x3Graph.SetLineStyle(ROOT.kDotted)
+	effIsoMb12N3x3Graph.SetLineStyle(ROOT.kDotted)
+
+
 	effBmtfGraph.GetXaxis().SetRangeUser(0, float(args.x_max));
 	effBmtfGraph.Draw("same ap")
 	if not args.bmtf_only:
 		effIsoMb1Graph.Draw("same p")
+		effIsoMb1N3x3Graph.Draw("same p")
+
 		effIsoMb12Graph.Draw("same p")
+		effIsoMb12N3x3Graph.Draw("same p")
 
 	ROOT.gPad.BuildLegend(0.6, 0.2, 0.9, 0.45);
 

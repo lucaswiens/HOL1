@@ -44,6 +44,7 @@ if __name__=="__main__":
 	args.output = args.output + "/" + fileName + "/" + date
 
 	makeDirs(str(args.output) + "/root")
+	makeDirs(str(args.output) + "/batch")
 	makeDirs(str(args.output) + "/error")
 	makeDirs(str(args.output) + "/log")
 	makeDirs(str(args.output) + "/output")
@@ -85,14 +86,14 @@ if __name__=="__main__":
 	for sample in sampleList:
 		sample = sample.replace("\n", "")
 		if number == 0:
-			shellFile = open(args.output + "/processNtuple_" + str(shellNumber), "w")
-			os.system("chmod 744 " + args.output + "/processNtuple_" + str(shellNumber))
+			shellFile = open(args.output + "/batch/processNtuple_" + str(shellNumber), "w")
+			os.system("chmod 744 " + args.output + "/batch/processNtuple_" + str(shellNumber))
 			shellFile.write("#!/bin/sh\n")
 			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " ")
 			shellFile.write(sample + " ")
 			number += 1
 
-			argumentFile.write("processNtuple_" + str(shellNumber) + "\n")
+			argumentFile.write("batch/processNtuple_" + str(shellNumber) + "\n")
 		else:
 			shellFile.write(sample + " ")
 			number += 1

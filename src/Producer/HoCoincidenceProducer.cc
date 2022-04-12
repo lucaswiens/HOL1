@@ -332,7 +332,7 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 					int nHo3x3Hit = 0;
 					for (unsigned int iHo2 = 0; iHo2 < product->nHcalDetIds; iHo2++) {
 						if (iHo2 == iHo) { continue;}
-						int deltaIPhi2 = Utility::DeltaIPhi(product->dttpMatchedHoIPhi.at(iDttp), product->hcalIPhi.at(iHo2));
+						int deltaIPhi2 = Utility::DeltaIPhi(product->hcalIPhi.at(iHo), product->hcalIPhi.at(iHo2));
 						if ((product->dttpStation.at(iDttp) == 1 && abs(deltaIPhi2) <= 1) &&
 							product->dttpSection.at(iDttp) == product->hcalSection.at(iHo2) &&
 							product->dttpWheel.at(iDttp) == product->hcalWheel.at(iHo2)
