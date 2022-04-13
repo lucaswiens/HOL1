@@ -45,6 +45,17 @@ def findLabel(efficiencyName):
 		label = "#Delta #phi"
 	return label
 
+def printEfficiency(hist1, hist2):
+	histIntegral_1 = hist1.Integral()
+	histIntegral_2 = hist2.Integral()
+
+	print ('%s:%s%.1f +/- %.1f%%' % (hist1.GetName(), (" " * (25-len(hist1.GetName()))), 100 * histIntegral_1 / histIntegral_2,
+			(100 * histIntegral_1 / histIntegral_2) * np.sqrt(histIntegral_2) / histIntegral_2
+		)
+	)
+
+	return None
+
 
 if __name__=="__main__":
 	date = subprocess.check_output("date +\"%Y_%m_%d\"", shell=True).decode("utf-8").replace("\n", "")
@@ -75,8 +86,6 @@ if __name__=="__main__":
 	xLabel = findLabel("Pt")
 	yLabel = "Efficiency"
 	width = 1200
-	height = width
-	#height= 1500
 	height = int(width * 3/4.)
 	effName = "muonPt"
 
@@ -85,11 +94,9 @@ if __name__=="__main__":
 	canvas.SetGrid()
 
 	histogramFile = ROOT.TFile(args.input_file)
-	#histogramFile.Print()
 	histogramFile.cd("1")
 
 	muonPt = histogramFile.Get("1/muonPt")
-	print(muonPt)
 	bmtfMatchedMuonPt = histogramFile.Get("1/bmtfMatchedMuonPt")
 
 	isoMb1MatchedMuonPt = histogramFile.Get("1/isoMb1MatchedMuonPt")
@@ -160,5 +167,8 @@ if __name__=="__main__":
 
 	common.CreateIndexHtml(templateDir = cmsswBase + "/src/HOAnalysis/HOL1/data/html", outputDir = args.output_directory, fileTypes = args.file_types)
 
-	#plottingUrl = common.GetOSVariable("PLOTTING_URL")
-	#print(plottingUrl + "/" + args.output_directory)
+	printEfficiency(bmtfMatchedMuonPt, muonPt)
+	printEfficiency(isoMb1MatchedMuonPt, muonPt)
+	printEfficiency(isoMb12MatchedMuonPt, muonPt)
+	printEfficiency(isoMb1MatchedMuonN3x3Pt, muonPt)
+	printEfficiency(isoMb12MatchedMuonN3x3Pt, muonPt)
