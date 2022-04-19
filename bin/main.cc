@@ -14,8 +14,11 @@
 #include <HOAnalysis/HOL1/interface/Producer/HoCoincidenceProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/HoHistogramProducer.h>
 #include <HOAnalysis/HOL1/interface/Producer/TagAndProbeProducer.h>
+#include <HOAnalysis/HOL1/interface/Producer/BxMatchingProducer.h>
 
-void ProgressBar(const int &, const int &, const std::string &);
+
+//void ProgressBar(const int &, const int &, const std::string &);
+//extern int false_bx_count, right_bx_count;
 
 int main(int argc, char* argv[]) {
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
@@ -46,6 +49,8 @@ int main(int argc, char* argv[]) {
 		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer(ptCut, etaCut, workingPointCut)));
 		producers.push_back(std::shared_ptr<TagAndProbeProducer>(new TagAndProbeProducer(ptCut, l1PtCut, etaCut, workingPointCut)));
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, l1EtaCut, ptCut, l1PtCut, deltaPhiCut, deltaRCut)));
+		producers.push_back(std::shared_ptr<BxMatchingProducer>(new BxMatchingProducer())); //new
+
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
 
 		hasRecoMuons = true;
@@ -54,6 +59,7 @@ int main(int argc, char* argv[]) {
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(l1EtaCut, l1PtCut)));
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, l1EtaCut, ptCut, l1PtCut, deltaPhiCut, deltaRCut)));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
+		producers.push_back(std::shared_ptr<BxMatchingProducer>(new BxMatchingProducer()));
 
 		hasRecoMuons = false;
 	}
@@ -71,7 +77,7 @@ int main(int argc, char* argv[]) {
 		DataReader* dataReader = new DataReader(inputFile, &useEmulated);
 		std::cout << "Processing(" << iFile - 2 << "/" << argc - 3 << "): "<< inputFile << " with " << dataReader->GetEntries() << " events" << std::endl;
 
-		ProgressBar(0, 0, "Starting");
+		//ProgressBar(0, 0, "Starting");
 		while (dataReader->Next()) {
 			// Timing Information
 			elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count();
@@ -94,14 +100,20 @@ int main(int argc, char* argv[]) {
 			// Production of Ho Coincidence
 			HoProduct product;
 			for (std::shared_ptr<BaseProducer> producer: producers) {
-				if (processed % 100 == 0) { ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate, producer->Name); }
+				//if (processed % 100 == 0) { ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate, producer->Name); }
 				producer->Produce(dataReader, &product, histCollection);
 			}
 			totalProcessed++;
 			processed++;
 		}
-		ProgressBar(100, rate, "Done");
-		histCollections.at(runNumber).numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
+
+		//ProgressBar(100, rate, "Done");
+		//histCollections.at(runNumber).numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
+
+		std::cout << "\nrate " << rate << std::endl;
+
+		numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
+
 		delete dataReader;
 	}
 
@@ -120,10 +132,12 @@ int main(int argc, char* argv[]) {
 
 	std::cout << std::endl << "Processed " << argc - 3 << " files in " << std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - start).count() << " minutes" << std::endl;
 	std::cout << "The name of the outputfile is " << outputFile << std::endl;
+	//std::cout << "\nright bx: " << right_bx_count << " false bx: " << false_bx_count << " ratio " << ((double)false_bx_count)/right_bx_count << " " ;
 
 	return 0;
 }
 
+/*
 void ProgressBar(const int &progress, const int &rate, const std::string &producerName) {
 	std::string progressBar = "[";
 	int barLength = 100;
@@ -144,3 +158,4 @@ void ProgressBar(const int &progress, const int &rate, const std::string &produc
 	std::cout << std::left;
 	std::cout << "\r" << std::setw(24) << producerName +":" << progressBar << std::flush;
 }
+*/

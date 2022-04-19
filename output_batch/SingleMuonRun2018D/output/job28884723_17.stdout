@@ -1,0 +1,9 @@
+Using tight Muons.
+The applied cuts are:
+recoPt    > 25
+|recoEta| < 0.83
+bmtfPt    > 3
+|bmtfEta| < 999
+|iEtaCut| < 10
+deltaR    < 0.4
+deltaPhi  < 0.4

@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0
+eval `scramv1 runtime -sh` #cmsenv
+cd /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output_batch/SingleMuonRun2018D/L1Hist
+bash ../${1}

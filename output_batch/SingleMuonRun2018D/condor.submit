@@ -1,0 +1,9 @@
+executable = produceNtuple
+#arguments = L1Hist_$(Process) $(arguments)
+getenv = True
+universe = vanilla
+request_memory = 300MB
+output = output/job$(Cluster)_$(Process).stdout
+error =error/job$(Cluster)_$(Process).stderr
+log = log/job$(Cluster)_$(Process).log
+queue arguments from arguments.md

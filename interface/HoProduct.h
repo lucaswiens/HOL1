@@ -54,6 +54,7 @@ public:
 		hcalIPhi,
 		hcalQIESample,
 		hcalQIESampleAdc,
+		weighted_hcalQIESampleAdc,
 		hcalQIESampleDv,
 		hcalQIESampleEr,
 		hcalWheel,

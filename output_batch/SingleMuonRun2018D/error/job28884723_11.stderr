@@ -1,0 +1,84 @@
+Error in <TNetXNGFile::Open>: [ERROR] Operation expired
+
+ *** Break *** segmentation violation
+
+
+
+===========================================================
+There was a crash.
+This is the entire stack trace of all threads:
+===========================================================
+
+Thread 6 (Thread 0x2ad6fdd7a700 (LWP 29365)):
+#0  0x00002ad6e7fa2b3b in do_futex_wait.constprop () from /lib64/libpthread.so.0
+#1  0x00002ad6e7fa2bcf in __new_sem_wait_slow.constprop.0 () from /lib64/libpthread.so.0
+#2  0x00002ad6e7fa2c6b in sem_wait
+
+GLIBC_2.2.5 () from /lib64/libpthread.so.0
+#3  0x00002ad6fcfaf816 in XrdCl::JobManager::RunJobs() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#4  0x00002ad6fcfaf8c9 in RunRunnerThread () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#5  0x00002ad6e7f9cea5 in start_thread () from /lib64/libpthread.so.0
+#6  0x00002ad6e82afb0d in clone () from /lib64/libc.so.6
+
+Thread 5 (Thread 0x2ad6fdb79700 (LWP 29364)):
+#0  0x00002ad6e7fa2b3b in do_futex_wait.constprop () from /lib64/libpthread.so.0
+#1  0x00002ad6e7fa2bcf in __new_sem_wait_slow.constprop.0 () from /lib64/libpthread.so.0
+#2  0x00002ad6e7fa2c6b in sem_wait
+
+GLIBC_2.2.5 () from /lib64/libpthread.so.0
+#3  0x00002ad6fcfaf816 in XrdCl::JobManager::RunJobs() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#4  0x00002ad6fcfaf8c9 in RunRunnerThread () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#5  0x00002ad6e7f9cea5 in start_thread () from /lib64/libpthread.so.0
+#6  0x00002ad6e82afb0d in clone () from /lib64/libc.so.6
+
+Thread 4 (Thread 0x2ad6fd978700 (LWP 29362)):
+#0  0x00002ad6e7fa2b3b in do_futex_wait.constprop () from /lib64/libpthread.so.0
+#1  0x00002ad6e7fa2bcf in __new_sem_wait_slow.constprop.0 () from /lib64/libpthread.so.0
+#2  0x00002ad6e7fa2c6b in sem_wait
+
+GLIBC_2.2.5 () from /lib64/libpthread.so.0
+#3  0x00002ad6fcfaf816 in XrdCl::JobManager::RunJobs() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#4  0x00002ad6fcfaf8c9 in RunRunnerThread () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#5  0x00002ad6e7f9cea5 in start_thread () from /lib64/libpthread.so.0
+#6  0x00002ad6e82afb0d in clone () from /lib64/libc.so.6
+
+Thread 3 (Thread 0x2ad6fd777700 (LWP 29359)):
+#0  0x00002ad6e7fa3e9d in nanosleep () from /lib64/libpthread.so.0
+#1  0x00002ad6fcdd76ff in XrdSysTimer::Wait(int) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdUtils.so.2
+#2  0x00002ad6fcf51b0a in XrdCl::TaskManager::RunTasks() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#3  0x00002ad6fcf51c69 in RunRunnerThread () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdCl.so.2
+#4  0x00002ad6e7f9cea5 in start_thread () from /lib64/libpthread.so.0
+#5  0x00002ad6e82afb0d in clone () from /lib64/libc.so.6
+
+Thread 2 (Thread 0x2ad6fd576700 (LWP 29356)):
+#0  0x00002ad6e82b00e3 in epoll_wait () from /lib64/libc.so.6
+#1  0x00002ad6fcdd1ed2 in XrdSys::IOEvents::PollE::Begin(XrdSysSemaphore*, int&, char const**) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdUtils.so.2
+#2  0x00002ad6fcdce78d in XrdSys::IOEvents::BootStrap::Start(void*) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdUtils.so.2
+#3  0x00002ad6fcdd6f68 in XrdSysThread_Xeq () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libXrdUtils.so.2
+#4  0x00002ad6e7f9cea5 in start_thread () from /lib64/libpthread.so.0
+#5  0x00002ad6e82afb0d in clone () from /lib64/libc.so.6
+
+Thread 1 (Thread 0x2ad6e9da7280 (LWP 28593)):
+#0  0x00002ad6e8276659 in waitpid () from /lib64/libc.so.6
+#1  0x00002ad6e81f3f62 in do_system () from /lib64/libc.so.6
+#2  0x00002ad6e81f4311 in system () from /lib64/libc.so.6
+#3  0x00002ad6e6fe5a45 in TUnixSystem::StackTrace() () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libCore.so
+#4  0x00002ad6e6fe2c15 in TUnixSystem::DispatchSignals(ESignals) () from /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_11_2_0/external/slc7_amd64_gcc900/lib/libCore.so
+#5  <signal handler called>
+#6  0x00002ad6e592b330 in DataReader::DataReader(char const*) () from /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/lib/slc7_amd64_gcc900/libHOAnalysisHOL1.so
+#7  0x000000000040c7e2 in main ()
+===========================================================
+
+
+The lines below might hint at the cause of the crash.
+You may get help by asking at the ROOT forum https://root.cern.ch/forum
+Only if you are really convinced it is a bug in ROOT then please submit a
+report at https://root.cern.ch/bugs Please post the ENTIRE stack trace
+from above as an attachment in addition to anything else
+that might help us fixing this issue.
+===========================================================
+#6  0x00002ad6e592b330 in DataReader::DataReader(char const*) () from /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/lib/slc7_amd64_gcc900/libHOAnalysisHOL1.so
+#7  0x000000000040c7e2 in main ()
+===========================================================
+
+

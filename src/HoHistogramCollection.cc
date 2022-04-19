@@ -128,6 +128,7 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 	//histUnusedDttpStation_vs_DttpWheel_Lq = new TH2D("unusedMB_station_vs_wheel_Lq", "", nBinsWheel, minWheel, maxWheel, nBinsStation, minStation, maxStation);
 
 	// HOTP Histogram
+
 	histNHcalDetIds = new TH1I("hcalDetIds", "", 50, 500, 1000);
 	histSampleEnergy = new TH1F("SampleEnergy", "", 25, 0, 1);
 	histHcalDetIdIEta = new TH1I("hcalDetIdIEta", "", nBinsIEta, minIEta, maxIEta);
@@ -149,6 +150,10 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 
 	//histBmtfMatchedMuonPt_vs_MuonEta  = new TH2D("bmtfMatchedMuonPt_vs_MuonEta", "", nBinsPtVs, minPtVs, maxPtVs, nBinsEta, minEta, maxEta);
 	histHcalQIESamples_vs_HcalQIESampleAdc = new TH2D("HcalQIESamples_vs_HcalQIESampleAdc", "", 10, 0, 10, 50, 0, 50);
+	 //new
+	hist_Weighted_HcalQIESampleAdc = new TH1F("hcal_Weighted_QIESampleAdc", "hcal_Weighted_QIESampleAdc", 10, 0, 10);
+	hist_corrected_DttpBx = new TH1I("corrected_dttpBx", "corrected_dttpBx", 5, -2, 2);
+	hist_HoMatched_DttpBx = new TH1I("HoMatched_dttpBx", "HoMatched_dttpBx", 5, -2, 2);
 
 	// Ho Matched Variables
 	histIsMb3HoIEtaMatched = new TH1S("isMb3HoIEtaMatched", "", 2, 0, 2);

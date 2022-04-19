@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0
+eval `scramv1 runtime -sh` #cmsenv
+cd output//SingleMuonRun2018D/L1Hist
+bash output//SingleMuonRun2018D/${1}

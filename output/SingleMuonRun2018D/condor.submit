@@ -1,0 +1,10 @@
+#executable = produceNtuple
+executable = /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/produceNtuple
+arguments = /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/L1Hist_$(Process) $(arguments)
+getenv = True
+universe = vanilla
+request_memory = 300MB
+output = /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/output/job$(Cluster)_$(Process).stdout
+error = /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/error/job$(Cluster)_$(Process).stderr
+log = /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/log/job$(Cluster)_$(Process).log
+queue arguments from /nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/arguments.md

@@ -1,0 +1,9 @@
+/var/lib/condor/util/job_wrapper.sh[81]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/var/lib/condor/util/job_wrapper.sh[82]: run_condor_aklog[65]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/var/lib/condor/util/job_wrapper.sh[82]: run_condor_aklog[70]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/var/lib/condor/util/job_wrapper.sh[131]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/var/lib/condor/util/job_wrapper.sh[132]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/var/lib/condor/util/job_wrapper.sh[166]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/var/lib/condor/util/job_wrapper.sh[170]: llog[43]: /var/log/condor/JobWrapper.Log: cannot create [Permission denied]
+/nfs/dust/cms/user/frengelk/Code/cmssw/CMSSW_11_2_0/src/HOAnalysis/HOL1/output/SingleMuonRun2018D/produceNtuple: line 4: cd: output//SingleMuonRun2018D/L1Hist: No such file or directory
+bash: output//SingleMuonRun2018D/processNtuple_48: No such file or directory

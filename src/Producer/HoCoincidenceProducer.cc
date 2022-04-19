@@ -311,9 +311,13 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		if (product->dttpBx.at(iDttp) != 0 ||
 			product->dttpStation.at(iDttp) > 2 ||
 			abs(product->dttpWheel.at(iDttp)) == 2 ||
+
 			!product->dttpIsHq.at(iDttp) ||
 			product->isDttpMatchedBmtf.at(iDttp) || // this is equivalent to (!isIsoMb1)
 			product->dttpCmsPt.at(iDttp) < l1PtCut //FIXME
+
+			// || FIXME product->isDttpMatchedBmtf.at(iDttp) // || // this is equivalent to (!isIsoMb1)
+			//product->dttpPt.at(iDttp) < ptCut
 		) { continue;}
 
 		unsigned int dttpMatchedHoIndex = 99999;
