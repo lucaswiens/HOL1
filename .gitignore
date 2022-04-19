@@ -4,3 +4,7 @@
 *.swp
 *.root
 crab_projects
+output/
+output_batch/
+data/
+bx_plots/
