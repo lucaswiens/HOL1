@@ -8,6 +8,8 @@
 
 <use name="HOAnalysis/HOL1"/>
 
+<flags CXXFLAGS="-fPIC -w -lstdc++fs -fcompare-debug-second -g -std=c++17 -O2"/>
+
 <export>
 	<lib name="1"/>
 </export>

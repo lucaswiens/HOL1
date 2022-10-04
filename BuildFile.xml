@@ -4,7 +4,7 @@
 <use name="rootphysics"/>
 <use name="rootgraphics"/>
 
-<flags CXXFLAGS="-Wall -std=c++17"/>
+<flags CXXFLAGS="-fPIC -w -lstdc++fs -fcompare-debug-second -g -std=c++17 -O2"/>
 
 <flags ADD_SUBDIR="1"/>
 

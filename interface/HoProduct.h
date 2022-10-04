@@ -21,7 +21,7 @@ public:
 	std::vector<double> dttpCmsPhi;
 	std::vector<bool> dttpIsHq,
 		dttpIsLq;
-	// Track Finder Muons
+	// Track Finder Muons BMTF=0; OMTF=1; EMTF=2
 	std::map<int, unsigned short> tfMuonSize = {{0, 0}, {1, 0}, {2, 0}};
 	std::map<int, std::vector<int>> tfMuonTrackType = {{0, {}}, {1, {}}, {2, {}}},
 		tfMuonQuality = {{0, {}}, {1, {}}, {2, {}}};
@@ -162,68 +162,34 @@ public:
 	std::vector<double> probeMuonMet,
 		probeMuonMt;
 
-	// Used Muons
-	unsigned short nUsedMuon;
-	std::vector<bool> isMediumUsedMuon,
-		usedMuonHltIsoMu,
-		usedMuonHltMu,
-		usedMuonPassesSingleMuon,
-		usedMuonHasMb1;
-	std::vector<int> usedMuonCharge,
-		usedMuonIEta,
-		usedMuonHoN3x3Hit;
-	std::vector<float> usedMuonE,
-		usedMuonEt,
-		usedMuonPt,
-		usedMuonEta,
-		usedMuonPhi,
-		usedMuonIso,
-		usedMuonHltIsoDeltaR,
-		usedMuonDeltaR,
-		usedMuonEtaSt1,
-		usedMuonPhiSt1,
-		usedMuonEtaSt2,
-		usedMuonPhiSt2;
-	std::vector<double> usedMuonMet,
-		usedMuonMt;
-	// Unused Muons
-	unsigned short nUnusedMuon;
-	std::vector<bool> isMediumUnusedMuon,
-		unusedMuonHltIsoMu,
-		unusedMuonHltMu,
-		unusedMuonPassesSingleMuon,
-		unusedMuonHasMb1;
-	std::vector<int> unusedMuonCharge,
-		unusedMuonIEta,
-		unusedMuonHoN3x3Hit;
-	std::vector<float> unusedMuonE,
-		unusedMuonEt,
-		unusedMuonPt,
-		unusedMuonEta,
-		unusedMuonPhi,
-		unusedMuonIso,
-		unusedMuonHltIsoDeltaR,
-		unusedMuonDeltaR,
-		unusedMuonEtaSt1,
-		unusedMuonPhiSt1,
-		unusedMuonEtaSt2,
-		unusedMuonPhiSt2;
-	std::vector<double> unusedMuonMet,
-		unusedMuonMt;
 	// Matching tfMuon (BMTF output) with Reco Muon
-	std::vector<double> bmtfMatchedMuonDeltaR,
-		bmtfMatchedMuonPt,
-		bmtfMatchedMuonEta,
-		bmtfMatchedMuonPhi,
-		bmtfMatchedMuonTrackType,
-		bmtfMatchedMuonDeltaPhi;
-	std::vector<int> bmtfMatchedMuonCharge;
-	std::vector<unsigned short> bmtfMatchedMuonIndex,
-		muonMatchedBmtfIndex;
-	std::vector<double> muonMatchedBmtfCmsPt,
-		muonMatchedBmtfCmsEta;
-	std::vector<bool> isMuonMatchedBmtf,
-		isBmtfMatchedMuon;
+	//std::vector<double> bmtfMatchedMuonDeltaR,
+	//	bmtfMatchedMuonPt,
+	//	bmtfMatchedMuonEta,
+	//	bmtfMatchedMuonPhi,
+	//	bmtfMatchedMuonTrackType,
+	//	bmtfMatchedMuonDeltaPhi;
+	//std::vector<int> bmtfMatchedMuonCharge;
+	//std::vector<unsigned short> bmtfMatchedMuonIndex,
+	//	muonMatchedBmtfIndex;
+	//std::vector<double> muonMatchedBmtfCmsPt,
+	//	muonMatchedBmtfCmsEta;
+	//std::vector<bool> isMuonMatchedBmtf,
+	//	isBmtfMatchedMuon;
+	// Matching tfMuon (TF output) with Reco Muon
+	std::map<int, std::vector<double>> tfMatchedMuonDeltaR,
+		tfMatchedMuonPt,
+		tfMatchedMuonEta,
+		tfMatchedMuonPhi,
+		tfMatchedMuonTrackType,
+		tfMatchedMuonDeltaPhi;
+	std::map<int, std::vector<int>> tfMatchedMuonCharge,
+		tfMatchedMuonTfType;
+	std::map<int, std::vector<unsigned short>> tfMatchedMuonIndex,
+		muonMatchedTfIndex;
+	std::map<int, std::vector<bool>> isTfMatchedMuon;
+	std::vector<bool> isMuonMatchedTf;
+
 	// Matching MB34 with HO
 	std::vector<double> bmtfMb34MatchedHoDeltaR,
 		bmtfMb34MatchedHoPt,

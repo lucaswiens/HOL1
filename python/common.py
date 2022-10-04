@@ -4,7 +4,7 @@ import os
 import re
 import string
 
-import awkward1 as ak
+import awkward as ak
 import boost_histogram as bh
 
 #from getXSection import GetXSection

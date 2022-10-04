@@ -1,10 +1,14 @@
 #include <HOAnalysis/HOL1/interface/Producer/TagAndProbeProducer.h>
 
-TagAndProbeProducer::TagAndProbeProducer(const double &ptCut, const double &l1PtCut, const double &etaCut, const char &workingPointCut):
-	ptCut(ptCut),
+TagAndProbeProducer::TagAndProbeProducer(const double &tagPtCut, const double &probePtCut, const double &l1PtCut, const double &etaCut, const double &deltaRTagAndTfCut, const double &deltaRTagAndProbeCut, const char &tagWorkingPointCut, const char &probeWorkingPointCut):
+	tagPtCut(tagPtCut),
+	probePtCut(probePtCut),
 	l1PtCut(l1PtCut),
 	etaCut(etaCut),
-	workingPointCut(workingPointCut)
+	deltaRTagAndTfCut(deltaRTagAndTfCut),
+	deltaRTagAndProbeCut(deltaRTagAndProbeCut),
+	tagWorkingPointCut(tagWorkingPointCut),
+	probeWorkingPointCut(probeWorkingPointCut)
 	{
 		Name = "Tag and Probe Producer";
 		std::map<char, std::string> workingPointMap = {
@@ -13,12 +17,22 @@ TagAndProbeProducer::TagAndProbeProducer(const double &ptCut, const double &l1Pt
 			{'t', "tight"},
 			{'a', "all"}
 		};
-		std::cout << "Using " << workingPointMap[workingPointCut] << " Muons." << std::endl;
+		std::cout << "The cuts for the Tag and Probes are:\n" <<
+			"Tag Muon WP        = " << workingPointMap[tagWorkingPointCut] << std::endl <<
+			"Probe Muon WP      = " << workingPointMap[probeWorkingPointCut] << std::endl <<
+			"Tag   Muon Pt      > " << tagPtCut   << std::endl <<
+			"Probe Muon Pt      > " << probePtCut   << std::endl <<
+			"l1Pt               > " << l1PtCut   << std::endl <<
+			"|muonEta|          < " << etaCut  << std::endl <<
+			"deltaR(Tag, Tf)    < " << deltaRTagAndTfCut   << std::endl <<
+			"deltaR(Tag, Probe) > " << deltaRTagAndProbeCut   << std::endl;
 	}
+
 
 void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	if (product->nMuon < 2) { product->nMuon = 0; return;}
-	const double &deltaRCut = 0.4;//FIXME Add this as an argument to the constructor
+	product->nProbeMuon = 0;
+	product->nTagMuon = 0;
 
 	// Tag Muons
 	std::vector<unsigned short> tagIndices;
@@ -33,20 +47,20 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		const double &tagMuonPhiSt2 = product->muonPhiSt2.at(iTag);
 		const bool &hasMB2 = (tagMuonEtaSt2 > -99) && (tagMuonPhiSt2 > -99);
 
-		if (!(hasMB1 or hasMB2)) { continue;}
+		//if (!(hasMB1 or hasMB2)) { continue;}
 
 		bool passesWorkingPoint = false;
 
 		const bool &isLooseTagMuon = product->isLooseMuon.at(iTag);
 		const bool &isMediumTagMuon = product->isMediumMuon.at(iTag);
 		const bool &isTightTagMuon = product->isTightMuon.at(iTag);
-		if (workingPointCut == 'm') {
+		if (tagWorkingPointCut == 'm') {
 			passesWorkingPoint = isMediumTagMuon;
-		} else if (workingPointCut == 't') {
+		} else if (tagWorkingPointCut == 't') {
 			passesWorkingPoint = isTightTagMuon;
-		} else if (workingPointCut == 'l') {
+		} else if (tagWorkingPointCut == 'l') {
 			passesWorkingPoint = isLooseTagMuon;
-		} else if (workingPointCut == 'a') {
+		} else if (tagWorkingPointCut == 'a') {
 			passesWorkingPoint = true;
 		} else {
 			std::cerr << "Chosen invalid working point!" << std::endl;
@@ -61,7 +75,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		if (hltIsoTagMuonDeltaR > 0.1) { continue;}
 
 		const double &tagMuonPt = product->muonPt.at(iTag);
-		if (tagMuonPt < ptCut) { continue;}
+		if (tagMuonPt < tagPtCut) { continue;}
 
 		const double &tagMuonIso = product->muonIso.at(iTag);
 		if (tagMuonIso > 0.1) { continue;}
@@ -71,16 +85,19 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 			for (unsigned short iTf = 0; iTf < product->tfMuonSize.at(tfType); iTf++){
 
 				if (product->tfMuonBx.at(tfType).at(iTf) != 0) { continue;}
-				if (product->tfMuonCmsPt.at(tfType).at(iTf) < ptCut - 4.01) { continue;}
+				//if (product->tfMuonCmsPt.at(tfType).at(iTf) < tagPtCut - 4.01) { continue;}
+				if (product->tfMuonCmsPt.at(tfType).at(iTf) < tagMuonPt - 4) { continue;}
 
 				double tfMuonMatchedMuonDeltaR = 0.;
 				if (hasMB2) {
 					tfMuonMatchedMuonDeltaR = Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), tagMuonEtaSt2, tagMuonPhiSt2);
-				} else {
+				} else if (hasMB1) {
 					tfMuonMatchedMuonDeltaR = Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), tagMuonEtaSt1, tagMuonPhiSt1);
+				} else {
+					tfMuonMatchedMuonDeltaR = Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), product->muonEta.at(iTag), product->muonPhi.at(iTag));
 				}
 
-				if (tfMuonMatchedMuonDeltaR < deltaRCut) {
+				if (tfMuonMatchedMuonDeltaR < deltaRTagAndTfCut) {
 
 					if (std::find(tagIndices.begin(), tagIndices.end(), iTag) != tagIndices.end()) { continue;}
 					tagIndices.push_back(iTag);
@@ -108,6 +125,35 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 					product->tagMuonHasMb1.push_back(hasMB1);
 					product->tagMuonHasMb2.push_back(hasMB2);
+
+					histCollection->histTagMuonMet->Fill(product->tagMuonMet.back());
+					histCollection->histTagMuonMt->Fill(product->tagMuonMt.back());
+
+					histCollection->histIsLooseTagMuon->Fill(product->isLooseTagMuon.back());
+					histCollection->histIsMediumTagMuon->Fill(product->isMediumTagMuon.back());
+					histCollection->histIsTightTagMuon->Fill(product->isTightTagMuon.back());
+					histCollection->histTagMuonHltIsoMu->Fill(product->tagMuonHltIsoMu.back());
+					histCollection->histTagMuonHltMu->Fill(product->tagMuonHltMu.back());
+					histCollection->histTagMuonPassesSingleMuon->Fill(product->tagMuonPassesSingleMuon.back());
+					histCollection->histTagMuonCharge->Fill(product->tagMuonCharge.back());
+
+					histCollection->histTagMuonE->Fill(product->tagMuonE.back());
+					histCollection->histTagMuonEt->Fill(product->tagMuonEt.back());
+					histCollection->histTagMuonPt->Fill(product->tagMuonPt.back());
+					histCollection->histTagMuonEta->Fill(product->tagMuonEta.back());
+					histCollection->histTagMuonPhi->Fill(product->tagMuonPhi.back());
+					histCollection->histTagMuonIso->Fill(product->tagMuonIso.back());
+					histCollection->histTagMuonHltIsoDeltaR->Fill(product->tagMuonHltIsoDeltaR.back());
+					histCollection->histTagMuonEtaSt1->Fill(product->tagMuonEtaSt1.back());
+					histCollection->histTagMuonPhiSt1->Fill(product->tagMuonPhiSt1.back());
+					histCollection->histTagMuonEtaSt2->Fill(product->tagMuonEtaSt2.back());
+					histCollection->histTagMuonPhiSt2->Fill(product->tagMuonPhiSt2.back());
+
+					//histCollection->histTagMuonIEta->Fill(product->tagMuonIEta.back());
+
+					histCollection->histTagMuonPt_vs_TagMuonEta->Fill(product->tagMuonPt.back(), product->tagMuonEta.back());
+					histCollection->histTagMuonEta_vs_TagMuonPt->Fill(product->tagMuonEta.back(), product->tagMuonPt.back());
+					histCollection->histTagMuonEta_vs_TagMuonPhi->Fill(product->tagMuonEta.back(), product->tagMuonPhi.back());
 				}
 			}
 		}
@@ -115,11 +161,13 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 
 	product->nTagMuon = product->tagMuonPt.size();
 	if (product->nTagMuon == 0) { product->nMuon = 0; return;} // If no Tag muons are found, skip the event
-	//std::cout << product->nTagMuon << " Tag Muons(" << product->nMuon << ") found" << std::endl;
 
 	// Probe Muons
+	//std::vector<std::pair<int, int>> tagAndProbePair;
+	std::vector<int> probeMatchedTagIndex;
 	for (unsigned short iProbe = 0; iProbe < product->nMuon; iProbe++) {
-		//std::cout << "\niProbe = " << iProbe << std::endl;
+		//if (std::find(probeMatchedTagIndex.begin(), probeMatchedTagIndex.end(), iProbe) != probeMatchedTagIndex.end()) { continue;} // If the reco muon with index iProbe is an already matched tag muon, don't use it again
+
 		const double &probeMuonEtaSt1 = product->muonEtaSt1.at(iProbe);
 		const double &probeMuonPhiSt1 = product->muonPhiSt1.at(iProbe);
 		const bool &hasMB1 = (probeMuonEtaSt1 > -99) && (probeMuonPhiSt1 > -99);
@@ -128,25 +176,20 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		const double &probeMuonPhiSt2 = product->muonPhiSt2.at(iProbe);
 		const bool &hasMB2 = (probeMuonEtaSt2 > -99) && (probeMuonPhiSt2 > -99);
 
-		if (hasMB2) {
-			//std::cout << std::setprecision(4) << "Probe(" << iProbe << "): " << probeMuonEtaSt2 << ", " << probeMuonPhiSt2<< std::endl;
-		} else {
-			//std::cout << std::setprecision(4) << "Probe(" << iProbe << "): " << probeMuonEtaSt1 << ", " << probeMuonPhiSt1<< std::endl;
-		}
+		//if (!(hasMB1 or hasMB2)) { continue;}
 
-		if (!(hasMB1 or hasMB2)) { continue;}
 
 		bool passesWorkingPoint = false;
 		const bool &isLooseProbeMuon = product->isLooseMuon.at(iProbe);
 		const bool &isMediumProbeMuon = product->isMediumMuon.at(iProbe);
 		const bool &isTightProbeMuon = product->isTightMuon.at(iProbe);
-		if (workingPointCut == 'm') {
+		if (probeWorkingPointCut == 'm') {
 			passesWorkingPoint = isMediumProbeMuon;
-		} else if (workingPointCut == 't') {
+		} else if (probeWorkingPointCut == 't') {
 			passesWorkingPoint = isTightProbeMuon;
-		} else if (workingPointCut == 'l') {
+		} else if (probeWorkingPointCut == 'l') {
 			passesWorkingPoint = isLooseProbeMuon;
-		} else if (workingPointCut == 'a') {
+		} else if (probeWorkingPointCut == 'a') {
 			passesWorkingPoint = true;
 		} else {
 			std::cerr << "Chosen invalid working point!" << std::endl;
@@ -157,32 +200,40 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		}
 
 		const double &probeMuonPt = product->muonPt.at(iProbe);
-		if (probeMuonPt < ptCut) { continue;}
-		double probeMuonEta;
-		if (hasMB2) {
-			probeMuonEta = product->muonEtaSt2.at(iProbe);
-		} else {
-			probeMuonEta = product->muonEtaSt1.at(iProbe);
-		}
+		if (probeMuonPt < probePtCut) { continue;}
+		const double &probeMuonEta = product->muonEta.at(iProbe);
 		if (fabs(probeMuonEta) > etaCut) { continue;}
+
+		const double &probeMuonPhi = product->muonPhi.at(iProbe);
+		ROOT::Math::PtEtaPhiMVector probeMuonP4 = ROOT::Math::PtEtaPhiMVector(probeMuonPt, probeMuonEta, probeMuonPhi, muonMass);
 
 		unsigned short tagAndProbeIndex = 999;
 		for (unsigned short iTag = 0; iTag < product->nTagMuon; iTag++){
-			if (iProbe == tagIndices.at(iTag)) { continue;}
+			//if (iProbe == tagIndices.at(iTag)) { continue;} // Tags cannot become probes
+			unsigned short &tagIndex = tagIndices.at(iTag);
+			if (std::find(probeMatchedTagIndex.begin(), probeMatchedTagIndex.end(), tagIndex) != probeMatchedTagIndex.end()) { continue;} // If tag has already found a probe pair, then don't use it again
+			if (std::find(probeIndices.begin(), probeIndices.end(), tagIndex) != probeIndices.end()) { continue;} // If a tag is already a probe, don't use it again
 
-			double tagAndProbeDeltaR = 0.;
-			if (hasMB2) {
-				tagAndProbeDeltaR = Utility::DeltaR(product->tagMuonEtaSt2.at(iTag), product->tagMuonPhiSt2.at(iTag), probeMuonEtaSt2, probeMuonPhiSt2);
+			double tagAndProbeDeltaR = Utility::DeltaR(product->tagMuonEta.at(iTag), product->tagMuonPhi.at(iTag), probeMuonEta, probeMuonPhi);
+			ROOT::Math::PtEtaPhiMVector tagMuonP4 = ROOT::Math::PtEtaPhiMVector(product->tagMuonPt.at(iTag), product->tagMuonEta.at(iTag), product->tagMuonPhi.at(iTag), muonMass);
+			const double &diMuonMass = (probeMuonP4 + tagMuonP4).M();
+
+			histCollection->histDiMuonMass->Fill(diMuonMass);
+
+			if (tagAndProbeDeltaR < deltaRTagAndProbeCut) { continue;}
+			if (product->tagMuonPt.at(iTag) > 20) {
+				if (std::abs(diMuonMass - zBosonMass)/zBosonMass > 0.32) { continue;}
 			} else {
-				tagAndProbeDeltaR = Utility::DeltaR(product->tagMuonEtaSt1.at(iTag), product->tagMuonPhiSt1.at(iTag), probeMuonEtaSt1, probeMuonPhiSt1);
+				if (std::abs(diMuonMass - jPsiMass)/jPsiMass > 0.32) { continue;}
 			}
 
-			if (tagAndProbeDeltaR < 2 * deltaRCut) { continue;}
 			tagAndProbeIndex = tagIndices.at(iTag);
+			histCollection->histTagAndProbeDiMuonMass->Fill(diMuonMass);
 			break;
 		}
 		if (tagAndProbeIndex > 899) { continue;}
 		probeIndices.push_back(iProbe);
+		probeMatchedTagIndex.push_back(tagAndProbeIndex);
 
 		product->isLooseProbeMuon.push_back(isLooseProbeMuon);
 		product->isMediumProbeMuon.push_back(isMediumProbeMuon);
@@ -209,33 +260,53 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		product->probeMuonHasMb1.push_back((fabs(product->probeMuonEtaSt1.back()) < 5) && (fabs(product->probeMuonPhiSt1.back()) < M_PI));
 		product->probeMuonHasMb2.push_back((fabs(product->probeMuonEtaSt2.back()) < 5) && (fabs(product->probeMuonPhiSt2.back()) < M_PI));
 
-		histCollection->histMuonMet->Fill(product->probeMuonMet.back());
-		histCollection->histMuonMt->Fill(product->probeMuonMt.back());
+		histCollection->histProbeMuonMet->Fill(product->probeMuonMet.back());
+		histCollection->histProbeMuonMt->Fill(product->probeMuonMt.back());
 
-		histCollection->histIsLooseMuon->Fill(product->isLooseMuon.back());
-		histCollection->histIsMediumMuon->Fill(product->isMediumMuon.back());
-		histCollection->histIsTightMuon->Fill(product->isTightMuon.back());
-		histCollection->histMuonHltIsoMu->Fill(product->probeMuonHltIsoMu.back());
-		histCollection->histMuonHltMu->Fill(product->probeMuonHltMu.back());
-		histCollection->histMuonPassesSingleMuon->Fill(product->probeMuonPassesSingleMuon.back());
-		histCollection->histMuonCharge->Fill(product->probeMuonCharge.back());
+		histCollection->histIsLooseProbeMuon->Fill(product->isLooseProbeMuon.back());
+		histCollection->histIsMediumProbeMuon->Fill(product->isMediumProbeMuon.back());
+		histCollection->histIsTightProbeMuon->Fill(product->isTightProbeMuon.back());
+		histCollection->histProbeMuonHltIsoMu->Fill(product->probeMuonHltIsoMu.back());
+		histCollection->histProbeMuonHltMu->Fill(product->probeMuonHltMu.back());
+		histCollection->histProbeMuonPassesSingleMuon->Fill(product->probeMuonPassesSingleMuon.back());
+		histCollection->histProbeMuonCharge->Fill(product->probeMuonCharge.back());
 
-		histCollection->histMuonE->Fill(product->probeMuonE.back());
-		histCollection->histMuonEt->Fill(product->probeMuonEt.back());
-		histCollection->histMuonPt->Fill(product->probeMuonPt.back());
-		histCollection->histMuonPt20->Fill(product->probeMuonPt.back());
-		histCollection->histMuonEta->Fill(product->probeMuonEta.back());
-		histCollection->histMuonPhi->Fill(product->probeMuonPhi.back());
-		histCollection->histMuonIso->Fill(product->probeMuonIso.back());
-		histCollection->histMuonHltIsoDeltaR->Fill(product->probeMuonHltIsoDeltaR.back());
-		histCollection->histMuonEtaSt1->Fill(product->probeMuonEtaSt1.back());
-		histCollection->histMuonPhiSt1->Fill(product->probeMuonPhiSt1.back());
-		histCollection->histMuonEtaSt2->Fill(product->probeMuonEtaSt2.back());
-		histCollection->histMuonPhiSt2->Fill(product->probeMuonPhiSt2.back());
+		histCollection->histProbeMuonE->Fill(product->probeMuonE.back());
+		histCollection->histProbeMuonEt->Fill(product->probeMuonEt.back());
+		histCollection->histProbeMuonPt->Fill(product->probeMuonPt.back());
+		histCollection->histProbeMuonEta->Fill(product->probeMuonEta.back());
+		histCollection->histProbeMuonPhi->Fill(product->probeMuonPhi.back());
+		histCollection->histProbeMuonIso->Fill(product->probeMuonIso.back());
+		histCollection->histProbeMuonHltIsoDeltaR->Fill(product->probeMuonHltIsoDeltaR.back());
+		histCollection->histProbeMuonEtaSt1->Fill(product->probeMuonEtaSt1.back());
+		histCollection->histProbeMuonPhiSt1->Fill(product->probeMuonPhiSt1.back());
+		histCollection->histProbeMuonEtaSt2->Fill(product->probeMuonEtaSt2.back());
+		histCollection->histProbeMuonPhiSt2->Fill(product->probeMuonPhiSt2.back());
 
-		histCollection->histMuonIEta->Fill(product->probeMuonIEta.back());
+		histCollection->histProbeMuonIEta->Fill(product->probeMuonIEta.back());
+
+		histCollection->histProbeMuonPt_vs_ProbeMuonEta->Fill(product->probeMuonPt.back(), product->probeMuonEta.back());
+		histCollection->histProbeMuonEta_vs_ProbeMuonPt->Fill(product->probeMuonEta.back(), product->probeMuonPt.back());
+		histCollection->histProbeMuonEta_vs_ProbeMuonPhi->Fill(product->probeMuonEta.back(), product->probeMuonPhi.back());
+
+		/*
+		if (product->probeMuonIEta.back() == 3) {
+			histCollection->histProbeMuonPtAtIEtaP3->Fill(product->probeMuonPt.back());
+		} else if (product->probeMuonIEta.back() == -3) {
+			histCollection->histProbeMuonPtAtIEtaM3->Fill(product->probeMuonPt.back());
+		}
+
+		if (product->probeMuonPt.back() > 20) {
+			histCollection->histProbeMuonEtaHighPt->Fill(product->probeMuonEta.back());
+		} else {
+			histCollection->histProbeMuonEtaLowPt->Fill(product->probeMuonEta.back());
+		}
+		*/
 	}
 	product->nProbeMuon = product->probeMuonPt.size();
+	//histCollection->histNTagMuon_vs_nProbeMuon->Fill(product->nProbeMuon, product->nTagMuon);
+	histCollection->histNTagMuon->Fill(product->nTagMuon);
+	histCollection->histNMuon->Fill(product->nProbeMuon);
 	histCollection->histNTagMuon_vs_nProbeMuon->Fill(product->nProbeMuon, product->nTagMuon);
 }
 

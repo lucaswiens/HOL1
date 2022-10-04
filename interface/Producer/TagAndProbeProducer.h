@@ -8,10 +8,13 @@
 
 class TagAndProbeProducer : public BaseProducer {
 	private:
-		double ptCut, l1PtCut, etaCut;
-		char workingPointCut;
+		double tagPtCut, probePtCut, l1PtCut, etaCut, deltaRTagAndTfCut, deltaRTagAndProbeCut;
+		char tagWorkingPointCut, probeWorkingPointCut;
+		const double zBosonMass = 91.1876;
+		const double jPsiMass = 3.096;
+		const double muonMass = 0.1056583755;
 	public:
-		TagAndProbeProducer(const double &ptCut, const double &l1PtCut, const double &etaCut, const char &workingPointCut);
+		TagAndProbeProducer(const double &tagPtCut, const double &probePtCut, const double &l1PtCut, const double &etaCut, const double &deltaRTagAndTfCut, const double &deltaRTagAndProbeCut, const char &tagWorkingPointCut, const char &probeWorkingPointCut);
 		~TagAndProbeProducer();
 		void Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection);
 		void EndJob(HoHistogramCollection* histCollection);

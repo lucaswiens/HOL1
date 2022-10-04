@@ -80,7 +80,8 @@ DataReader::DataReader(const char* inputFileName, const bool *useEmulated) {
 	bmtfPhBandAng = std::make_unique<TTreeReaderArray<float>>(*l1BmtfInputReader, "phBandAng");
 	//Set Reader for BMTF Muon Variables
 	std::map<int, std::string> tfPrefix = {{Utility::Bmtf, "Bmtf"}, {Utility::Omtf, "Omtf"}, {Utility::Emtf, "Emtf"}};
-	for (int tfType : {Utility::Bmtf, Utility::Omtf, Utility::Emtf}) {
+
+	for (int tfType : Utility::TfAlgorithms) {
 		nTfMuons.insert({tfType,     std::make_unique<TTreeReaderValue<unsigned short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.nTfMuons").c_str())});
 		tfMuonHwPt.insert({tfType,            std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwPt").c_str())});
 		tfMuonHwEta.insert({tfType,           std::make_unique<TTreeReaderArray<short>>(*l1BmtfInputReader, ("L1Upgrade" + tfPrefix.at(tfType) + "Muon.tfMuonHwEta").c_str())});

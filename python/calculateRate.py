@@ -43,6 +43,7 @@ def findLabel(rateName):
 if __name__=="__main__":
 	date = subprocess.check_output("date +\"%Y_%m_%d\"", shell=True).decode("utf-8").replace("\n", "")
 	cmsswBase = GetOsVariable("CMSSW_BASE")
+	dustDir = GetOsVariable("DUSTDIR")
 
 	parser = argparse.ArgumentParser(description="Runs a NAF batch system for nanoAOD", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-i", "--input-file", required=True, help="Path to the file with the L1Ntuple + HO coincidence histograms")
@@ -56,7 +57,7 @@ if __name__=="__main__":
 
 	args = parser.parse_args()
 
-	args.output_directory = "hostudy/" + date + "/" + args.output_directory
+	args.output_directory = dustDir + "/HoPlots/" + date + "/" + args.output_directory
 
 	outputDirectories = [
 		args.output_directory,
@@ -84,10 +85,12 @@ if __name__=="__main__":
 	histogramFile = ROOT.TFile(args.input_file)
 	for iKey, key in enumerate(histogramFile.GetListOfKeys()):
 		runNumber = key.GetName()
-		#print(runNumber)
+		print(runNumber)
 		if runNumber == "runNumber": continue
 
-		#if(runNumber in [
+		if(runNumber in [
+			"320917",
+			"321010",
 		#	"320888",
 		#	"320900",
 		#	"320901",
@@ -99,7 +102,7 @@ if __name__=="__main__":
 		#	"320916",
 		#	"320917",
 		#	"320936",
-		#]): continue
+		]): continue
 
 		histNumberOfEvents          = histogramFile.Get(runNumber + "/numberOfEvents")
 		histBmtfNumber              = histogramFile.Get(runNumber + "/bmtfNumber")
@@ -165,7 +168,8 @@ if __name__=="__main__":
 		isoMBN3x3RateHist.SetBinContent(i, rateDf.loc[i, "dttpMatchedHoN3x3Rate"])
 
 	width = 1200
-	height = int(width * 3/4.)
+	#height = int(width * 3/4.)
+	height = 1200
 	canvas = ROOT.TCanvas("rateHist", "rateHist", width, height)
 	canvas.SetGrid()
 

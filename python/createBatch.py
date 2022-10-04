@@ -35,6 +35,7 @@ if __name__=="__main__":
 	parser.add_argument("-n", "--number-of-files", help="Number of files that will be processed at once", default = 50)
 	parser.add_argument("--test", default = False, action = "store_true", help = "Use only the first five file for each sample for a quick run")
 	parser.add_argument("-e", "--use-emulated", default = False, action = "store_true", help = "Use the emulated branch to read BMTF information")
+	parser.add_argument("-s", "--split-by-run", default = False, action = "store_true", help = "Store output split by run number")
 
 	args = parser.parse_args()
 	print(args.input_file)
@@ -89,7 +90,7 @@ if __name__=="__main__":
 			shellFile = open(args.output + "/batch/processNtuple_" + str(shellNumber), "w")
 			os.system("chmod 744 " + args.output + "/batch/processNtuple_" + str(shellNumber))
 			shellFile.write("#!/bin/sh\n")
-			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " ")
+			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " " + ("1" if args.split_by_run else "0") + " ")
 			shellFile.write(sample + " ")
 			number += 1
 

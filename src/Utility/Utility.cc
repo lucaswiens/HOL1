@@ -175,3 +175,7 @@ int Utility::TfMuonIndexToTfType(short index) {
 	}
 	return tfType;
 }
+
+bool Utility::PassesSingleMuonTrigger(int tfMuonQuality) {
+	return std::find(Utility::SingleMuonTriggerValues.begin(), Utility::SingleMuonTriggerValues.end(), tfMuonQuality) == Utility::SingleMuonTriggerValues.end();
+}
