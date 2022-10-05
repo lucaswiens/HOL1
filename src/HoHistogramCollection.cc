@@ -259,25 +259,25 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 		histBmtfMb34MatchedMuonPhi = new TH1D("bmtfMb34MatchedMuonPhi", "", nBinsPhi, minPhi, maxPhi);
 		histBmtfMb34MatchedMuonDeltaPhi = new TH1D("bmtfMb34MatchedMuonDeltaPhi", "", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
 
-		histBmtfMatchedMuonCharge = new TH1D("bmtfMatchedMuonCharge", "", 3, -1, 2);
-		histIsBmtfMatchedMuon = new TH1D("isBmtfMatchedMuon", "", 2, 0, 2);
-		histBmtfMatchedMuonDeltaR = new TH1D("bmtfMatchedMuonDeltaR", "", nBinsDeltaR, minDeltaR, maxDeltaR);
-		//histBmtfMatchedMuonPt = new TH1D("bmtfMatchedMuonPt", "", nBinsPt, minPt, maxPt);
-		histBmtfMatchedMuonPt = new TH1D("bmtfMatchedMuonPt", "", 23, ptBinning);
-		/*
-		histBmtfMatchedMuonPtAtIEtaP3 = new TH1D("bmtfMatchedMuonPtAtIEtaP3", "", 23, ptBinning);
-		histBmtfMatchedMuonPtAtIEtaM3 = new TH1D("bmtfMatchedMuonPtAtIEtaM3", "", 23, ptBinning);
-		*/
+		//histBmtfMatchedMuonCharge = new TH1D("bmtfMatchedMuonCharge", "", 3, -1, 2);
+		//histIsBmtfMatchedMuon = new TH1D("isBmtfMatchedMuon", "", 2, 0, 2);
+		//histBmtfMatchedMuonDeltaR = new TH1D("bmtfMatchedMuonDeltaR", "", nBinsDeltaR, minDeltaR, maxDeltaR);
+		////histBmtfMatchedMuonPt = new TH1D("bmtfMatchedMuonPt", "", nBinsPt, minPt, maxPt);
+		//histBmtfMatchedMuonPt = new TH1D("bmtfMatchedMuonPt", "", 23, ptBinning);
+		///*
+		//histBmtfMatchedMuonPtAtIEtaP3 = new TH1D("bmtfMatchedMuonPtAtIEtaP3", "", 23, ptBinning);
+		//histBmtfMatchedMuonPtAtIEtaM3 = new TH1D("bmtfMatchedMuonPtAtIEtaM3", "", 23, ptBinning);
+		//*/
 
-		histBmtfMatchedMuonPtFineBinning = new TH1D("bmtfMatchedMuonPtFineBinning", "", nBinsPt, minPt, maxPt);
-		histBmtfMatchedMuonEta = new TH1D("bmtfMatchedMuonEta", "", nBinsEta, minEta, maxEta);
-		/*
-		histBmtfMatchedMuonEtaLowPt = new TH1D("bmtfMatchedMuonEtaLowPt", "", nBinsEta, minEta, maxEta);
-		histBmtfMatchedMuonEtaHighPt = new TH1D("bmtfMatchedMuonEtaHighPt", "", nBinsEta, minEta, maxEta);
-		*/
-		histBmtfMatchedMuonPhi = new TH1D("bmtfMatchedMuonPhi", "", nBinsPhi, minPhi, maxPhi);
-		histBmtfMatchedMuonTrackType = new TH1D("bmtfMatchedMuonTrackType", "", nBinsTrackType, minTrackType, maxTrackType);
-		histBmtfMatchedMuonDeltaPhi = new TH1D("bmtfMatchedMuonDeltaPhi", "", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
+		//histBmtfMatchedMuonPtFineBinning = new TH1D("bmtfMatchedMuonPtFineBinning", "", nBinsPt, minPt, maxPt);
+		//histBmtfMatchedMuonEta = new TH1D("bmtfMatchedMuonEta", "", nBinsEta, minEta, maxEta);
+		///*
+		//histBmtfMatchedMuonEtaLowPt = new TH1D("bmtfMatchedMuonEtaLowPt", "", nBinsEta, minEta, maxEta);
+		//histBmtfMatchedMuonEtaHighPt = new TH1D("bmtfMatchedMuonEtaHighPt", "", nBinsEta, minEta, maxEta);
+		//*/
+		//histBmtfMatchedMuonPhi = new TH1D("bmtfMatchedMuonPhi", "", nBinsPhi, minPhi, maxPhi);
+		//histBmtfMatchedMuonTrackType = new TH1D("bmtfMatchedMuonTrackType", "", nBinsTrackType, minTrackType, maxTrackType);
+		//histBmtfMatchedMuonDeltaPhi = new TH1D("bmtfMatchedMuonDeltaPhi", "", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
 
 		histBmtfMatchedMuonPt_vs_MuonEta  = new TH2D("bmtfMatchedMuonPt_vs_MuonEta", "", nBinsPtVs, minPtVs, maxPtVs, nBinsEta, minEta, maxEta);
 		histBmtfMatchedMuonEta_vs_MuonPt  = new TH2D("bmtfMatchedMuonEta_vs_MuonPt", "", nBinsEta, minEta, maxEta, nBinsPtVs, minPtVs, maxPtVs);
@@ -287,25 +287,25 @@ HoHistogramCollection::HoHistogramCollection(const bool &hasRecoMuon) : hasRecoM
 		//histMuonMatchedBmtfCmsPt = new TH1D("muonMatchedBmtfCmsPt", "", 23, ptBinning);
 		//histMuonMatchedBmtfCmsEta = new TH1D("muonMatchedBmtfCmsEta", "", nBinsEta, minEta, maxEta);
 
-		histTfMatchedMuonCharge = new TH1D("tfMatchedMuonCharge", "", 3, -1, 2);
-		histIsTfMatchedMuon = new TH1D("isTFMatchedMuon", "", 2, 0, 2);
-		histTfMatchedMuonDeltaR = new TH1D("tfMatchedMuonDeltaR", "", nBinsDeltaR, minDeltaR, maxDeltaR);
-		//histTfMatchedMuonPt = new TH1D("tfMatchedMuonPt", "", nBinsPt, minPt, maxPt);
-		histTfMatchedMuonPt = new TH1D("tfMatchedMuonPt", "", 23, ptBinning);
-		/*
-		histTfMatchedMuonPtAtIEtaP3 = new TH1D("tfMatchedMuonPtAtIEtaP3", "", 23, ptBinning);
-		histTfMatchedMuonPtAtIEtaM3 = new TH1D("tfMatchedMuonPtAtIEtaM3", "", 23, ptBinning);
-		*/
+		//histTfMatchedMuonCharge = new TH1D("tfMatchedMuonCharge", "", 3, -1, 2);
+		//histIsTfMatchedMuon = new TH1D("isTFMatchedMuon", "", 2, 0, 2);
+		//histTfMatchedMuonDeltaR = new TH1D("tfMatchedMuonDeltaR", "", nBinsDeltaR, minDeltaR, maxDeltaR);
+		////histTfMatchedMuonPt = new TH1D("tfMatchedMuonPt", "", nBinsPt, minPt, maxPt);
+		//histTfMatchedMuonPt = new TH1D("tfMatchedMuonPt", "", 23, ptBinning);
+		///*
+		//histTfMatchedMuonPtAtIEtaP3 = new TH1D("tfMatchedMuonPtAtIEtaP3", "", 23, ptBinning);
+		//histTfMatchedMuonPtAtIEtaM3 = new TH1D("tfMatchedMuonPtAtIEtaM3", "", 23, ptBinning);
+		//*/
 
-		histTfMatchedMuonPtFineBinning = new TH1D("tfMatchedMuonPtFineBinning", "", nBinsPt, minPt, maxPt);
-		histTfMatchedMuonEta = new TH1D("tfMatchedMuonEta", "", nBinsEta, minEta, maxEta);
-		/*
-		histTfMatchedMuonEtaLowPt = new TH1D("tfMatchedMuonEtaLowPt", "", nBinsEta, minEta, maxEta);
-		histTfMatchedMuonEtaHighPt = new TH1D("tfMatchedMuonEtaHighPt", "", nBinsEta, minEta, maxEta);
-		*/
-		histTfMatchedMuonPhi = new TH1D("tfMatchedMuonPhi", "", nBinsPhi, minPhi, maxPhi);
-		histTfMatchedMuonTrackType = new TH1D("tfMatchedMuonTrackType", "", nBinsTrackType, minTrackType, maxTrackType);
-		histTfMatchedMuonDeltaPhi = new TH1D("tfMatchedMuonDeltaPhi", "", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
+		//histTfMatchedMuonPtFineBinning = new TH1D("tfMatchedMuonPtFineBinning", "", nBinsPt, minPt, maxPt);
+		//histTfMatchedMuonEta = new TH1D("tfMatchedMuonEta", "", nBinsEta, minEta, maxEta);
+		///*
+		//histTfMatchedMuonEtaLowPt = new TH1D("tfMatchedMuonEtaLowPt", "", nBinsEta, minEta, maxEta);
+		//histTfMatchedMuonEtaHighPt = new TH1D("tfMatchedMuonEtaHighPt", "", nBinsEta, minEta, maxEta);
+		//*/
+		//histTfMatchedMuonPhi = new TH1D("tfMatchedMuonPhi", "", nBinsPhi, minPhi, maxPhi);
+		//histTfMatchedMuonTrackType = new TH1D("tfMatchedMuonTrackType", "", nBinsTrackType, minTrackType, maxTrackType);
+		//histTfMatchedMuonDeltaPhi = new TH1D("tfMatchedMuonDeltaPhi", "", nBinsPhi / 2, -maxPhi/4, maxPhi/4);
 
 		histTfMatchedMuonPt_vs_MuonEta  = new TH2D("tfMatchedMuonPt_vs_MuonEta", "", nBinsPtVs, minPtVs, maxPtVs, nBinsEta, minEta, maxEta);
 		histTfMatchedMuonEta_vs_MuonPt  = new TH2D("tfMatchedMuonEta_vs_MuonPt", "", nBinsEta, minEta, maxEta, nBinsPtVs, minPtVs, maxPtVs);

@@ -21,63 +21,34 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 	}
 
 	if (dataReader->GetHasRecoMuon() && product->nProbeMuon != 0) {
-		for (int tfType : {Utility::Bmtf, Utility::Omtf, Utility::Emtf}) {
+		for (int tfType : Utility::TfAlgorithms) {
 			for (unsigned short iTf = 0; iTf < product->tfMuonSize.at(tfType); iTf++) {
-				histCollection->histTfMatchedMuonDeltaR->Fill(product->tfMatchedMuonDeltaR.at(tfType).at(iTf));
-				if (!product->isTfMatchedMuon.at(tfType).at(iTf)) { continue;}
-				histCollection->histIsTfMatchedMuon->Fill(product->isTfMatchedMuon.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonCharge->Fill(product->tfMatchedMuonCharge.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonPt->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonPtFineBinning->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonEta->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonPhi->Fill(product->tfMatchedMuonPhi.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonDeltaPhi->Fill(product->tfMatchedMuonDeltaPhi.at(tfType).at(iTf));
-
-				histCollection->histTfMatchedMuonPt_vs_MuonEta->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf), product->tfMatchedMuonEta.at(tfType).at(iTf), product->isTfMatchedMuon.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonEta_vs_MuonPt->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf), product->tfMatchedMuonPt.at(tfType).at(iTf), product->isTfMatchedMuon.at(tfType).at(iTf));
-				histCollection->histTfMatchedMuonEta_vs_MuonPhi->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf), product->tfMatchedMuonPhi.at(tfType).at(iTf), product->isTfMatchedMuon.at(tfType).at(iTf));
-			}
-		}
-
-		//for (int tfType : {Utility::Bmtf, Utility::Omtf, Utility::Emtf, Utility::UGMT}) {
-		for (int tfType : {Utility::Bmtf, Utility::Omtf, Utility::Emtf}) {
-			for (unsigned short iTf = 0; iTf < product->tfMuonSize.at(tfType); iTf++) {
-				double recoAbsEta = std::abs(product->tfMatchedMuonEta.at(tfType).at(iTf));
-				if (Utility::EtaCuts.at(tfType).first  < recoAbsEta && recoAbsEta < Utility::EtaCuts.at(tfType).second) {
+				if (Utility::EtaCuts.at(tfType).first <= std::abs(product->tfMatchedMuonEta.at(tfType).at(iTf)) && std::abs(product->tfMatchedMuonEta.at(tfType).at(iTf)) < Utility::EtaCuts.at(tfType).second) {
 					histCollection->histTfMapMatchedMuonPt.at(tfType)->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonPtFineBinning.at(tfType)->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonEta.at(tfType)->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonPhi.at(tfType)->Fill(product->tfMatchedMuonPhi.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonTfType.at(tfType)->Fill(product->tfMatchedMuonTfType.at(tfType).at(iTf));
-				}
-			}
 
-			for (unsigned short iTf = 0; iTf < product->tfMuonSize.at(tfType); iTf++) {
-				double recoAbsEta = std::abs(product->tfMatchedMuonEta.at(tfType).at(iTf));
-				if (Utility::EtaCuts.at(tfType).first  < recoAbsEta && recoAbsEta < Utility::EtaCuts.at(tfType).second) {
 					histCollection->histTfMapMatchedMuonPt.at(Utility::UGMT)->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonPtFineBinning.at(Utility::UGMT)->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonEta.at(Utility::UGMT)->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonPhi.at(Utility::UGMT)->Fill(product->tfMatchedMuonPhi.at(tfType).at(iTf));
 					histCollection->histTfMapMatchedMuonTfType.at(Utility::UGMT)->Fill(product->tfMatchedMuonTfType.at(tfType).at(iTf));
+
+					histCollection->histTfMatchedMuonPt_vs_MuonEta->Fill(product->tfMatchedMuonPt.at(tfType).at(iTf), product->tfMatchedMuonEta.at(tfType).at(iTf), product->isTfMatchedMuon.at(tfType).at(iTf));
+					histCollection->histTfMatchedMuonEta_vs_MuonPt->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf), product->tfMatchedMuonPt.at(tfType).at(iTf), product->isTfMatchedMuon.at(tfType).at(iTf));
+					histCollection->histTfMatchedMuonEta_vs_MuonPhi->Fill(product->tfMatchedMuonEta.at(tfType).at(iTf), product->tfMatchedMuonPhi.at(tfType).at(iTf), product->isTfMatchedMuon.at(tfType).at(iTf));
 				}
 			}
 
 			for (unsigned short iProbe = 0; iProbe < product->nProbeMuon; iProbe++) {
-				//if (Utility::EtaCuts.at(tfType).first < std::abs(product->probeMuonEta.at(iProbe)) && std::abs(product->probeMuonEta.at(iProbe)) < Utility::EtaCuts.at(tfType).second) {
-				double recoAbsEta = std::abs(product->probeMuonEta.at(iProbe));
-				if (Utility::EtaCuts.at(tfType).first < recoAbsEta && recoAbsEta < Utility::EtaCuts.at(tfType).second) {
+				if (Utility::EtaCuts.at(tfType).first <= std::abs(product->probeMuonEta.at(iProbe)) && std::abs(product->probeMuonEta.at(iProbe)) < Utility::EtaCuts.at(tfType).second) {
 					histCollection->histProbeMuonMapPt.at(tfType)->Fill(product->probeMuonPt.at(iProbe));
 					histCollection->histProbeMuonMapPtFineBinning.at(tfType)->Fill(product->probeMuonPt.at(iProbe));
 					histCollection->histProbeMuonMapEta.at(tfType)->Fill(product->probeMuonEta.at(iProbe));
 					histCollection->histProbeMuonMapPhi.at(tfType)->Fill(product->probeMuonPhi.at(iProbe));
-				}
-			}
 
-			for (unsigned short iProbe = 0; iProbe < product->nProbeMuon; iProbe++) {
-				//if (Utility::EtaCuts.at(tfType).first < std::abs(product->probeMuonEta.at(iProbe)) && std::abs(product->probeMuonEta.at(iProbe)) < Utility::EtaCuts.at(tfType).second) {
-				double recoAbsEta = std::abs(product->probeMuonEta.at(iProbe));
-				if (Utility::EtaCuts.at(tfType).first < recoAbsEta && recoAbsEta < Utility::EtaCuts.at(tfType).second) {
 					histCollection->histProbeMuonMapPt.at(Utility::UGMT)->Fill(product->probeMuonPt.at(iProbe));
 					histCollection->histProbeMuonMapPtFineBinning.at(Utility::UGMT)->Fill(product->probeMuonPt.at(iProbe));
 					histCollection->histProbeMuonMapEta.at(Utility::UGMT)->Fill(product->probeMuonEta.at(iProbe));
@@ -112,28 +83,6 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 				histCollection->histIsoMb12MatchedMuonEta_vs_MuonPt->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
 				histCollection->histIsoMb12MatchedMuonEta_vs_MuonPhi->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPhi.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
 
-				/*
-				if (Utility::CmsEtaToHoIEta(product->probeMuonEta.at(iMuon)) == 3) {
-					histCollection->histIsoMb1MatchedMuonPtAtIEtaP3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-					histCollection->histIsoMb2MatchedMuonPtAtIEtaP3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-					histCollection->histIsoMb12MatchedMuonPtAtIEtaP3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-				} else if (Utility::CmsEtaToHoIEta(product->probeMuonEta.at(iMuon)) == -3) {
-					histCollection->histIsoMb1MatchedMuonPtAtIEtaM3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-					histCollection->histIsoMb2MatchedMuonPtAtIEtaM3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-					histCollection->histIsoMb12MatchedMuonPtAtIEtaM3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-				}
-
-				if (product->probeMuonPt.at(iMuon) < 20) {
-					histCollection->histIsoMb1MatchedMuonEtaLowPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-					histCollection->histIsoMb2MatchedMuonEtaLowPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-					histCollection->histIsoMb12MatchedMuonEtaLowPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-				} else {
-					histCollection->histIsoMb1MatchedMuonEtaHighPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-					histCollection->histIsoMb2MatchedMuonEtaHighPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-					histCollection->histIsoMb12MatchedMuonEtaHighPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-				}
-				*/
-
 				const bool &n3x3Cut = product->dttpMatchedMuonHoN3x3Hit.at(product->muonMatchedDttpIndex.at(iMuon)) <= 1;
 				if (n3x3Cut) {
 					histCollection->histIsoMb1MatchedMuonN3x3Pt->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
@@ -156,42 +105,8 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 					histCollection->histIsoMb12MatchedMuonN3x3Phi->Fill(product->probeMuonPhi.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
 					histCollection->histIsoMb12MatchedMuonN3x3Eta_vs_MuonPt->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
 					histCollection->histIsoMb12MatchedMuonN3x3Eta_vs_MuonPhi->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPhi.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-
-					/*
-					if (product->probeMuonPt.at(iMuon) < 20) {
-						histCollection->histIsoMb1MatchedMuonN3x3EtaLowPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-						histCollection->histIsoMb2MatchedMuonN3x3EtaLowPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-						histCollection->histIsoMb12MatchedMuonN3x3EtaLowPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-					} else {
-						histCollection->histIsoMb1MatchedMuonN3x3EtaHighPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-						histCollection->histIsoMb2MatchedMuonN3x3EtaHighPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-						histCollection->histIsoMb12MatchedMuonN3x3EtaHighPt->Fill(product->probeMuonEta.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-					}
-
-					if (Utility::CmsEtaToHoIEta(product->probeMuonEta.at(iMuon)) == 3) {
-						histCollection->histIsoMb1MatchedMuonN3x3PtAtIEtaP3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-						histCollection->histIsoMb2MatchedMuonN3x3PtAtIEtaP3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-						histCollection->histIsoMb12MatchedMuonN3x3PtAtIEtaP3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-					} else if (Utility::CmsEtaToHoIEta(product->probeMuonEta.at(iMuon)) == -3) {
-						histCollection->histIsoMb1MatchedMuonN3x3PtAtIEtaM3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 1));
-						histCollection->histIsoMb2MatchedMuonN3x3PtAtIEtaM3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) == 2));
-						histCollection->histIsoMb12MatchedMuonN3x3PtAtIEtaM3->Fill(product->probeMuonPt.at(iMuon), (product->dttpStation.at(product->muonMatchedDttpIndex.at(iMuon)) <= 2));
-					}
-					*/
 				}
 			}
-
-			//histCollection->histMuonMatchedBmtfCmsPt->Fill(product->muonMatchedBmtfCmsPt.at(iMuon), product->isMuonMatchedBmtf.at(iMuon));
-			//histCollection->histMuonMatchedBmtfCmsEta->Fill(product->muonMatchedBmtfCmsEta.at(iMuon), product->isMuonMatchedBmtf.at(iMuon));
-
-			//histCollection->histMuonPt_vs_MuonEta->Fill(product->probeMuonPt.at(iMuon), product->probeMuonEta.at(iMuon));
-			//histCollection->histMuonEta_vs_MuonPt->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPt.at(iMuon));
-			//histCollection->histMuonEta_vs_MuonPhi->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPhi.at(iMuon));
-
-
-			//histCollection->histBmtfMatchedMuonPt_vs_MuonEta->Fill(product->probeMuonPt.at(iMuon), product->probeMuonEta.at(iMuon), product->isMuonMatchedBmtf.at(iMuon));
-			//histCollection->histBmtfMatchedMuonEta_vs_MuonPt->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPt.at(iMuon), product->isMuonMatchedBmtf.at(iMuon));
-			//histCollection->histBmtfMatchedMuonEta_vs_MuonPhi->Fill(product->probeMuonEta.at(iMuon), product->probeMuonPhi.at(iMuon), product->isMuonMatchedBmtf.at(iMuon));
 		}
 	}
 
@@ -341,12 +256,12 @@ void HoHistogramProducer::EndJob(HoHistogramCollection* histCollection) {
 		efficiencyIsoMb12Phi->Write("efficiencyIsoMb12Phi");
 		delete efficiencyIsoMb12Pt; delete efficiencyIsoMb12Eta; delete efficiencyIsoMb12Phi;
 
-		TGraphAsymmErrors *efficiencyTfPt = new TGraphAsymmErrors(histCollection->histTfMatchedMuonPt);
-		TGraphAsymmErrors *efficiencyTfEta = new TGraphAsymmErrors(histCollection->histTfMatchedMuonEta);
-		TGraphAsymmErrors *efficiencyTfPhi = new TGraphAsymmErrors(histCollection->histTfMatchedMuonPhi);
-		efficiencyTfPt->Divide(histCollection->histTfMatchedMuonPt, histCollection->histProbeMuonPt, "cl=0.683 b(1,1) mode");
-		efficiencyTfEta->Divide(histCollection->histTfMatchedMuonEta, histCollection->histProbeMuonEta, "cl=0.683 b(1,1) mode");
-		efficiencyTfPhi->Divide(histCollection->histTfMatchedMuonPhi, histCollection->histProbeMuonPhi, "cl=0.683 b(1,1) mode");
+		TGraphAsymmErrors *efficiencyTfPt = new TGraphAsymmErrors(histCollection->histTfMapMatchedMuonPt.at(Utility::UGMT));
+		TGraphAsymmErrors *efficiencyTfEta = new TGraphAsymmErrors(histCollection->histTfMapMatchedMuonEta.at(Utility::UGMT));
+		TGraphAsymmErrors *efficiencyTfPhi = new TGraphAsymmErrors(histCollection->histTfMapMatchedMuonPhi.at(Utility::UGMT));
+		efficiencyTfPt->Divide(histCollection->histTfMapMatchedMuonPt.at(Utility::UGMT), histCollection->histProbeMuonPt, "cl=0.683 b(1,1) mode");
+		efficiencyTfEta->Divide(histCollection->histTfMapMatchedMuonEta.at(Utility::UGMT), histCollection->histProbeMuonEta, "cl=0.683 b(1,1) mode");
+		efficiencyTfPhi->Divide(histCollection->histTfMapMatchedMuonPhi.at(Utility::UGMT), histCollection->histProbeMuonPhi, "cl=0.683 b(1,1) mode");
 		efficiencyTfPt->Write("efficiencyTfPt");
 		efficiencyTfEta->Write("efficiencyTfEta");
 		efficiencyTfPhi->Write("efficiencyTfPhi");

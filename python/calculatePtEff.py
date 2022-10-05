@@ -113,7 +113,7 @@ if __name__=="__main__":
 
 		muonPt = histogramFile.Get(runNumber + "/probeMuonPt_Bmtf")
 		bmtfMatchedMuonPt = histogramFile.Get(runNumber + "/tfMatchedMuonPt_Bmtf")
-		tfMatchedMuonPt = histogramFile.Get(runNumber + "/tfMatchedMuonPt")
+		tfMatchedMuonPt = histogramFile.Get(runNumber + "/tfMatchedMuonPt_uGMT")
 
 		isoMb1MatchedMuonPt = histogramFile.Get(runNumber + "/isoMb1MatchedMuonPt")
 		isoMb2MatchedMuonPt = histogramFile.Get(runNumber + "/isoMb2MatchedMuonPt")

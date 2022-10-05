@@ -36,9 +36,9 @@ int main(int argc, char* argv[]) {
 		l1PtCut = 3,
 		l1EtaCut = 999,
 		deltaPhiCut = 0.4,
-		deltaRProbeAndTfCut = 0.4,
+		deltaRProbeAndTfCut = 0.2,
 		deltaRProbeAndHoCut = 0.4,
-		deltaRTagAndTfCut = 0.4,
+		deltaRTagAndTfCut = 0.1,
 		deltaRTagAndProbeCut = 0.4;
 
 	// Choose the working point of tag muon

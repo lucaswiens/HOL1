@@ -68,7 +68,7 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 		if (uGMTCmsPt < l1PtCut) { continue;}
 		//histCollection->histBmtfNumber->Fill(tfType); //this should probably be put in its own hist or something
 
-		histCollection->histtfMuonRateVsPhi->Fill(uGMTCmsPhi);
+		//histCollection->histtfMuonRateVsPhi->Fill(uGMTCmsPhi);
 
 		if (tfType == Utility::Bmtf) {
 			histCollection->histBmtfMuonRateVsPhi->Fill(uGMTCmsPhi);

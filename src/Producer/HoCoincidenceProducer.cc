@@ -170,28 +170,27 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 		product->muonMatchedDttpHoN3x3Hit = std::vector(product->nProbeMuon, -999);
 	}
 
-	if (dataReader->GetHasRecoMuon() && product->tagMuonPt.size() == 0) { product->nProbeMuon = 0; return;}
+	if (product->tagMuonPt.size() == 0) { product->nProbeMuon = 0; return;}
 
 	if (dataReader->GetHasRecoMuon() && product->nProbeMuon != 0) {
 		for (unsigned short iProbe = 0; iProbe < product->nProbeMuon; iProbe++) {
 			int muonMatchedTfType = 999;
 			unsigned int muonMatchedTfIndex = 999;
-			double tfMatchedMuonDeltaRMin = -999;
+			const double &probeMuonEta = product->probeMuonHasMb2.at(iProbe) ? product->probeMuonEtaSt2.at(iProbe) : product->probeMuonEtaSt1.at(iProbe);
+			const double &probeMuonPhi = product->probeMuonHasMb2.at(iProbe) ? product->probeMuonPhiSt2.at(iProbe) : product->probeMuonPhiSt1.at(iProbe);
+			// testing
+			//const double &probeMuonEta = product->probeMuonEta.at(iProbe);
+			//const double &probeMuonPhi = product->probeMuonPhi.at(iProbe);
+
+			double tfMatchedMuonDeltaRMin = 999;
 			for (int tfType : Utility::TfAlgorithms) {
 				for (unsigned short iTf = 0; iTf < product->tfMuonSize.at(tfType); iTf++) {
 					if (product->isTfMatchedMuon.at(tfType).at(iTf)) { continue;}
 					if (product->tfMuonBx.at(tfType).at(iTf) != 0) { continue;}
+					if (fabs(product->tfMuonCmsEta.at(tfType).at(iTf)) > l1EtaCut) { continue;}
 
-					double tfMatchedMuonDeltaR;
-					if (product->probeMuonHasMb2.at(iProbe)) {
-						Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), product->probeMuonEtaSt2.at(iProbe), product->probeMuonPhiSt2.at(iProbe));
-					} else if (product->probeMuonHasMb1.at(iProbe)) {
-						Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), product->probeMuonEtaSt1.at(iProbe), product->probeMuonPhiSt1.at(iProbe));
-					} else {
-						Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), product->probeMuonEta.at(iProbe), product->probeMuonPhi.at(iProbe));
-					}
-
-					if (tfMatchedMuonDeltaR < std::abs(tfMatchedMuonDeltaRMin)) {
+					const double &tfMatchedMuonDeltaR = Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), probeMuonEta, probeMuonPhi);
+					if (tfMatchedMuonDeltaR < tfMatchedMuonDeltaRMin) {
 						bool uGMTMatch = false;
 						for (unsigned short iUGMT = 0; iUGMT < product->nUGMTMuons; iUGMT++) {
 							if (product->tfMuonBx.at(tfType).at(iTf) == product->uGMTMuonBx.at(iUGMT) &&
@@ -210,18 +209,16 @@ void HoCoincidenceProducer::Produce(DataReader* dataReader, HoProduct* product, 
 				}
 			}
 
-			for (int tfType : Utility::TfAlgorithms) {
-				if (muonMatchedTfIndex < 999 && muonMatchedTfType == tfType) {
-					product->tfMatchedMuonDeltaR.at(muonMatchedTfType).at(muonMatchedTfIndex) = tfMatchedMuonDeltaRMin;
-					product->isTfMatchedMuon.at(muonMatchedTfType).at(muonMatchedTfIndex) = true;
-					product->tfMatchedMuonPt.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonPt.at(iProbe);
-					product->tfMatchedMuonEta.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonEta.at(iProbe);
-					product->tfMatchedMuonPhi.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonPhi.at(iProbe);
-					product->tfMatchedMuonCharge.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonCharge.at(iProbe);
-					product->tfMatchedMuonIndex.at(muonMatchedTfType).at(muonMatchedTfIndex) = iProbe;
-					product->tfMatchedMuonTfType.at(muonMatchedTfType).at(muonMatchedTfIndex) = muonMatchedTfType;
-					product->isMuonMatchedTf.at(iProbe) = true;
-				}
+			if (muonMatchedTfIndex < 999 && muonMatchedTfType < 999) {
+				product->tfMatchedMuonDeltaR.at(muonMatchedTfType).at(muonMatchedTfIndex) = tfMatchedMuonDeltaRMin;
+				product->isTfMatchedMuon.at(muonMatchedTfType).at(muonMatchedTfIndex) = true;
+				product->tfMatchedMuonPt.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonPt.at(iProbe);
+				product->tfMatchedMuonEta.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonEta.at(iProbe);
+				product->tfMatchedMuonPhi.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonPhi.at(iProbe);
+				product->tfMatchedMuonCharge.at(muonMatchedTfType).at(muonMatchedTfIndex) = product->probeMuonCharge.at(iProbe);
+				product->tfMatchedMuonIndex.at(muonMatchedTfType).at(muonMatchedTfIndex) = iProbe;
+				product->tfMatchedMuonTfType.at(muonMatchedTfType).at(muonMatchedTfIndex) = muonMatchedTfType;
+				product->isMuonMatchedTf.at(iProbe) = true;
 			}
 		}
 	}
