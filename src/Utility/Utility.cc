@@ -1,22 +1,23 @@
 #include <HOAnalysis/HOL1/interface/Utility/Utility.h>
 
 double Utility::DeltaPhi(double phi1, double phi2) {
-	double deltaPhi = phi1 - phi2;
-	while (deltaPhi >  M_PI) deltaPhi -= 2 * M_PI;
-	while (deltaPhi < -M_PI) deltaPhi += 2 * M_PI;
-	return deltaPhi;
+	//double deltaPhi = phi1 - phi2;
+	//while (deltaPhi >=  M_PI) deltaPhi -= 2 * M_PI;
+	//while (deltaPhi < -M_PI) deltaPhi += 2 * M_PI;
+	//return deltaPhi;
+	return TVector2::Phi_mpi_pi(phi1 - phi2);
 }
 
 int Utility::DeltaIPhi(int iPhi1, int iPhi2) {
 	int deltaIPhi = iPhi1 - iPhi2;
-	deltaIPhi = (deltaIPhi >  36) ? deltaIPhi - 72 : deltaIPhi;
+	deltaIPhi = (deltaIPhi >=  36) ? deltaIPhi - 72 : deltaIPhi;
 	deltaIPhi = (deltaIPhi < -36) ? deltaIPhi + 72 : deltaIPhi;
 	return deltaIPhi;
 }
 
 double Utility::DeltaR(const double &eta1, const double &phi1, const double &eta2, const double &phi2) {
 	double deltaEta = eta1 - eta2;
-	double deltaPhi = Utility::DeltaPhi(phi1, phi2);
+	double deltaPhi = DeltaPhi(phi1, phi2);
 	return std::sqrt(deltaPhi * deltaPhi + deltaEta * deltaEta);
 }
 

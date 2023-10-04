@@ -1,10 +1,9 @@
 #pragma once
 
 #include <HOAnalysis/HOL1/interface/Producer/BaseProducer.h>
+#include <TRandom.h>
 
 class HoProducer : public BaseProducer {
-	private:
-
 	public:
 		HoProducer();
 		~HoProducer();

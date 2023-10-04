@@ -92,6 +92,7 @@ public:
 		muonHasMb2;
 	std::vector<int> muonCharge,
 		muonIEta,
+		muonIPhi,
 		muonHoN3x3Hit;
 	std::vector<float> muonE,
 		muonEt,
@@ -146,6 +147,7 @@ public:
 		probeMuonHasMb2;
 	std::vector<int> probeMuonCharge,
 		probeMuonIEta,
+		probeMuonIPhi,
 		probeMuonHoN3x3Hit;
 	std::vector<float> probeMuonE,
 		probeMuonEt,
@@ -219,21 +221,26 @@ public:
 	// DTTP matching HO
 	std::vector<bool> isDttpMatchedHo,
 		isHoMatchedDttp;
-	std::vector<int> dttpMatchedHoDeltaIPhi,
+	std::vector<int> hoMatchedDttpIndex,
+		dttpMatchedHoDeltaIPhi,
+		hoMatchedDttpDeltaIPhi,
 		dttpMatchedHoIPhi,
 		dttpMatchedHoIEta,
 		dttpHoN3x3Hit;
 	std::vector<unsigned int> dttpMatchedHoIndex;
 	std::vector<double> dttpMatchedHoCmsPt,
+		hoMatchedDttpDeltaPhi,
 		dttpMatchedHoCmsPhi,
 		dttpMatchedHoCmsEta,
 		dttpMatchedHoDeltaPhi;
-	// DTTP matching Muon
+	// DTTP and HO matching Muon
 	std::vector<bool> isMuonMatchedDttp,
 		isDttpMatchedMuon;
 	std::vector<unsigned short> dttpMatchedMuonIndex,
 		dttpMatchedBmtfIndex;
-	std::vector<double> dttpMatchedMuonDeltaR;
+	std::vector<double> dttpMatchedMuonDeltaR,
+		dttpMatchedMuonDeltaPhi,
+		dttpMatchedMuonDeltaEta;
 	std::vector<int> dttpMatchedMuonHoN3x3Hit;
 	// Reco Muon matching Ho
 	std::vector<int> muonMatchedDttpHoN3x3Hit,
@@ -242,9 +249,13 @@ public:
 	std::vector<bool> isMuonMatchedHo,
 		isHoMatchedMuon;
 	std::vector<double> hoMatchedMuonDeltaR,
-		muonMatchedHoDeltaR;
+		muonMatchedHoDeltaR,
+		hoMatchedMuonDeltaPhi,
+		hoMatchedMuonDeltaEta;
 	std::vector<unsigned int> muonMatchedHoIndex;
 	std::vector<unsigned short> hoMatchedMuonIndex;
+	std::vector<int> muonMatchedHoN3x3Hit,
+		hoMatchedMuonHoN3x3Hit;
 
 };
 

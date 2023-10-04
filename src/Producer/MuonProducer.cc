@@ -7,6 +7,22 @@ MuonProducer::MuonProducer() {
 void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 	product->nMuon = *dataReader->nMuon->Get();
 	for (unsigned short iMuon = 0; iMuon < product->nMuon; iMuon++) {
+		// The chimneys/cryogenics of the magnet cause an inefficiency
+		// The trigger perfomance paper do not mention how they deal with this
+		// We just don't use muons from that region
+		// https://link.springer.com/content/pdf/10.1140/epjc/s10052-008-0756-6.pdf
+		// https://publications.rwth-aachen.de/record/689785
+		const float &muonEta = dataReader->muonEta->At(iMuon);
+		const float &muonPhi = dataReader->muonPhi->At(iMuon);
+		const bool &isAtChimneyRegion1 =
+			 0.17 <= muonEta && muonEta <=  0.35 &&
+			 1.13 <= muonPhi && muonPhi <=  2.01;
+		const bool &isAtChimneyRegion2 =
+			-0.35 <= muonEta && muonEta <= -0.17 &&
+			 0.60 <= muonPhi && muonPhi <=  1.60;
+
+		if (isAtChimneyRegion1 || isAtChimneyRegion2) { continue;}
+
 		const float &muonEtaSt1 = dataReader->muonEtaSt1->At(iMuon);
 		const float &muonPhiSt1 = dataReader->muonPhiSt1->At(iMuon);
 		const bool &hasMB1 = (fabs(muonEtaSt1) < 5) && (fabs(muonPhiSt1) < M_PI);
@@ -25,8 +41,9 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 		product->muonE.push_back(dataReader->muonE->At(iMuon));
 		product->muonEt.push_back(dataReader->muonEt->At(iMuon));
 		product->muonPt.push_back(std::min(dataReader->muonPt->At(iMuon), (float)149.99)); // Keep this for now to be the same as eff_L1T.py
-		product->muonEta.push_back(dataReader->muonEta->At(iMuon));
-		product->muonPhi.push_back(dataReader->muonPhi->At(iMuon));
+		//product->muonPt.push_back(dataReader->muonPt->At(iMuon));
+		product->muonEta.push_back(muonEta);
+		product->muonPhi.push_back(muonPhi);
 		product->muonIso.push_back(dataReader->muonIso->At(iMuon));
 		product->muonHltIsoDeltaR.push_back(dataReader->muonHlt_isoDeltaR->At(iMuon));
 		product->muonDeltaR.push_back(dataReader->muonHlt_deltaR->At(iMuon));
@@ -37,7 +54,8 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 		product->muonMet.push_back(dataReader->muonMet->At(iMuon));
 		product->muonMt.push_back(dataReader->muonMt->At(iMuon));
 
-		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(product->muonEta.back()));
+		product->muonIEta.push_back(Utility::CmsEtaToHoIEta(muonEta));
+		product->muonIPhi.push_back(Utility::CmsPhiToHoIPhi(muonPhi));
 		product->muonHasMb1.push_back(hasMB1);
 		product->muonHasMb2.push_back(hasMB2);
 
@@ -90,6 +108,7 @@ void MuonProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogr
 		}
 		*/
 	}
+	product->nMuon = product->muonPt.size();
 }
 
 void MuonProducer::EndJob(HoHistogramCollection* histCollection) {}

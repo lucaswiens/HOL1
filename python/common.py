@@ -3,11 +3,104 @@ from __future__ import print_function
 import os
 import re
 import string
+import numpy as np
 
 import awkward as ak
 import boost_histogram as bh
 
+import ROOT
 #from getXSection import GetXSection
+
+BMTFCOLOR = ROOT.TColor.GetColor("#000000")
+ISOMB1COLOR = ROOT.TColor.GetColor("#ff4da6")
+ISOMB13x3COLOR = ROOT.TColor.GetColor("#ff4d4d")
+ISOMB2COLOR = ROOT.TColor.GetColor("#4dffa6")
+ISOMB12COLOR = ROOT.TColor.GetColor("#4da6ff")
+ISOMB123x3COLOR = ROOT.TColor.GetColor("#4d4dff")
+
+def SetupStyle(option = ""):
+	ROOT.gStyle.SetOptTitle(0)
+	ROOT.gStyle.SetOptStat(0)
+	ROOT.gStyle.SetLegendBorderSize(0)
+	ROOT.gStyle.SetLegendBorderSize(0)
+	ROOT.gStyle.SetPadBorderSize(1)
+
+	if option == "":
+		ROOT.gStyle.SetPadTopMargin(0.05)
+		ROOT.gStyle.SetPadLeftMargin(0.115)
+		ROOT.gStyle.SetPadRightMargin(0.03)
+	if "2D" in option:
+		ROOT.gStyle.SetPadTopMargin(0.05)
+		ROOT.gStyle.SetPadLeftMargin(0.115)
+		ROOT.gStyle.SetPadRightMargin(0.03)
+	pass
+
+def GetLegend(variable):
+	if variable == "Pt":
+		legend = ROOT.TLegend(0.6, 0.2, 0.9, 0.45)
+
+		legendSize = 0.055
+		legend.SetBorderSize(1)
+		#legend.SetTextFont(62)
+		legend.SetLineColor(0)
+		legend.SetLineStyle(0)
+		#legend.SetLineWidth(1)
+		legend.SetFillColorAlpha(0,1)
+		legend.SetFillStyle(1001)
+	elif variable == "Pt":
+		pass
+	elif variable == "Pt":
+		pass
+	return legend
+
+def HexToRgb(hex_code):
+	# Convert a hexadecimal color code to RGB values
+	hex_code = hex_code.lstrip("#")
+	return [int(hex_code[i:i+2], 16) / 255.0 for i in (0, 2, 4)]
+
+#def GenerateColorGradient(color_lower = "#4da6ff", color_upper = "#ff4da6", number = 100):
+def GenerateColorGradient(color_lower = "#F2E9D0", color_upper = "#e16852", number = 100):
+	#red1, green1, blue1, alpha1 = ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(1)
+	#red2, green2, blue2, alpha2 = ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(1)
+
+	rgb_lower = HexToRgb(color_lower)
+	rgb_upper = HexToRgb(color_upper)
+	print(*rgb_lower)
+	print(*rgb_upper)
+	color_lower = ROOT.TColor(*rgb_lower)
+	color_upper = ROOT.TColor(*rgb_upper)
+	print(color_lower)
+
+	#color_lower.GetRGB(red1, green1, blue1)
+	#color_upper.GetRGB(red2, green2, blue2)
+	red = np.linspace(rgb_lower[0], rgb_upper[0], number)
+	green = np.linspace(rgb_lower[1], rgb_upper[1], number)
+	blue = np.linspace(rgb_lower[2], rgb_upper[2], number)
+
+	ROOT.TColor.CreateGradientColorTable(number, np.linspace(0, 1, number), red, green, blue, number)
+	return None
+
+def GetOsVariable(Var):
+	try:
+		variable = os.environ[Var]
+	except KeyError:
+		print("Please set the environment variable " + Var)
+		sys.exit(1)
+	return variable
+
+def findLabel(efficiencyName):
+	label = ""
+	if "Pt" in efficiencyName:
+		label = "p_{T}^{offline} / GeV"
+	elif "Eta" in efficiencyName:
+		label = "#eta^{offline}"
+	elif "DeltaR" in efficiencyName:
+		label = "#DeltaR^{offline}"
+	elif "DeltaPhi" in efficiencyName:
+		label = "#Delta #phi^{offline}"
+	return label
+
+
 
 def GetFromDict(tree, dictionairy, key):
 	keyString = re.sub("_[0-9]", "", key)

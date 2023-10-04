@@ -7,14 +7,11 @@ HoProducer::HoProducer() {
 void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogramCollection* histCollection) {
 
 	product->sumQ = *dataReader->sumQ->Get();
-	product->nHcalDetIds = *dataReader->nHcalDetIds->Get();
 	product->nHcalQIESamples = *dataReader->nHcalQIESamples->Get();
 
 	histCollection->histSumQ->Fill(product->sumQ);
-	histCollection->histNHcalDetIds->Fill(product->nHcalDetIds);
 	histCollection->histNHcalQIESamples->Fill(product->nHcalQIESamples);
 
-	//unsigned int size = dataReader->hcalDetIdIEta->GetSize();
 	for (unsigned i = 0; i < dataReader->hcalDetIdIEta->GetSize(); i++) {
 		const int &qieSample = dataReader->hcalQIESample->At(i);
 		const int &qieSampleAdc = dataReader->hcalQIESampleAdc->At(i);
@@ -57,6 +54,9 @@ void HoProducer::Produce(DataReader* dataReader, HoProduct* product, HoHistogram
 		histCollection->histHcalWheel->Fill(product->hcalWheel.back());
 		histCollection->histHcalSection->Fill(product->hcalSection.back());
 	}
+
+	product->nHcalDetIds = product->hcalIEta.size();
+	histCollection->histNHcalDetIds->Fill(product->nHcalDetIds);
 }
 
 void HoProducer::EndJob(HoHistogramCollection* histCollection) {}

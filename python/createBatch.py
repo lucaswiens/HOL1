@@ -40,9 +40,11 @@ if __name__=="__main__":
 	args = parser.parse_args()
 	print(args.input_file)
 	print(args.input_file.split("/"))
-	fileName = "SingleMuon" if "SingleMuon" in args.input_file else "ZeroBias"
+	hasRecoMuons = "SingleMuon" in args.input_file
+	fileName = "SingleMuon" if hasRecoMuons else "ZeroBias"
 	fileName = args.input_file.split("/")[1].split(".")[0]
 	args.output = args.output + "/" + fileName + "/" + date
+
 
 	makeDirs(str(args.output) + "/root")
 	makeDirs(str(args.output) + "/batch")
@@ -90,7 +92,7 @@ if __name__=="__main__":
 			shellFile = open(args.output + "/batch/processNtuple_" + str(shellNumber), "w")
 			os.system("chmod 744 " + args.output + "/batch/processNtuple_" + str(shellNumber))
 			shellFile.write("#!/bin/sh\n")
-			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " " + ("1" if args.split_by_run else "0") + " ")
+			shellFile.write("HOStudy L1" + fileName + "_" + str(shellNumber) + " " + ("1" if args.use_emulated else "0") + " " + ("1" if args.split_by_run else "0") + " " + ("1" if hasRecoMuons else "0" + " "))
 			shellFile.write(sample + " ")
 			number += 1
 

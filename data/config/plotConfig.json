@@ -1,0 +1,5 @@
+{
+	"Pt"  : {"xLabel" : "$p_T / GeV", "yLabel" : "Events"},
+	"Phi" : {"xLabel" : "$\\phi",     "yLabel" : "Events"},
+	"Eta" : {"xLabel" : "$\\eta",     "yLabel" : "Events"}
+}

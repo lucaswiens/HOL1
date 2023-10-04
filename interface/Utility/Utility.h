@@ -5,6 +5,10 @@
 #include <algorithm>
 #include <map>
 
+#include "TMath.h"
+#include "TVector3.h"
+#include "TRotation.h"
+
 namespace Utility {
 	// General Purpose Functions
 	double DeltaPhi(double phi1, double phi2);
@@ -37,6 +41,33 @@ namespace Utility {
 	std::pair <int, double> GetNearestDttpToBmtf(int bmtfCmsPhi, int bmtfStation, int dttpBx, int dttpWheel, int dttpSection, int dttpStation, int dttpPhi);
 	bool PassesSingleMuonTrigger(int tfMuonQuality);
 
+	template <typename T>
+	void SortByIndex(T &vector, std::vector<unsigned int> indices){
+		//T tmp(vectorSize);
+		//T tmp;
+		T tmp(vector.size());
+		for (unsigned int i = 0; i < vector.size(); i++){
+			tmp.at(i) = vector.at(indices[i]);
+			//tmp.push_back(vector.at(indices.at(i)));
+		}
+		vector = std::move(tmp);
+	}
+	template <typename T>
+	void SortByIndex(T &vector, std::vector<int> indices){
+		//T tmp(vectorSize);
+		//T tmp;
+		T tmp(vector.size());
+		for (int i = 0; i < vector.size(); i++){
+			tmp.at(i) = vector.at(indices[i]);
+			//tmp.push_back(vector.at(indices.at(i)));
+		}
+		vector = std::move(tmp);
+	}
+
+
+
+
+
 	static const int Bmtf = 0;
 	static const int Omtf = 1;
 	static const int Emtf = 2;
@@ -60,3 +91,4 @@ namespace Utility {
 };
 
 }
+

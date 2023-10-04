@@ -22,11 +22,14 @@ int main(int argc, char* argv[]) {
 
 	bool useEmulated = (std::string)argv[2] == "0" ? false : true;
 	bool splitByRun = (std::string)argv[3] == "0" ? false : true;
+	bool hasRecoMuons = (std::string)argv[4] == "0" ? false : true;
 	std::string outputFile = std::string(argv[1]) + (useEmulated ? "Emu" : "") + ".root";
-	std::cout << (useEmulated ? "Using the emulated branch.\n" : "") << "Output file is named: " << outputFile << std::endl;
-	TFile *file = new TFile(outputFile.c_str(), "RECREATE");
 
-	bool hasRecoMuons;
+	std::cout << (useEmulated ? "Using the emulated branch.\n" : "") << "Output file is named: " << outputFile << std::endl;
+	std::cout << (splitByRun ? "Output is split by run number." : "Output is stored with mixed run numbers.")  << std::endl;
+	std::cout << (hasRecoMuons ? "Input file has offline reconstructed muons to estimate efficiency." : "Input file does not have offline reconstructed muons. Calculate Rate instead (typically only done with zero or minimum bias samples)")  << std::endl;
+
+	TFile *file = new TFile(outputFile.c_str(), "RECREATE");
 
 	// Define Cuts used during matching
 	int iEtaCut = 999;
@@ -35,19 +38,19 @@ int main(int argc, char* argv[]) {
 		etaCut = 2.40,
 		l1PtCut = 3,
 		l1EtaCut = 999,
-		deltaPhiCut = 0.4,
+		deltaPhiCut = 0.2,
 		deltaRProbeAndTfCut = 0.2,
-		deltaRProbeAndHoCut = 0.4,
+		deltaRProbeAndHoCut = 0.2,
 		deltaRTagAndTfCut = 0.1,
 		deltaRTagAndProbeCut = 0.4;
 
 	// Choose the working point of tag muon
 	char tagWorkingPointCut = 't'; // t = tight, m = medium, l = loose, a = all
-	char probeWorkingPointCut = 'a'; // t = tight, m = medium, l = loose, a = all
+	char probeWorkingPointCut = 'l'; // t = tight, m = medium, l = loose, a = all
 
 	// Declare vector of Producers which will fill Histograms
 	std::vector<std::shared_ptr<BaseProducer>> producers;
-	if (strstr(argv[4], "SingleMuon") != NULL || strstr(argv[4], "MET") != NULL) {
+	if (hasRecoMuons) {
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer()));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(l1EtaCut, l1PtCut)));
 		producers.push_back(std::shared_ptr<MuonProducer>(new MuonProducer()));
@@ -55,16 +58,15 @@ int main(int argc, char* argv[]) {
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, l1EtaCut, probePtCut, l1PtCut, deltaPhiCut, deltaRProbeAndTfCut, deltaRProbeAndHoCut)));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
 
-		hasRecoMuons = true;
 	} else {
 		producers.push_back(std::shared_ptr<HoProducer>(new HoProducer()));
 		producers.push_back(std::shared_ptr<BmtfInputProducer>(new BmtfInputProducer(l1EtaCut, l1PtCut)));
 		producers.push_back(std::shared_ptr<HoCoincidenceProducer>(new HoCoincidenceProducer(iEtaCut, etaCut, l1EtaCut, probePtCut, l1PtCut, deltaPhiCut, deltaRProbeAndTfCut, deltaRProbeAndHoCut)));
 		producers.push_back(std::shared_ptr<HoHistogramProducer>(new HoHistogramProducer()));
 
-		hasRecoMuons = false;
 	}
 
+	// HoHistogramCollection histCollection(hasRecoMuons);
 	// Histograms are stored inside a specific class to allow access to them for all producers
 	std::map<int, HoHistogramCollection> histCollections;
 
@@ -72,12 +74,12 @@ int main(int argc, char* argv[]) {
 	int runMin = 320000, runMax = 330000;
 	TH1D *histRunNumber = new TH1D("runNumber", "", runMax - runMin, runMin, runMax);
 
-	for (int iFile = 4; iFile < argc; iFile ++) {
+	for (int iFile = 5; iFile < argc; iFile ++) {
 		int  processed = 0;
 		const char* inputFile = argv[iFile];
 		DataReader* dataReader = new DataReader(inputFile, &useEmulated);
 
-		std::cout << "Processing(" << iFile - 3 << "/" << argc - 3 << "): "<< inputFile << " with " << dataReader->GetEntries() << " events" << std::endl;
+		std::cout << "Processing(" << iFile - 4 << "/" << argc - 4 << "): "<< inputFile << " with " << dataReader->GetEntries() << " events" << std::endl;
 		while (dataReader->Next()) {
 			totalProcessed++;
 			elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count();
@@ -99,14 +101,13 @@ int main(int argc, char* argv[]) {
 
 			// Production of Ho Coincidence
 			HoProduct product;
-			if (processed % 1000 == 0) { ProgressBar((int) 101 * processed/dataReader->GetEntries(), rate, ""); }
 			for (std::shared_ptr<BaseProducer> producer: producers) {
 				producer->Produce(dataReader, &product, histCollection);
 			}
+			histCollections.at(runNumber).numberOfEvents->Fill("Number of Events", 1);
 			processed++;
 		}
 		ProgressBar(100, rate, "");
-		histCollections.at(runNumber).numberOfEvents->Fill("Number of Events", dataReader->GetEntries());
 		delete dataReader;
 	}
 
@@ -123,7 +124,7 @@ int main(int argc, char* argv[]) {
 
 	delete file;
 
-	std::cout << std::endl << "Processed " << argc - 3 << " files in " << std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - start).count() << " minutes" << std::endl;
+	std::cout << std::endl << "Processed " << argc - 4 << " files in " << std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - start).count() << " minutes" << std::endl;
 	std::cout << "The name of the outputfile is " << outputFile << std::endl;
 
 	return 0;

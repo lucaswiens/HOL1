@@ -38,6 +38,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 	std::vector<unsigned short> tagIndices;
 	std::vector<unsigned short> probeIndices;
 	for (unsigned short iTag = 0; iTag < product->nMuon; iTag++) {
+		//if (tagIndices.size() >= 1) { continue;}
 		//Only get muons that have eta and phi variables propagated to the second station
 		const double &tagMuonEtaSt1 = product->muonEtaSt1.at(iTag);
 		const double &tagMuonPhiSt1 = product->muonPhiSt1.at(iTag);
@@ -47,17 +48,17 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		const double &tagMuonPhiSt2 = product->muonPhiSt2.at(iTag);
 		const bool &hasMb2 = (tagMuonEtaSt2 > -99) && (tagMuonPhiSt2 > -99);
 
-		if (!(hasMb1 or hasMb2)) { continue;}
+		if (!(hasMb1 || hasMb2)) { continue;}
 
 		bool passesWorkingPoint = false;
 
 		const bool &isLooseTagMuon = product->isLooseMuon.at(iTag);
 		const bool &isMediumTagMuon = product->isMediumMuon.at(iTag);
 		const bool &isTightTagMuon = product->isTightMuon.at(iTag);
-		if (tagWorkingPointCut == 'm') {
-			passesWorkingPoint = isMediumTagMuon;
-		} else if (tagWorkingPointCut == 't') {
+		if (tagWorkingPointCut == 't') {
 			passesWorkingPoint = isTightTagMuon;
+		} else if (tagWorkingPointCut == 'm') {
+			passesWorkingPoint = isMediumTagMuon;
 		} else if (tagWorkingPointCut == 'l') {
 			passesWorkingPoint = isLooseTagMuon;
 		} else if (tagWorkingPointCut == 'a') {
@@ -95,6 +96,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 				} else {
 					tfMuonMatchedMuonDeltaR = Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), product->muonEta.at(iTag), product->muonPhi.at(iTag));
 				}
+				tfMuonMatchedMuonDeltaR = Utility::DeltaR(product->tfMuonCmsEta.at(tfType).at(iTf), product->tfMuonCmsPhi.at(tfType).at(iTf), product->muonEta.at(iTag), product->muonPhi.at(iTag));
 
 				if (tfMuonMatchedMuonDeltaR < deltaRTagAndTfCut) {
 
@@ -165,7 +167,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 	//std::vector<std::pair<int, int>> tagAndProbePair;
 	std::vector<int> probeMatchedTagIndex;
 	for (unsigned short iProbe = 0; iProbe < product->nMuon; iProbe++) {
-		//if (std::find(probeMatchedTagIndex.begin(), probeMatchedTagIndex.end(), iProbe) != probeMatchedTagIndex.end()) { continue;} // If the reco muon with index iProbe is an already matched tag muon, don't use it again
+		if (std::find(probeMatchedTagIndex.begin(), probeMatchedTagIndex.end(), iProbe) != probeMatchedTagIndex.end()) { continue;} // If the reco muon with index iProbe is an already matched tag muon, don't use it again
 
 		const double &probeMuonEtaSt1 = product->muonEtaSt1.at(iProbe);
 		const double &probeMuonPhiSt1 = product->muonPhiSt1.at(iProbe);
@@ -175,17 +177,17 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		const double &probeMuonPhiSt2 = product->muonPhiSt2.at(iProbe);
 		const bool &hasMb2 = (probeMuonEtaSt2 > -99) && (probeMuonPhiSt2 > -99);
 
-		if (!(hasMb1 or hasMb2)) { continue;}
+		if (!(hasMb1 || hasMb2)) { continue;}
 
 
 		bool passesWorkingPoint = false;
 		const bool &isLooseProbeMuon = product->isLooseMuon.at(iProbe);
 		const bool &isMediumProbeMuon = product->isMediumMuon.at(iProbe);
 		const bool &isTightProbeMuon = product->isTightMuon.at(iProbe);
-		if (probeWorkingPointCut == 'm') {
-			passesWorkingPoint = isMediumProbeMuon;
-		} else if (probeWorkingPointCut == 't') {
+		if (probeWorkingPointCut == 't') {
 			passesWorkingPoint = isTightProbeMuon;
+		}else if (probeWorkingPointCut == 'm') {
+			passesWorkingPoint = isMediumProbeMuon;
 		} else if (probeWorkingPointCut == 'l') {
 			passesWorkingPoint = isLooseProbeMuon;
 		} else if (probeWorkingPointCut == 'a') {
@@ -211,7 +213,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 			//if (iProbe == tagIndices.at(iTag)) { continue;} // Tags cannot become probes
 			unsigned short &tagIndex = tagIndices.at(iTag);
 			if (std::find(probeMatchedTagIndex.begin(), probeMatchedTagIndex.end(), tagIndex) != probeMatchedTagIndex.end()) { continue;} // If tag has already found a probe pair, then don't use it again
-			if (std::find(probeIndices.begin(), probeIndices.end(), tagIndex) != probeIndices.end()) { continue;} // If a tag is already a probe, don't use it again
+			//if (std::find(probeIndices.begin(), probeIndices.end(), tagIndex) != probeIndices.end()) { continue;} // If a tag is already a probe, don't use it again
 			if (product->tagMuonCharge.at(iTag) == product->muonCharge.at(iProbe)){ continue;}
 
 			double tagAndProbeDeltaR = Utility::DeltaR(product->tagMuonEta.at(iTag), product->tagMuonPhi.at(iTag), probeMuonEta, probeMuonPhi);
@@ -221,11 +223,13 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 			histCollection->histDiMuonMass->Fill(diMuonMass);
 
 			if (tagAndProbeDeltaR < deltaRTagAndProbeCut) { continue;}
-			if (product->tagMuonPt.at(iTag) > 20) {
-				if (std::abs(diMuonMass - zBosonMass)/zBosonMass > 0.32) { continue;}
-			} else {
-				if (std::abs(diMuonMass - jPsiMass)/jPsiMass > 0.32) { continue;}
-			}
+			//if (product->tagMuonPt.at(iTag) > 10) {
+			//	if (std::abs(diMuonMass - zBosonMass)/zBosonMass > 0.32) { continue;}
+			//} else {
+			//	if (std::abs(diMuonMass - jPsiMass)/jPsiMass > 0.32) { continue;}
+			//}
+			//if (std::abs(diMuonMass - zBosonMass) > 30) { continue;}
+			if (diMuonMass < 50 || 120 < diMuonMass) { continue;}
 
 			tagAndProbeIndex = tagIndices.at(iTag);
 			histCollection->histTagAndProbeDiMuonMass->Fill(diMuonMass);
@@ -258,6 +262,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 		product->probeMuonMt.push_back(product->muonMt.at(iProbe));
 
 		product->probeMuonIEta.push_back(Utility::CmsEtaToHoIEta(product->probeMuonEta.back()));
+		product->probeMuonIPhi.push_back(Utility::CmsPhiToHoIPhi(product->probeMuonPhi.back()));
 		product->probeMuonHasMb1.push_back(hasMb1);
 		product->probeMuonHasMb2.push_back(hasMb2);
 
@@ -292,7 +297,7 @@ void TagAndProbeProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 	}
 	product->nProbeMuon = product->probeMuonPt.size();
 	histCollection->histNTagMuon->Fill(product->nTagMuon);
-	histCollection->histNMuon->Fill(product->nProbeMuon);
+	histCollection->histNProbeMuon->Fill(product->nProbeMuon);
 	histCollection->histNTagMuon_vs_nProbeMuon->Fill(product->nProbeMuon, product->nTagMuon);
 }
 

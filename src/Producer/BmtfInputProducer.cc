@@ -66,17 +66,6 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 		const double &uGMTCmsPhi = dataReader->uGMTPhi->At(iUGMT);
 
 		if (uGMTCmsPt < l1PtCut) { continue;}
-		//histCollection->histBmtfNumber->Fill(tfType); //this should probably be put in its own hist or something
-
-		//histCollection->histtfMuonRateVsPhi->Fill(uGMTCmsPhi);
-
-		if (tfType == Utility::Bmtf) {
-			histCollection->histBmtfMuonRateVsPhi->Fill(uGMTCmsPhi);
-		} else if (tfType == Utility::Omtf) {
-			histCollection->histOmtfMuonRateVsPhi->Fill(uGMTCmsPhi);
-		} else if (tfType == Utility::Emtf) {
-			histCollection->histEmtfMuonRateVsPhi->Fill(uGMTCmsPhi);;
-		}
 
 		product->uGMTMuonBx.push_back(dataReader->uGMTBx->At(iUGMT));
 		product->uGMTMuonPt.push_back(dataReader->uGMTIEt->At(iUGMT));
@@ -126,7 +115,8 @@ void BmtfInputProducer::Produce(DataReader* dataReader, HoProduct* product, HoHi
 			product->tfMuonQuality.at(tfType).push_back(tfMuonHwQual);
 
 			if (tfType == Utility::Bmtf) {
-				histCollection->histBmtfNumber->Fill(0);
+				histCollection->histBmtfNumber->Fill("bmtfNumber", 1);
+
 				//Somehow this is only filled properly for the bmtf.. But it is also only needed for it, so that should be ok
 				product->tfMuonTrackerAddresses.at(tfType).push_back({
 					dataReader->tfMuonTrAdd.at(tfType)->At(4 * iTf + 0),
