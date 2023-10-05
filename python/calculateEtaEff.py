@@ -280,8 +280,6 @@ if __name__=="__main__":
 		#canvas.SaveAs(args.output_directory + "/efficiency/log/" + effName + "_uGMT.pdf")
 		#canvas.Close()
 
-
-
 		muonEta_vs_MuonPt = histogramFile.Get(runNumber + "/probeMuonEta_vs_ProbeMuonPt")
 		bmtfMatchedMuonEta_vs_MuonPt = histogramFile.Get(runNumber + "/tfMatchedMuonEta_vs_MuonPt_Bmtf")
 

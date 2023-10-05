@@ -563,12 +563,23 @@ void HoHistogramProducer::EndJob(HoHistogramCollection* histCollection) {
 		efficiencyTfPhi->Write("efficiencyTfPhi");
 		delete efficiencyTfPt; delete efficiencyTfEta; delete efficiencyTfPhi;
 
-		for (TH2D *hist : {histCollection->histIsoMb1MatchedMuonEta_vs_MuonPt, histCollection->histIsoMb2MatchedMuonEta_vs_MuonPt, histCollection->histIsoMb12MatchedMuonEta_vs_MuonPt}) {
+		for (TH2D *hist : {
+				histCollection->histIsoMb1MatchedMuonEta_vs_MuonPt, histCollection->histIsoMb2MatchedMuonEta_vs_MuonPt, histCollection->histIsoMb12MatchedMuonEta_vs_MuonPt,
+				histCollection->histIsoMb1MatchedMuonN3x3Eta_vs_MuonPt, histCollection->histIsoMb2MatchedMuonN3x3Eta_vs_MuonPt, histCollection->histIsoMb12MatchedMuonN3x3Eta_vs_MuonPt,
+				histCollection->histIsoMb1MatchedMuonAbsIEta3Eta_vs_MuonPt, histCollection->histIsoMb2MatchedMuonAbsIEta3Eta_vs_MuonPt, histCollection->histIsoMb12MatchedMuonAbsIEta3Eta_vs_MuonPt,
+				histCollection->histIsoMb1MatchedMuonHighADCEta_vs_MuonPt, histCollection->histIsoMb2MatchedMuonHighADCEta_vs_MuonPt, histCollection->histIsoMb12MatchedMuonHighADCEta_vs_MuonPt
+		}) {
 			hist->Add(histCollection->histTfMatchedMuonEta_vs_MuonPt.at(Utility::Bmtf));
 		}
-		for (TH2D *hist : {histCollection->histIsoMb1MatchedMuonEta_vs_MuonPhi, histCollection->histIsoMb2MatchedMuonEta_vs_MuonPhi, histCollection->histIsoMb12MatchedMuonEta_vs_MuonPhi}) {
+		for (TH2D *hist : {
+				histCollection->histIsoMb1MatchedMuonEta_vs_MuonPhi, histCollection->histIsoMb2MatchedMuonEta_vs_MuonPhi, histCollection->histIsoMb12MatchedMuonEta_vs_MuonPhi,
+				histCollection->histIsoMb1MatchedMuonN3x3Eta_vs_MuonPhi, histCollection->histIsoMb2MatchedMuonN3x3Eta_vs_MuonPhi, histCollection->histIsoMb12MatchedMuonN3x3Eta_vs_MuonPhi,
+				histCollection->histIsoMb1MatchedMuonAbsIEta3Eta_vs_MuonPhi, histCollection->histIsoMb2MatchedMuonAbsIEta3Eta_vs_MuonPhi, histCollection->histIsoMb12MatchedMuonAbsIEta3Eta_vs_MuonPhi,
+				histCollection->histIsoMb1MatchedMuonHighADCEta_vs_MuonPhi, histCollection->histIsoMb2MatchedMuonHighADCEta_vs_MuonPhi, histCollection->histIsoMb12MatchedMuonHighADCEta_vs_MuonPhi
+		}) {
 			hist->Add(histCollection->histTfMatchedMuonEta_vs_MuonPhi.at(Utility::Bmtf));
 		}
+
 		TH2D *efficiencyBmtfMuonEta_vs_MuonPt = (TH2D*)histCollection->histTfMatchedMuonEta_vs_MuonPt.at(Utility::Bmtf)->Clone("efficiencyBmtfMatchedMuonEta_vs_Pt");
 		efficiencyBmtfMuonEta_vs_MuonPt->Divide(histCollection->histProbeMuonEta_vs_ProbeMuonPt);
 		efficiencyBmtfMuonEta_vs_MuonPt->Write("efficiencyBmtfMuonEta_vs_MuonPt");

@@ -18,6 +18,13 @@ ISOMB2COLOR = ROOT.TColor.GetColor("#4dffa6")
 ISOMB12COLOR = ROOT.TColor.GetColor("#4da6ff")
 ISOMB123x3COLOR = ROOT.TColor.GetColor("#4d4dff")
 
+COLORMAP = {
+        "BMTF" : BMTFCOLOR,
+        "IsoMB1" : ISOMB1COLOR,
+        "IsoMB2" : ISOMB2COLOR,
+        "IsoMB12" : ISOMB12COLOR,
+}
+
 def SetupStyle(option = ""):
 	ROOT.gStyle.SetOptTitle(0)
 	ROOT.gStyle.SetOptStat(0)
@@ -59,17 +66,14 @@ def HexToRgb(hex_code):
 	return [int(hex_code[i:i+2], 16) / 255.0 for i in (0, 2, 4)]
 
 #def GenerateColorGradient(color_lower = "#4da6ff", color_upper = "#ff4da6", number = 100):
-def GenerateColorGradient(color_lower = "#F2E9D0", color_upper = "#e16852", number = 100):
+def GenerateColorGradient(color_lower = "#370e3a", color_upper = "#f73393", number = 100):
 	#red1, green1, blue1, alpha1 = ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(1)
 	#red2, green2, blue2, alpha2 = ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(0), ROOT.Double_t(1)
 
 	rgb_lower = HexToRgb(color_lower)
 	rgb_upper = HexToRgb(color_upper)
-	print(*rgb_lower)
-	print(*rgb_upper)
 	color_lower = ROOT.TColor(*rgb_lower)
 	color_upper = ROOT.TColor(*rgb_upper)
-	print(color_lower)
 
 	#color_lower.GetRGB(red1, green1, blue1)
 	#color_upper.GetRGB(red2, green2, blue2)
