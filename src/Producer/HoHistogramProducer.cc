@@ -385,6 +385,11 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 				//histCollection->histDttpMatchedHoAbsIEta3CmsPhi->Fill(product->dttpMatchedHoCmsPhi.at(iDttp));
 				//histCollection->histDttpMatchedHoAbsIEta3CmsEta->Fill(product->dttpMatchedHoCmsEta.at(iDttp));
 			}
+
+			if (product->hcalQIESampleAdc.at(product->dttpMatchedHoIndex.at(iDttp)) >= 20) {
+				histCollection->histDttpMatchedHoHighADCNumber->Fill("dttpMatchedHoHighADCNumber", 1);
+			}
+
 			// isoMb1 Candidates
 			if (product->dttpStation.at(iDttp) == 1) {
 				histCollection->histDttpMb1MatchedHoNumber->Fill("dttpMb1MatchedHoNumber", 1);
@@ -413,6 +418,10 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 					//histCollection->histDttpMb1MatchedHoAbsIEta3IEta->Fill(product->dttpMatchedHoIEta.at(iDttp));
 					//histCollection->histDttpMb1MatchedHoAbsIEta3CmsPhi->Fill(product->dttpMatchedHoCmsPhi.at(iDttp));
 					//histCollection->histDttpMb1MatchedHoAbsIEta3CmsEta->Fill(product->dttpMatchedHoCmsEta.at(iDttp));
+				}
+
+				if (product->hcalQIESampleAdc.at(product->dttpMatchedHoIndex.at(iDttp)) >= 20) {
+					histCollection->histDttpMb1MatchedHoHighADCNumber->Fill("dttpMb1MatchedHoHighADCNumber", 1);
 				}
 			}
 			// isoMb2 Candidates
@@ -444,6 +453,10 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 					//histCollection->histDttpMb2MatchedHoAbsIEta3CmsPhi->Fill(product->dttpMatchedHoCmsPhi.at(iDttp));
 					//histCollection->histDttpMb2MatchedHoAbsIEta3CmsEta->Fill(product->dttpMatchedHoCmsEta.at(iDttp));
 				}
+
+				if (product->hcalQIESampleAdc.at(product->dttpMatchedHoIndex.at(iDttp)) >= 20) {
+					histCollection->histDttpMb2MatchedHoHighADCNumber->Fill("dttpMb2MatchedHoHighADCNumber", 1);
+				}
 			}
 			// isoMb12 Candidates
 			if (product->dttpStation.at(iDttp) <= 2) {
@@ -473,6 +486,10 @@ void HoHistogramProducer::Produce(DataReader* dataReader, HoProduct* product, Ho
 					//histCollection->histDttpMb12MatchedHoAbsIEta3IEta->Fill(product->dttpMatchedHoIEta.at(iDttp));
 					//histCollection->histDttpMb12MatchedHoAbsIEta3CmsPhi->Fill(product->dttpMatchedHoCmsPhi.at(iDttp));
 					//histCollection->histDttpMb12MatchedHoAbsIEta3CmsEta->Fill(product->dttpMatchedHoCmsEta.at(iDttp));
+				}
+
+				if (product->hcalQIESampleAdc.at(product->dttpMatchedHoIndex.at(iDttp)) >= 20) {
+					histCollection->histDttpMb12MatchedHoHighADCNumber->Fill("dttpMb12MatchedHoHighADCNumber", 1);
 				}
 			}
 		}
