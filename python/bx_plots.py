@@ -69,12 +69,12 @@ for bx, bx_str in [
     plt.legend(loc="best", ncol=1)
     plt.tight_layout()
     plt.savefig(
-        "bx_plots/xroot_{}".format(bx_str) + ".png",
+        "bx_plots/xroot_{}".format(bx_str) + ".pdf",
         bbox_inches="tight",
     )
     plt.yscale("log")
     plt.savefig(
-        "bx_plots/xroot_{}_log".format(bx_str) + ".png",
+        "bx_plots/xroot_{}_log".format(bx_str) + ".pdf",
         bbox_inches="tight",
     )
     plt.close()
@@ -122,26 +122,30 @@ plt.figure(figsize=(12, 9))
 # file_muon_matching[keys[3]].to_hist().plot(label="before")
 # file_no_cut[keys[2]].to_hist().plot(label="after")
 file_no_cut[keys[3]].to_hist().plot(density=True,
-    label="DTTP", linewidth=1.5,
+    #label="DTTP",
+    linewidth=2,
     #bins=bins
-    #label="before in middle bin {}".format(
-    #    np.round(counts_before[2] / np.sum(counts_before), 4)
-    #)
+    label="DTTP, BX0: {}".format(
+        np.round(counts_before[2] / np.sum(counts_before), 2)
+    )
 )
 file_no_cut[keys[2]].to_hist().plot(density=True,
-    label="HO corrected", linewidth=1.5,
+    #label="HO corrected",
+    linewidth=2,
     #bins=bins
-    #label="after in middle bin {}".format(
-    #    np.round(counts_after[2] / np.sum(counts_after), 4)
-    #)
+    label="HO corrected, BX0: {}".format(
+        np.round(counts_after[2] / np.sum(counts_after), 2)
+    )
 )
+
+vals, edges = np.histogram(ak.flatten(bmtf_muon_bx), uproot_bins)
 plt.hist(
         ak.flatten(bmtf_muon_bx),
-        label="BMTF Muons",
+        label="BMTF Muons, BX0: {}".format(np.round(vals[2] / np.sum(vals), 2)),
         density=True,
         bins=uproot_bins,
         histtype="step",
-        linewidth=1.5,
+        linewidth=2
     )
 # plt.hist(file_no_cut_wo_matching[keys[0]], label="before")
 hep.style.use("CMS")
@@ -149,10 +153,15 @@ hep.cms.label(llabel="Work in progress", loc=0)
 plt.title("dttp bx correction", fontsize=16)  # qie4 cut
 plt.xlabel("BX", fontsize=16)
 # plt.ylabel("Normalised")
-plt.legend(loc="best", ncol=1)
+plt.legend(*([x[i] for i in [0, 2, 1]] for x in plt.gca().get_legend_handles_labels()), loc="best", ncol=1)
+#plt.legend(loc="best", ncol=1)
 plt.tight_layout()
 plt.savefig(
     "bx_plots/bmtfbx_dttb_bx_correction_qie4_cut" + ".png",
+    bbox_inches="tight",
+)
+plt.savefig(
+    "bx_plots/bmtfbx_dttb_bx_correction_qie4_cut" + ".pdf",
     bbox_inches="tight",
 )
 plt.yscale("log")
@@ -160,9 +169,13 @@ plt.savefig(
     "bx_plots/bmtfbx_dttb_bx_correction_qie4_cut_log" + ".png",
     bbox_inches="tight",
 )
+plt.savefig(
+    "bx_plots/bmtfbx_dttb_bx_correction_qie4_cut_log" + ".pdf",
+    bbox_inches="tight",
+)
 plt.close()
 
-print("bx_plots/dttb_bx_correction_qie4_cut_log" + ".png")
+print("bx_plots/dttb_bx_correction_qie4_cut_log" + ".pdf")
 
 
 # from IPython import embed;embed()
